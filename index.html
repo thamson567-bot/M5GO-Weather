@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>M5GO Weather Station</title>
+<style>
+:root{--bg:#0f0f23;--card:#1a1a2e;--card2:#16213e;--text:#e0e0e0;--dim:#888;--r:16px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.top{background:linear-gradient(135deg,#0a1628,#1a3a5c,#2d6187,#3a7ca5);
+color:#fff;padding:24px 20px 44px;text-align:center;position:relative;overflow:hidden}
+.top::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+background:radial-gradient(circle,rgba(255,255,255,.03) 0%,transparent 60%);animation:shimmer 8s infinite}
+@keyframes shimmer{0%,100%{transform:rotate(0deg)}50%{transform:rotate(180deg)}}
+.top::after{content:'';position:absolute;bottom:0;left:0;right:0;height:44px;
+background:var(--bg);border-radius:50% 50% 0 0/100% 100% 0 0}
+.top h1{font-size:1.1rem;font-weight:400;opacity:.7;letter-spacing:3px;text-transform:uppercase}
+.loc{font-size:.8rem;opacity:.4;margin-top:4px;letter-spacing:1px}
+.clk{font-size:1rem;opacity:.7;margin-top:8px;font-variant-numeric:tabular-nums}
+.hero{display:flex;align-items:center;justify-content:center;gap:24px;margin-top:20px}
+.wx-icon{font-size:5rem;filter:drop-shadow(0 4px 16px rgba(0,0,0,.3));animation:fl 3s ease-in-out infinite}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.wx-temp{font-size:5rem;font-weight:100;letter-spacing:-4px}
+.wx-deg{font-size:1.6rem;vertical-align:top;opacity:.7}
+.wx-desc{font-size:1.15rem;margin-top:4px;opacity:.9;font-weight:500}
+.wx-hl{font-size:.85rem;opacity:.5;margin-top:6px;letter-spacing:.5px}
+.wx-hl span{font-weight:600;opacity:.8}
+
+.wrap{max-width:920px;margin:-24px auto 0;padding:0 16px 24px;position:relative;z-index:1}
+
+.sb{display:flex;align-items:center;justify-content:center;gap:8px;
+padding:10px 20px;border-radius:24px;font-size:.8rem;margin:0 auto 16px;
+background:var(--card);width:fit-content;border:1px solid rgba(255,255,255,.05)}
+.sd{width:9px;height:9px;border-radius:50%;animation:pu 2s infinite}
+.on{background:#4caf50;box-shadow:0 0 8px #4caf50}.of{background:#f44336;box-shadow:0 0 8px #f44336}
+@keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
+
+.cm{background:linear-gradient(135deg,var(--card),var(--card2));border-radius:var(--r);
+padding:18px;margin-bottom:14px;border:1px solid rgba(255,255,255,.05)}
+.cm .tt{font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.cm .lv{font-size:1.4rem;font-weight:700;margin-bottom:10px}
+.cm .br{height:8px;border-radius:4px;background:#2a2a4a;overflow:hidden}
+.cm .fl{height:100%;border-radius:4px;transition:all .8s cubic-bezier(.4,0,.2,1)}
+
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.cd{background:linear-gradient(135deg,var(--card),var(--card2));border-radius:var(--r);
+padding:18px;border:1px solid rgba(255,255,255,.05);position:relative;overflow:hidden;
+transition:transform .3s,box-shadow .3s}
+.cd:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.4)}
+.cd::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.cd.tp::before{background:linear-gradient(90deg,#ff6b6b,#ffa500)}
+.cd.hu::before{background:linear-gradient(90deg,#4ecdc4,#44b0e0)}
+.cd.pr::before{background:linear-gradient(90deg,#ffd93d,#ff6b6b)}
+.cd.dw::before{background:linear-gradient(90deg,#a8e6cf,#88d8b0)}
+.cd.li::before{background:linear-gradient(90deg,#ffd700,#ff8c00)}
+.cd .ic{font-size:2rem;margin-bottom:8px}
+.cd .lb{font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--dim)}
+.cd .vl{font-size:1.8rem;font-weight:700;margin-top:4px}
+.cd .un{font-size:.85rem;color:var(--dim);font-weight:400}
+.cd .su{font-size:.7rem;color:var(--dim);margin-top:6px}
+
+.hg-card{background:linear-gradient(135deg,var(--card),var(--card2));border-radius:var(--r);
+padding:18px;margin-bottom:14px;border:1px solid rgba(255,255,255,.05)}
+.hg-card .tt{font-size:.8rem;font-weight:600;margin-bottom:10px}
+.hg-labels{display:flex;justify-content:space-between;font-size:.7rem;color:var(--dim);margin-bottom:6px}
+.hg-track{height:12px;border-radius:6px;position:relative;
+background:linear-gradient(90deg,#c0962c,#2ecc71 25%,#27ae60 50%,#2ecc71 75%,#3498db)}
+.hg-pin{width:4px;height:20px;background:#fff;border-radius:2px;position:absolute;
+top:-4px;transition:left .8s cubic-bezier(.4,0,.2,1);box-shadow:0 0 10px rgba(255,255,255,.6)}
+
+.ch{background:linear-gradient(135deg,var(--card),var(--card2));border-radius:var(--r);
+padding:18px;margin-bottom:12px;border:1px solid rgba(255,255,255,.05)}
+.ch .tt{font-size:.8rem;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.ch .dt{width:10px;height:10px;border-radius:50%}
+canvas{width:100%;height:90px;display:block;border-radius:8px}
+
+.gt{width:100%;height:6px;background:#2a2a4a;border-radius:3px;margin-top:10px;overflow:hidden}
+.gf{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.4,0,.2,1);
+background:linear-gradient(90deg,#ffd700,#ff8c00)}
+
+footer{text-align:center;padding:20px 0;color:var(--dim);font-size:.7rem}
+footer a{color:var(--accent);text-decoration:none}
+
+@media(max-width:600px){.grid{grid-template-columns:1fr 1fr}.wx-temp{font-size:3.5rem}
+.wx-icon{font-size:3.5rem}.cd .vl{font-size:1.4rem}}
+@media(max-width:400px){.grid,.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top">
+<h1>M5GO Weather Station</h1>
+<div class="loc">Nanyang Polytechnic · Indoor Environment Monitor</div>
+<div class="clk" id="ck">Loading...</div>
+<div class="hero">
+<div class="wx-icon" id="wi">🌡️</div>
+<div>
+<div class="wx-temp"><span id="mt">--</span><span class="wx-deg">°C</span></div>
+<div class="wx-desc" id="wd">Connecting...</div>
+<div class="wx-hl">High: <span id="xh">--</span>° &nbsp; Low: <span id="xl">--</span>°</div>
+</div></div></div>
+
+<div class="wrap">
+<div class="sb"><div class="sd of" id="sd"></div><span id="st">Waiting for sensor data...</span></div>
+
+<div class="cm">
+<div class="tt">Indoor Comfort Index</div>
+<div class="lv" id="co">--</div>
+<div class="br"><div class="fl" id="cf" style="width:50%;background:#27ae60"></div></div></div>
+
+<div class="grid">
+<div class="cd tp"><div class="ic">🌡️</div><div class="lb">Temperature</div>
+<div class="vl" id="tv">--<span class="un">°C</span></div>
+<div class="su" id="ts">Feels like --°C</div></div>
+<div class="cd hu"><div class="ic">💧</div><div class="lb">Humidity</div>
+<div class="vl" id="hv">--<span class="un">%</span></div>
+<div class="su" id="hs">--</div></div>
+<div class="cd pr"><div class="ic">🌀</div><div class="lb">Pressure</div>
+<div class="vl" id="pv">--<span class="un"> hPa</span></div>
+<div class="su" id="ps">--</div></div>
+</div>
+
+<div class="grid2">
+<div class="cd dw"><div class="ic">🌫️</div><div class="lb">Dew Point</div>
+<div class="vl" id="dv">--<span class="un">°C</span></div>
+<div class="su">Condensation temperature</div></div>
+<div class="cd li"><div class="ic">💡</div><div class="lb">Light Control</div>
+<div class="vl" id="lv">--<span class="un">%</span></div>
+<div class="su">Brightness level</div>
+<div class="gt"><div class="gf" id="gf" style="width:0%"></div></div></div>
+</div>
+
+<div class="hg-card">
+<div class="tt">Humidity Level</div>
+<div class="hg-labels"><span>🏜️ Very Dry</span><span>😊 Comfortable</span><span>💧 Very Humid</span></div>
+<div class="hg-track"><div class="hg-pin" id="hp" style="left:50%"></div></div></div>
+
+<div class="ch"><div class="tt"><div class="dt" style="background:#ff6b6b"></div>Temperature History</div>
+<canvas id="c1"></canvas></div>
+<div class="ch"><div class="tt"><div class="dt" style="background:#4ecdc4"></div>Humidity History</div>
+<canvas id="c2"></canvas></div>
+<div class="ch"><div class="tt"><div class="dt" style="background:#ffd93d"></div>Pressure History</div>
+<canvas id="c3"></canvas></div>
+
+<footer>Live sensor data from M5GO ENV III · Powered by ThingSpeak<br>
+NYP Engineering Project · Updates every 15 seconds</footer>
+</div>
+
+<script>
+// ╔═══════════════════════════════════════════╗
+// ║  CHANGE THESE TO YOUR THINGSPEAK VALUES  ║
+// ╚═══════════════════════════════════════════╝
+var CHANNEL = 'YOUR_CHANNEL_ID';
+var READ_KEY = 'YOUR_READ_API_KEY';
+// ════════════════════════════════════════════
+
+var fc=0,minT=999,maxT=-999,minH=999,maxH=-999;
+function $(id){return document.getElementById(id)}
+
+function drawChart(cv,data,color,unit){
+  if(!data||data.length<1)return;
+  var c=cv.getContext('2d'),dpr=window.devicePixelRatio||1;
+  var W=cv.clientWidth*dpr,H=cv.clientHeight*dpr;
+  cv.width=W;cv.height=H;c.clearRect(0,0,W,H);
+
+  // Grid lines
+  c.strokeStyle='rgba(255,255,255,.05)';c.lineWidth=1;
+  for(var g=0;g<4;g++){var gy=H*(.2+g*.2);
+  c.beginPath();c.moveTo(0,gy);c.lineTo(W,gy);c.stroke()}
+
+  var mn=data[0],mx=data[0];
+  for(var i=1;i<data.length;i++){if(data[i]<mn)mn=data[i];if(data[i]>mx)mx=data[i]}
+  var rn=mx-mn||1,pd=H*.15,pts=[];
+  for(var i=0;i<data.length;i++){
+    var x=data.length===1?W/2:(i/(data.length-1))*W;
+    var y=H-pd-((data[i]-mn)/rn)*(H-2*pd);pts.push([x,y])}
+
+  // Gradient fill
+  var gr=c.createLinearGradient(0,0,0,H);
+  gr.addColorStop(0,color+'40');gr.addColorStop(.5,color+'15');gr.addColorStop(1,color+'00');
+  c.beginPath();c.moveTo(pts[0][0],H);
+  for(var i=0;i<pts.length;i++)c.lineTo(pts[i][0],pts[i][1]);
+  c.lineTo(pts[pts.length-1][0],H);c.closePath();c.fillStyle=gr;c.fill();
+
+  // Line with glow
+  c.shadowColor=color;c.shadowBlur=8*dpr;
+  c.beginPath();
+  for(var i=0;i<pts.length;i++){i===0?c.moveTo(pts[i][0],pts[i][1]):c.lineTo(pts[i][0],pts[i][1])}
+  c.strokeStyle=color;c.lineWidth=2.5*dpr;c.lineJoin='round';c.lineCap='round';c.stroke();
+  c.shadowBlur=0;
+
+  // End dot
+  var lp=pts[pts.length-1];
+  c.beginPath();c.arc(lp[0],lp[1],7*dpr,0,6.28);c.fillStyle=color+'33';c.fill();
+  c.beginPath();c.arc(lp[0],lp[1],4*dpr,0,6.28);c.fillStyle=color;c.fill();
+  c.beginPath();c.arc(lp[0],lp[1],2*dpr,0,6.28);c.fillStyle='#fff';c.fill();
+
+  // Labels
+  c.fillStyle='rgba(255,255,255,.9)';c.font='bold '+(H*.16)+'px system-ui';
+  c.textAlign='right';c.fillText(data[data.length-1].toFixed(1)+' '+unit,W-8*dpr,H*.2);
+  c.fillStyle='rgba(255,255,255,.3)';c.font=(H*.11)+'px system-ui';
+  c.textAlign='left';c.fillText('Min: '+mn.toFixed(1),8*dpr,H-6*dpr);
+  c.textAlign='right';c.fillText('Max: '+mx.toFixed(1),W-8*dpr,H-6*dpr);
+}
+
+function update(){
+  var url='https://api.thingspeak.com/channels/'+CHANNEL+'/feeds.json?api_key='+READ_KEY+'&results=50';
+  fetch(url).then(function(r){return r.json()}).then(function(data){
+    fc=0;
+    var feeds=data.feeds;
+    if(!feeds||feeds.length===0){$('st').textContent='No data yet...';return}
+
+    var last=feeds[feeds.length-1];
+    var age=Math.round((Date.now()-new Date(last.created_at).getTime())/1000);
+    $('sd').className='sd '+(age<60?'on':'of');
+    $('st').textContent=age<30?'M5GO connected · Live'
+      :age<120?'Last update '+age+'s ago':'M5GO may be offline ('+Math.round(age/60)+'m ago)';
+
+    var t=parseFloat(last.field1)||0;
+    var h=parseFloat(last.field2)||0;
+    var p=parseFloat(last.field3)||0;
+    var lb=parseFloat(last.field4)||0;
+    var dp=parseFloat(last.field5)||0;
+    var hi=parseFloat(last.field6)||0;
+
+    // History
+    var hT=[],hH=[],hP=[];
+    for(var i=0;i<feeds.length;i++){
+      var ft=parseFloat(feeds[i].field1),fh=parseFloat(feeds[i].field2),fp=parseFloat(feeds[i].field3);
+      if(!isNaN(ft))hT.push(ft);if(!isNaN(fh))hH.push(fh);if(!isNaN(fp))hP.push(fp)}
+
+    if(t<minT)minT=t;if(t>maxT)maxT=t;
+    if(h<minH)minH=h;if(h>maxH)maxH=h;
+
+    // Weather
+    var co,wn='Fair',wc='fair';
+    if(t>=20&&t<=26&&h>=30&&h<=60){co='Excellent'}
+    else if(t>=18&&t<=28&&h>=25&&h<=70){co='Good'}
+    else if(t>=15&&t<=30){co='Moderate'}else{co='Poor'}
+
+    var icons={sunny:'☀️',partlycloudy:'⛅',fair:'🌤️',cloudy:'☁️',rain:'🌧️'};
+    $('wi').textContent=icons[wc]||'🌤️';$('wd').textContent=wn;
+
+    var cmap={Excellent:['#27ae60',95],Good:['#2ecc71',75],Moderate:['#f39c12',50],Poor:['#e74c3c',25]};
+    var cm=cmap[co]||['#999',50];
+
+    $('mt').textContent=t.toFixed(1);
+    $('xh').textContent=maxT.toFixed(1);$('xl').textContent=minT.toFixed(1);
+    $('tv').innerHTML=t.toFixed(1)+'<span class="un">°C</span>';
+    $('ts').textContent='Feels like '+hi.toFixed(1)+'°C';
+    $('hv').innerHTML=h.toFixed(1)+'<span class="un">%</span>';
+    $('hs').textContent='Low: '+minH.toFixed(0)+'% · High: '+maxH.toFixed(0)+'%';
+    $('pv').innerHTML=p.toFixed(1)+'<span class="un"> hPa</span>';
+    var pd=p<1000?'Low pressure':p<1013?'Below normal':p<1020?'Normal':p<1030?'Above normal':'High';
+    $('ps').textContent=pd;
+    $('dv').innerHTML=dp.toFixed(1)+'<span class="un">°C</span>';
+    $('lv').innerHTML=lb+'<span class="un">%</span>';
+    $('gf').style.width=lb+'%';
+    $('co').textContent=co;
+    $('cf').style.width=cm[1]+'%';$('cf').style.background=cm[0];
+    $('hp').style.left=Math.min(Math.max(h,0),100)+'%';
+
+    var now=new Date();
+    $('ck').textContent=now.toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
+      +' · '+now.toLocaleTimeString();
+
+    drawChart($('c1'),hT,'#ff6b6b','°C');
+    drawChart($('c2'),hH,'#4ecdc4','%');
+    drawChart($('c3'),hP,'#ffd93d','hPa');
+  }).catch(function(){fc++;if(fc>2){$('sd').className='sd of';$('st').textContent='Connection error'}});
+}
+update();setInterval(update,15000);
+</script>
+</body>
+</html>

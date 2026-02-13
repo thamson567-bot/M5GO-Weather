@@ -18,6 +18,14 @@ background:var(--bg);border-radius:50% 50% 0 0/100% 100% 0 0}
 .top h1{font-size:1.1rem;font-weight:400;opacity:.7;letter-spacing:3px;text-transform:uppercase}
 .loc{font-size:.8rem;opacity:.4;margin-top:4px;letter-spacing:1px}
 .clk{font-size:1rem;opacity:.7;margin-top:8px;font-variant-numeric:tabular-nums}
+
+.nav{display:flex;justify-content:center;gap:12px;margin-top:20px;position:relative;z-index:10}
+.nav button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+color:#fff;padding:10px 20px;border-radius:20px;cursor:pointer;font-size:0.9rem;
+transition:all 0.3s}
+.nav button:hover{background:rgba(255,255,255,.2)}
+.nav button.active{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.4)}
+
 .hero{display:flex;align-items:center;justify-content:center;gap:24px;margin-top:20px}
 .wx-icon{font-size:5rem;filter:drop-shadow(0 4px 16px rgba(0,0,0,.3));animation:fl 3s ease-in-out infinite}
 @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
@@ -29,106 +37,111 @@ background:var(--bg);border-radius:50% 50% 0 0/100% 100% 0 0}
 
 .wrap{max-width:920px;margin:-24px auto 0;padding:0 16px 24px;position:relative;z-index:1}
 
+.page{display:none}
+.page.active{display:block}
+
 .sb{display:flex;align-items:center;justify-content:center;gap:8px;
 padding:10px 20px;border-radius:24px;font-size:.8rem;margin:0 auto 16px;
 background:var(--card);width:fit-content;border:1px solid rgba(255,255,255,.05)}
 .sd{width:9px;height:9px;border-radius:50%;animation:pu 2s infinite}
-.on{background:#4caf50;box-shadow:0 0 8px #4caf50}.of{background:#f44336;box-shadow:0 0 8px #f44336}
-@keyframes pu{0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes pu{0%,100%{opacity:.4}50%{opacity:1}}
+.sd.ok{background:#0f0}
+.sd.er{background:#f00}
 
-.cm{background:linear-gradient(135deg,var(--card),var(--card2));border-radius:var(--r);
-padding:18px;margin-bottom:14px;border:1px solid rgba(255,255,255,.05)}
-.cm .tt{font-size:.75rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
-.cm .lv{font-size:1.4rem;font-weight:700;margin-bottom:10px}
-.cm .br{height:8px;border-radius:4px;background:#2a2a4a;overflow:hidden}
-.cm .fl{height:100%;border-radius:4px;transition:all .8s cubic-bezier(.4,0,.2,1)}
+.gr{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px}
+.cd{background:var(--card);border-radius:var(--r);padding:20px;border:1px solid rgba(255,255,255,.05);
+transition:transform .2s,box-shadow .2s}
+.cd:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.ic{font-size:2rem;margin-bottom:8px}
+.lb{font-size:.85rem;opacity:.6;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.vl{font-size:2rem;font-weight:300;margin-bottom:4px}
+.un{font-size:1rem;opacity:.6;margin-left:4px}
+.su{font-size:.75rem;opacity:.4}
+.gt{height:6px;background:rgba(255,255,255,.1);border-radius:3px;margin-top:8px;overflow:hidden}
+.gf{height:100%;background:linear-gradient(90deg,#ffd93d,#ffa500);border-radius:3px;transition:width .3s}
 
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
-.cd{background:linear-gradient(135deg,var(--card),var(--card2));border-radius:var(--r);
-padding:18px;border:1px solid rgba(255,255,255,.05);position:relative;overflow:hidden;
-transition:transform .3s,box-shadow .3s}
-.cd:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.4)}
-.cd::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
-.cd.tp::before{background:linear-gradient(90deg,#ff6b6b,#ffa500)}
-.cd.hu::before{background:linear-gradient(90deg,#4ecdc4,#44b0e0)}
-.cd.pr::before{background:linear-gradient(90deg,#ffd93d,#ff6b6b)}
-.cd.dw::before{background:linear-gradient(90deg,#a8e6cf,#88d8b0)}
-.cd.li::before{background:linear-gradient(90deg,#ffd700,#ff8c00)}
-.cd .ic{font-size:2rem;margin-bottom:8px}
-.cd .lb{font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--dim)}
-.cd .vl{font-size:1.8rem;font-weight:700;margin-top:4px}
-.cd .un{font-size:.85rem;color:var(--dim);font-weight:400}
-.cd .su{font-size:.7rem;color:var(--dim);margin-top:6px}
+.hg-card{background:var(--card);border-radius:var(--r);padding:24px;margin-top:16px;border:1px solid rgba(255,255,255,.05)}
+.tt{font-size:1.1rem;font-weight:500;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.dt{width:12px;height:12px;border-radius:2px}
+.hg-track{height:12px;background:linear-gradient(90deg,#8B4513 0%,#a0a0a0 25%,#4ecdc4 50%,#95e1d3 75%,#4a90e2 100%);
+border-radius:6px;position:relative;margin-top:12px}
+.hg-pin{width:24px;height:24px;background:#fff;border:3px solid var(--bg);border-radius:50%;
+position:absolute;top:-6px;transform:translateX(-50%);box-shadow:0 2px 8px rgba(0,0,0,.3);transition:left .3s}
+.hg-labels{display:flex;justify-content:space-between;font-size:.75rem;opacity:.6;margin-top:8px}
 
-.hg-card{background:linear-gradient(135deg,var(--card),var(--card2));border-radius:var(--r);
-padding:18px;margin-bottom:14px;border:1px solid rgba(255,255,255,.05)}
-.hg-card .tt{font-size:.8rem;font-weight:600;margin-bottom:10px}
-.hg-labels{display:flex;justify-content:space-between;font-size:.7rem;color:var(--dim);margin-bottom:6px}
-.hg-track{height:12px;border-radius:6px;position:relative;
-background:linear-gradient(90deg,#c0962c,#2ecc71 25%,#27ae60 50%,#2ecc71 75%,#3498db)}
-.hg-pin{width:4px;height:20px;background:#fff;border-radius:2px;position:absolute;
-top:-4px;transition:left .8s cubic-bezier(.4,0,.2,1);box-shadow:0 0 10px rgba(255,255,255,.6)}
+.ch{background:var(--card);border-radius:var(--r);padding:20px;margin-top:16px;border:1px solid rgba(255,255,255,.05)}
+canvas{width:100%;height:200px;display:block}
 
-.ch{background:linear-gradient(135deg,var(--card),var(--card2));border-radius:var(--r);
-padding:18px;margin-bottom:12px;border:1px solid rgba(255,255,255,.05)}
-.ch .tt{font-size:.8rem;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.ch .dt{width:10px;height:10px;border-radius:50%}
-canvas{width:100%;height:90px;display:block;border-radius:8px}
+/* Office Map Styles */
+.office-container{background:var(--card);border-radius:var(--r);padding:30px;margin-top:16px;border:1px solid rgba(255,255,255,.05)}
+.office-title{font-size:1.5rem;font-weight:500;margin-bottom:20px;text-align:center}
+.light-info{text-align:center;margin-bottom:20px;font-size:1.1rem}
+.light-level{font-weight:bold;color:#4ecdc4}
+.office-map{position:relative;width:100%;max-width:600px;margin:0 auto;aspect-ratio:2/1;
+background:#1a1a2e;border:3px solid #555;border-radius:8px;overflow:hidden}
+.door{position:absolute;top:0;left:50%;transform:translateX(-50%);width:60px;height:12px;background:#8B4513;z-index:2}
+.room{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;
+border-right:3px solid #555;padding:20px}
+.room:last-child{border-right:none}
+.room-label{font-size:0.9rem;opacity:0.7;margin-bottom:10px}
+.light-bulb{width:60px;height:60px;border-radius:50%;background:#333;
+display:flex;align-items:center;justify-content:center;font-size:2rem;
+transition:all 0.5s;box-shadow:0 0 0 rgba(255,255,255,0)}
+.light-bulb.on{box-shadow:0 0 30px rgba(255,255,255,0.6)}
+.room1{left:0;top:0;width:33.33%;height:100%}
+.room2{left:33.33%;top:0;width:33.33%;height:100%}
+.room3{left:66.66%;top:0;width:33.33%;height:100%}
 
-.gt{width:100%;height:6px;background:#2a2a4a;border-radius:3px;margin-top:10px;overflow:hidden}
-.gf{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.4,0,.2,1);
-background:linear-gradient(90deg,#ffd700,#ff8c00)}
-
-footer{text-align:center;padding:20px 0;color:var(--dim);font-size:.7rem}
-footer a{color:var(--accent);text-decoration:none}
-
-@media(max-width:600px){.grid{grid-template-columns:1fr 1fr}.wx-temp{font-size:3.5rem}
-.wx-icon{font-size:3.5rem}.cd .vl{font-size:1.4rem}}
-@media(max-width:400px){.grid,.grid2{grid-template-columns:1fr}}
+footer{text-align:center;padding:24px;font-size:.8rem;opacity:.4;margin-top:24px}
 </style>
 </head>
 <body>
+
 <div class="top">
-<h1>M5GO Weather Station</h1>
-<div class="loc">Nanyang Polytechnic · Indoor Environment Monitor</div>
-<div class="clk" id="ck">Loading...</div>
-<div class="hero">
-<div class="wx-icon" id="wi">🌡️</div>
-<div>
-<div class="wx-temp"><span id="mt">--</span><span class="wx-deg">°C</span></div>
-<div class="wx-desc" id="wd">Connecting...</div>
-<div class="wx-hl">High: <span id="xh">--</span>° &nbsp; Low: <span id="xl">--</span>°</div>
-</div></div></div>
+<h1>🌦️ M5GO Weather Station</h1>
+<div class="loc">NYP Engineering Lab</div>
+<div class="clk" id="clk">Loading...</div>
 
-<div class="wrap">
-<div class="sb"><div class="sd of" id="sd"></div><span id="st">Waiting for sensor data...</span></div>
-
-<div class="cm">
-<div class="tt">Indoor Comfort Index</div>
-<div class="lv" id="co">--</div>
-<div class="br"><div class="fl" id="cf" style="width:50%;background:#27ae60"></div></div></div>
-
-<div class="grid">
-<div class="cd tp"><div class="ic">🌡️</div><div class="lb">Temperature</div>
-<div class="vl" id="tv">--<span class="un">°C</span></div>
-<div class="su" id="ts">Feels like --°C</div></div>
-<div class="cd hu"><div class="ic">💧</div><div class="lb">Humidity</div>
-<div class="vl" id="hv">--<span class="un">%</span></div>
-<div class="su" id="hs">--</div></div>
-<div class="cd pr"><div class="ic">🌀</div><div class="lb">Pressure</div>
-<div class="vl" id="pv">--<span class="un"> hPa</span></div>
-<div class="su" id="ps">--</div></div>
+<div class="nav">
+  <button class="nav-btn active" onclick="showPage('weather')">Weather</button>
+  <button class="nav-btn" onclick="showPage('office')">Office Map</button>
 </div>
 
-<div class="grid2">
-<div class="cd dw"><div class="ic">🌫️</div><div class="lb">Dew Point</div>
+<div class="hero">
+<div class="wx-icon">🌤️</div>
+<div>
+<div class="wx-temp"><span id="t">--</span><span class="wx-deg">°C</span></div>
+<div class="wx-desc" id="desc">Refreshing data...</div>
+<div class="wx-hl">H: <span id="hi">--</span>°C | L: <span id="lo">--</span>°C</div>
+</div>
+</div>
+</div>
+
+<div class="wrap">
+
+<!-- Weather Page -->
+<div id="weather-page" class="page active">
+<div class="sb">
+<div class="sd ok" id="st"></div>
+<span id="su">Connecting to ThingSpeak...</span>
+</div>
+
+<div class="gr">
+<div class="cd"><div class="ic">🌡️</div><div class="lb">Temperature</div>
+<div class="vl" id="tv">--<span class="un">°C</span></div>
+<div class="su">Current temperature</div></div>
+<div class="cd"><div class="ic">💧</div><div class="lb">Humidity</div>
+<div class="vl" id="hv">--<span class="un">%</span></div>
+<div class="su">Relative humidity</div></div>
+<div class="cd"><div class="ic">🌬️</div><div class="lb">Pressure</div>
+<div class="vl" id="pv">--<span class="un">hPa</span></div>
+<div class="su">Atmospheric pressure</div></div>
+<div class="cd li"><div class="ic">🌡️</div><div class="lb">Heat Index</div>
+<div class="vl" id="hiv">--<span class="un">°C</span></div>
+<div class="su">Feels like temperature</div></div>
+<div class="cd li"><div class="ic">💎</div><div class="lb">Dew Point</div>
 <div class="vl" id="dv">--<span class="un">°C</span></div>
 <div class="su">Condensation temperature</div></div>
-<div class="cd li"><div class="ic">💡</div><div class="lb">Light Control</div>
-<div class="vl" id="lv">--<span class="un">%</span></div>
-<div class="su">Brightness level</div>
-<div class="gt"><div class="gf" id="gf" style="width:0%"></div></div></div>
 </div>
 
 <div class="hg-card">
@@ -142,21 +155,135 @@ footer a{color:var(--accent);text-decoration:none}
 <canvas id="c2"></canvas></div>
 <div class="ch"><div class="tt"><div class="dt" style="background:#ffd93d"></div>Pressure History</div>
 <canvas id="c3"></canvas></div>
+</div>
+
+<!-- Office Map Page -->
+<div id="office-page" class="page">
+<div class="office-container">
+  <div class="office-title">🏢 Office Lighting Control</div>
+  <div class="light-info">
+    Current Level: <span class="light-level" id="light-level-text">Loading...</span>
+  </div>
+  
+  <div class="office-map">
+    <div class="door"></div>
+    
+    <div class="room room1">
+      <div class="room-label">Room 1</div>
+      <div class="light-bulb" id="bulb1">💡</div>
+    </div>
+    
+    <div class="room room2">
+      <div class="room-label">Room 2</div>
+      <div class="light-bulb" id="bulb2">💡</div>
+    </div>
+    
+    <div class="room room3">
+      <div class="room-label">Room 3</div>
+      <div class="light-bulb" id="bulb3">💡</div>
+    </div>
+  </div>
+  
+  <div class="sb" style="margin-top:20px">
+    <span id="light-status">Monitoring lighting system...</span>
+  </div>
+</div>
+
+<div class="ch"><div class="tt"><div class="dt" style="background:#ffd93d"></div>Light Level History</div>
+<canvas id="c4"></canvas></div>
+</div>
 
 <footer>Live sensor data from M5GO ENV III · Powered by ThingSpeak<br>
 NYP Engineering Project · Updates every 15 seconds</footer>
 </div>
 
 <script>
-// ╔═══════════════════════════════════════════╗
-// ║  CHANGE THESE TO YOUR THINGSPEAK VALUES  ║
-// ╚═══════════════════════════════════════════╝
+// ThingSpeak Configuration
 var CHANNEL = '3260324';
 var READ_KEY = 'RSDE9TXRGDX5HIL0';
-// ════════════════════════════════════════════
 
 var fc=0,minT=999,maxT=-999,minH=999,maxH=-999;
+var currentPage = 'weather';
+
 function $(id){return document.getElementById(id)}
+
+function showPage(page) {
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  
+  if(page === 'weather') {
+    $('weather-page').classList.add('active');
+    document.querySelectorAll('.nav-btn')[0].classList.add('active');
+  } else if(page === 'office') {
+    $('office-page').classList.add('active');
+    document.querySelectorAll('.nav-btn')[1].classList.add('active');
+  }
+}
+
+function updateOfficeLights(lightLevel) {
+  var bulb1 = $('bulb1');
+  var bulb2 = $('bulb2');
+  var bulb3 = $('bulb3');
+  var levelText = $('light-level-text');
+  var statusText = $('light-status');
+  
+  // Reset all lights
+  bulb1.classList.remove('on');
+  bulb2.classList.remove('on');
+  bulb3.classList.remove('on');
+  bulb1.style.background = '#333';
+  bulb2.style.background = '#333';
+  bulb3.style.background = '#333';
+  
+  if(lightLevel === 0) {
+    levelText.textContent = 'OFF (0%)';
+    levelText.style.color = '#888';
+    statusText.textContent = 'All lights are off';
+  } else if(lightLevel === 10) {
+    levelText.textContent = 'ECO (10%)';
+    levelText.style.color = '#ffff99';
+    bulb1.classList.add('on');
+    bulb1.style.background = 'radial-gradient(circle, #ffff99, #888800)';
+    statusText.textContent = 'Room 1 is dimly lit';
+  } else if(lightLevel === 30) {
+    levelText.textContent = 'NORMAL (30%)';
+    levelText.style.color = '#ffff99';
+    bulb1.classList.add('on');
+    bulb2.classList.add('on');
+    bulb1.style.background = 'radial-gradient(circle, #ffffaa, #aaaa00)';
+    bulb2.style.background = 'radial-gradient(circle, #ffff99, #888800)';
+    statusText.textContent = 'Rooms 1 & 2 are lit';
+  } else if(lightLevel === 40) {
+    levelText.textContent = 'BLUE (40%)';
+    levelText.style.color = '#99ffff';
+    bulb1.classList.add('on');
+    bulb2.classList.add('on');
+    bulb1.style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
+    bulb2.style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
+    statusText.textContent = 'Rooms 1 & 2 blue lighting';
+  } else if(lightLevel === 50) {
+    levelText.textContent = 'BRIGHT (50%)';
+    levelText.style.color = '#ccffff';
+    bulb1.classList.add('on');
+    bulb2.classList.add('on');
+    bulb3.classList.add('on');
+    bulb1.style.background = 'radial-gradient(circle, #ccffff, #00aacc)';
+    bulb2.style.background = 'radial-gradient(circle, #ccffff, #00aacc)';
+    bulb3.style.background = 'radial-gradient(circle, #aaffff, #005566)';
+    statusText.textContent = 'All rooms are lit (bright mode)';
+  } else if(lightLevel >= 70) {
+    levelText.textContent = 'MAX (70%)';
+    levelText.style.color = '#ffffff';
+    bulb1.classList.add('on');
+    bulb2.classList.add('on');
+    bulb3.classList.add('on');
+    bulb1.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
+    bulb2.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
+    bulb3.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
+    statusText.textContent = 'All rooms at maximum brightness';
+  }
+}
 
 function drawChart(cv,data,color,unit){
   if(!data||data.length<1)return;
@@ -164,7 +291,6 @@ function drawChart(cv,data,color,unit){
   var W=cv.clientWidth*dpr,H=cv.clientHeight*dpr;
   cv.width=W;cv.height=H;c.clearRect(0,0,W,H);
 
-  // Grid lines
   c.strokeStyle='rgba(255,255,255,.05)';c.lineWidth=1;
   for(var g=0;g<4;g++){var gy=H*(.2+g*.2);
   c.beginPath();c.moveTo(0,gy);c.lineTo(W,gy);c.stroke()}
@@ -176,101 +302,95 @@ function drawChart(cv,data,color,unit){
     var x=data.length===1?W/2:(i/(data.length-1))*W;
     var y=H-pd-((data[i]-mn)/rn)*(H-2*pd);pts.push([x,y])}
 
-  // Gradient fill
   var gr=c.createLinearGradient(0,0,0,H);
   gr.addColorStop(0,color+'40');gr.addColorStop(.5,color+'15');gr.addColorStop(1,color+'00');
-  c.beginPath();c.moveTo(pts[0][0],H);
+  c.fillStyle=gr;c.beginPath();c.moveTo(pts[0][0],H);
   for(var i=0;i<pts.length;i++)c.lineTo(pts[i][0],pts[i][1]);
-  c.lineTo(pts[pts.length-1][0],H);c.closePath();c.fillStyle=gr;c.fill();
+  c.lineTo(pts[pts.length-1][0],H);c.closePath();c.fill();
 
-  // Line with glow
-  c.shadowColor=color;c.shadowBlur=8*dpr;
-  c.beginPath();
-  for(var i=0;i<pts.length;i++){i===0?c.moveTo(pts[i][0],pts[i][1]):c.lineTo(pts[i][0],pts[i][1])}
-  c.strokeStyle=color;c.lineWidth=2.5*dpr;c.lineJoin='round';c.lineCap='round';c.stroke();
-  c.shadowBlur=0;
+  c.strokeStyle=color;c.lineWidth=2*dpr;c.lineJoin='round';c.lineCap='round';
+  c.beginPath();c.moveTo(pts[0][0],pts[0][1]);
+  for(var i=1;i<pts.length;i++)c.lineTo(pts[i][0],pts[i][1]);
+  c.stroke();
 
-  // End dot
-  var lp=pts[pts.length-1];
-  c.beginPath();c.arc(lp[0],lp[1],7*dpr,0,6.28);c.fillStyle=color+'33';c.fill();
-  c.beginPath();c.arc(lp[0],lp[1],4*dpr,0,6.28);c.fillStyle=color;c.fill();
-  c.beginPath();c.arc(lp[0],lp[1],2*dpr,0,6.28);c.fillStyle='#fff';c.fill();
+  for(var i=0;i<pts.length;i++){
+    c.fillStyle=color;c.beginPath();c.arc(pts[i][0],pts[i][1],3*dpr,0,Math.PI*2);c.fill();
+    c.strokeStyle='#1a1a2e';c.lineWidth=2*dpr;c.stroke()}
 
-  // Labels
-  c.fillStyle='rgba(255,255,255,.9)';c.font='bold '+(H*.16)+'px system-ui';
-  c.textAlign='right';c.fillText(data[data.length-1].toFixed(1)+' '+unit,W-8*dpr,H*.2);
-  c.fillStyle='rgba(255,255,255,.3)';c.font=(H*.11)+'px system-ui';
-  c.textAlign='left';c.fillText('Min: '+mn.toFixed(1),8*dpr,H-6*dpr);
-  c.textAlign='right';c.fillText('Max: '+mx.toFixed(1),W-8*dpr,H-6*dpr);
-}
+  c.fillStyle='rgba(255,255,255,.7)';c.font=(12*dpr)+'px sans-serif';c.textAlign='left';
+  c.fillText((mn.toFixed(1))+unit,8,H-8);c.textAlign='right';
+  c.fillText((mx.toFixed(1))+unit,W-8,20*dpr)}
 
-function update(){
-  var url='https://api.thingspeak.com/channels/'+CHANNEL+'/feeds.json?api_key='+READ_KEY+'&results=50';
-  fetch(url).then(function(r){return r.json()}).then(function(data){
-    fc=0;
-    var feeds=data.feeds;
-    if(!feeds||feeds.length===0){$('st').textContent='No data yet...';return}
+function updClk(){var n=new Date(),h=n.getHours(),m=n.getMinutes(),s=n.getSeconds();
+$('clk').textContent=(h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s}
+setInterval(updClk,1000);updClk();
 
-    var last=feeds[feeds.length-1];
-    var age=Math.round((Date.now()-new Date(last.created_at).getTime())/1000);
-    $('sd').className='sd '+(age<60?'on':'of');
-    $('st').textContent=age<30?'M5GO connected · Live'
-      :age<120?'Last update '+age+'s ago':'M5GO may be offline ('+Math.round(age/60)+'m ago)';
+function fetch(){
+  var url='https://api.thingspeak.com/channels/'+CHANNEL+'/feeds.json?api_key='+READ_KEY+'&results=20';
+  var xhr=new XMLHttpRequest();
+  xhr.open('GET',url,true);
+  xhr.onload=function(){
+    if(xhr.status===200){
+      try{
+        var d=JSON.parse(xhr.responseText);
+        if(d.feeds&&d.feeds.length>0){
+          fc++;
+          var f=d.feeds[d.feeds.length-1];
+          var temp=parseFloat(f.field1)||0;
+          var hum=parseFloat(f.field2)||0;
+          var pres=parseFloat(f.field3)||0;
+          var light=parseFloat(f.field4)||0;
+          var dew=parseFloat(f.field5)||0;
+          var heat=parseFloat(f.field6)||0;
 
-    var t=parseFloat(last.field1)||0;
-    var h=parseFloat(last.field2)||0;
-    var p=parseFloat(last.field3)||0;
-    var lb=parseFloat(last.field4)||0;
-    var dp=parseFloat(last.field5)||0;
-    var hi=parseFloat(last.field6)||0;
+          $('t').textContent=temp.toFixed(1);
+          $('tv').innerHTML=temp.toFixed(1)+'<span class="un">°C</span>';
+          $('hv').innerHTML=hum.toFixed(1)+'<span class="un">%</span>';
+          $('pv').innerHTML=pres.toFixed(1)+'<span class="un">hPa</span>';
+          $('hiv').innerHTML=heat.toFixed(1)+'<span class="un">°C</span>';
+          $('dv').innerHTML=dew.toFixed(1)+'<span class="un">°C</span>';
 
-    // History
-    var hT=[],hH=[],hP=[];
-    for(var i=0;i<feeds.length;i++){
-      var ft=parseFloat(feeds[i].field1),fh=parseFloat(feeds[i].field2),fp=parseFloat(feeds[i].field3);
-      if(!isNaN(ft))hT.push(ft);if(!isNaN(fh))hH.push(fh);if(!isNaN(fp))hP.push(fp)}
+          if(temp<minT)minT=temp;if(temp>maxT)maxT=temp;
+          if(hum<minH)minH=hum;if(hum>maxH)maxH=hum;
+          $('hi').textContent=maxT.toFixed(1);
+          $('lo').textContent=minT.toFixed(1);
 
-    if(t<minT)minT=t;if(t>maxT)maxT=t;
-    if(h<minH)minH=h;if(h>maxH)maxH=h;
+          if(temp<10){$('desc').textContent='Very Cold';$('desc').style.color='#00d4ff'}
+          else if(temp<18){$('desc').textContent='Cold';$('desc').style.color='#4ecdc4'}
+          else if(temp<25){$('desc').textContent='Comfortable';$('desc').style.color='#95e1d3'}
+          else if(temp<30){$('desc').textContent='Warm';$('desc').style.color='#ffd93d'}
+          else{$('desc').textContent='Hot';$('desc').style.color='#ff6b6b'}
 
-    // Weather
-    var co,wn='Fair',wc='fair';
-    if(t>=20&&t<=26&&h>=30&&h<=60){co='Excellent'}
-    else if(t>=18&&t<=28&&h>=25&&h<=70){co='Good'}
-    else if(t>=15&&t<=30){co='Moderate'}else{co='Poor'}
+          $('hp').style.left=Math.max(0,Math.min(100,hum))+'%';
+          
+          // Update office lights
+          updateOfficeLights(light);
 
-    var icons={sunny:'☀️',partlycloudy:'⛅',fair:'🌤️',cloudy:'☁️',rain:'🌧️'};
-    $('wi').textContent=icons[wc]||'🌤️';$('wd').textContent=wn;
+          var tempData=[],humData=[],presData=[],lightData=[];
+          for(var i=0;i<d.feeds.length;i++){
+            tempData.push(parseFloat(d.feeds[i].field1)||0);
+            humData.push(parseFloat(d.feeds[i].field2)||0);
+            presData.push(parseFloat(d.feeds[i].field3)||0);
+            lightData.push(parseFloat(d.feeds[i].field4)||0);
+          }
 
-    var cmap={Excellent:['#27ae60',95],Good:['#2ecc71',75],Moderate:['#f39c12',50],Poor:['#e74c3c',25]};
-    var cm=cmap[co]||['#999',50];
+          drawChart($('c1'),tempData,'#ff6b6b','°C');
+          drawChart($('c2'),humData,'#4ecdc4','%');
+          drawChart($('c3'),presData,'#ffd93d','hPa');
+          drawChart($('c4'),lightData,'#ffd93d','%');
 
-    $('mt').textContent=t.toFixed(1);
-    $('xh').textContent=maxT.toFixed(1);$('xl').textContent=minT.toFixed(1);
-    $('tv').innerHTML=t.toFixed(1)+'<span class="un">°C</span>';
-    $('ts').textContent='Feels like '+hi.toFixed(1)+'°C';
-    $('hv').innerHTML=h.toFixed(1)+'<span class="un">%</span>';
-    $('hs').textContent='Low: '+minH.toFixed(0)+'% · High: '+maxH.toFixed(0)+'%';
-    $('pv').innerHTML=p.toFixed(1)+'<span class="un"> hPa</span>';
-    var pd=p<1000?'Low pressure':p<1013?'Below normal':p<1020?'Normal':p<1030?'Above normal':'High';
-    $('ps').textContent=pd;
-    $('dv').innerHTML=dp.toFixed(1)+'<span class="un">°C</span>';
-    $('lv').innerHTML=lb+'<span class="un">%</span>';
-    $('gf').style.width=lb+'%';
-    $('co').textContent=co;
-    $('cf').style.width=cm[1]+'%';$('cf').style.background=cm[0];
-    $('hp').style.left=Math.min(Math.max(h,0),100)+'%';
+          $('st').className='sd ok';
+          $('su').textContent='Live · Updated '+fc+' times';
+        }
+      }catch(e){$('st').className='sd er';$('su').textContent='Parse error'}}
+    else{$('st').className='sd er';$('su').textContent='Connection failed'}
+  };
+  xhr.onerror=function(){$('st').className='sd er';$('su').textContent='Network error'};
+  xhr.send()}
 
-    var now=new Date();
-    $('ck').textContent=now.toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'})
-      +' · '+now.toLocaleTimeString();
-
-    drawChart($('c1'),hT,'#ff6b6b','°C');
-    drawChart($('c2'),hH,'#4ecdc4','%');
-    drawChart($('c3'),hP,'#ffd93d','hPa');
-  }).catch(function(){fc++;if(fc>2){$('sd').className='sd of';$('st').textContent='Connection error'}});
-}
-update();setInterval(update,15000);
+fetch();
+setInterval(fetch,15000);
 </script>
+
 </body>
 </html>

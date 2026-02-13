@@ -8,6 +8,8 @@
 :root{--bg:#0f0f23;--card:#1a1a2e;--card2:#16213e;--text:#e0e0e0;--dim:#888;--r:16px}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* Top Header */
 .top{background:linear-gradient(135deg,#0a1628,#1a3a5c,#2d6187,#3a7ca5);
 color:#fff;padding:24px 20px 44px;text-align:center;position:relative;overflow:hidden}
 .top::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
@@ -19,13 +21,16 @@ background:var(--bg);border-radius:50% 50% 0 0/100% 100% 0 0}
 .loc{font-size:.8rem;opacity:.4;margin-top:4px;letter-spacing:1px}
 .clk{font-size:1rem;opacity:.7;margin-top:8px;font-variant-numeric:tabular-nums}
 
+/* Navigation */
 .nav{display:flex;justify-content:center;gap:12px;margin-top:20px;position:relative;z-index:10}
 .nav button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
-color:#fff;padding:10px 20px;border-radius:20px;cursor:pointer;font-size:0.9rem;
-transition:all 0.3s}
-.nav button:hover{background:rgba(255,255,255,.2)}
-.nav button.active{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.4)}
+color:#fff;padding:10px 24px;border-radius:20px;cursor:pointer;font-size:0.95rem;
+transition:all 0.3s;font-weight:500}
+.nav button:hover{background:rgba(255,255,255,.2);transform:translateY(-2px)}
+.nav button.active{background:rgba(255,255,255,.3);border-color:rgba(255,255,255,.5);
+box-shadow:0 4px 12px rgba(255,255,255,.2)}
 
+/* Weather Hero */
 .hero{display:flex;align-items:center;justify-content:center;gap:24px;margin-top:20px}
 .wx-icon{font-size:5rem;filter:drop-shadow(0 4px 16px rgba(0,0,0,.3));animation:fl 3s ease-in-out infinite}
 @keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
@@ -37,9 +42,11 @@ transition:all 0.3s}
 
 .wrap{max-width:920px;margin:-24px auto 0;padding:0 16px 24px;position:relative;z-index:1}
 
+/* Page Management */
 .page{display:none}
 .page.active{display:block}
 
+/* Status Bar */
 .sb{display:flex;align-items:center;justify-content:center;gap:8px;
 padding:10px 20px;border-radius:24px;font-size:.8rem;margin:0 auto 16px;
 background:var(--card);width:fit-content;border:1px solid rgba(255,255,255,.05)}
@@ -48,6 +55,7 @@ background:var(--card);width:fit-content;border:1px solid rgba(255,255,255,.05)}
 .sd.ok{background:#0f0}
 .sd.er{background:#f00}
 
+/* Weather Cards */
 .gr{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:16px}
 .cd{background:var(--card);border-radius:var(--r);padding:20px;border:1px solid rgba(255,255,255,.05);
 transition:transform .2s,box-shadow .2s}
@@ -57,9 +65,8 @@ transition:transform .2s,box-shadow .2s}
 .vl{font-size:2rem;font-weight:300;margin-bottom:4px}
 .un{font-size:1rem;opacity:.6;margin-left:4px}
 .su{font-size:.75rem;opacity:.4}
-.gt{height:6px;background:rgba(255,255,255,.1);border-radius:3px;margin-top:8px;overflow:hidden}
-.gf{height:100%;background:linear-gradient(90deg,#ffd93d,#ffa500);border-radius:3px;transition:width .3s}
 
+/* Humidity Gauge */
 .hg-card{background:var(--card);border-radius:var(--r);padding:24px;margin-top:16px;border:1px solid rgba(255,255,255,.05)}
 .tt{font-size:1.1rem;font-weight:500;margin-bottom:16px;display:flex;align-items:center;gap:8px}
 .dt{width:12px;height:12px;border-radius:2px}
@@ -69,28 +76,54 @@ border-radius:6px;position:relative;margin-top:12px}
 position:absolute;top:-6px;transform:translateX(-50%);box-shadow:0 2px 8px rgba(0,0,0,.3);transition:left .3s}
 .hg-labels{display:flex;justify-content:space-between;font-size:.75rem;opacity:.6;margin-top:8px}
 
+/* Charts */
 .ch{background:var(--card);border-radius:var(--r);padding:20px;margin-top:16px;border:1px solid rgba(255,255,255,.05)}
 canvas{width:100%;height:200px;display:block}
 
 /* Office Map Styles */
-.office-container{background:var(--card);border-radius:var(--r);padding:30px;margin-top:16px;border:1px solid rgba(255,255,255,.05)}
-.office-title{font-size:1.5rem;font-weight:500;margin-bottom:20px;text-align:center}
-.light-info{text-align:center;margin-bottom:20px;font-size:1.1rem}
-.light-level{font-weight:bold;color:#4ecdc4}
-.office-map{position:relative;width:100%;max-width:600px;margin:0 auto;aspect-ratio:2/1;
-background:#1a1a2e;border:3px solid #555;border-radius:8px;overflow:hidden}
-.door{position:absolute;top:0;left:50%;transform:translateX(-50%);width:60px;height:12px;background:#8B4513;z-index:2}
-.room{position:absolute;display:flex;flex-direction:column;align-items:center;justify-content:center;
-border-right:3px solid #555;padding:20px}
-.room:last-child{border-right:none}
-.room-label{font-size:0.9rem;opacity:0.7;margin-bottom:10px}
-.light-bulb{width:60px;height:60px;border-radius:50%;background:#333;
-display:flex;align-items:center;justify-content:center;font-size:2rem;
-transition:all 0.5s;box-shadow:0 0 0 rgba(255,255,255,0)}
-.light-bulb.on{box-shadow:0 0 30px rgba(255,255,255,0.6)}
-.room1{left:0;top:0;width:33.33%;height:100%}
-.room2{left:33.33%;top:0;width:33.33%;height:100%}
-.room3{left:66.66%;top:0;width:33.33%;height:100%}
+.office-hero{display:none}
+.office-hero.active{display:block}
+
+.office-container{background:var(--card);border-radius:var(--r);padding:40px;margin-top:16px;border:1px solid rgba(255,255,255,.05)}
+.office-title{font-size:1.8rem;font-weight:500;margin-bottom:30px;text-align:center;color:#4ecdc4}
+.light-info{text-align:center;margin-bottom:30px;font-size:1.2rem}
+.light-level{font-weight:bold;color:#ffd93d;font-size:1.3rem}
+
+/* Office Map Layout - Matching Your Drawing */
+.office-map{position:relative;width:100%;max-width:700px;height:500px;margin:0 auto;
+background:#2a2a3e;border:4px solid #555;border-radius:4px}
+
+/* Room 1 - Top Left */
+.room1-outer{position:absolute;left:0;top:0;width:45%;height:50%;
+border-right:4px solid #555;border-bottom:4px solid #555}
+.room1-door{position:absolute;right:0;top:40%;width:30px;height:60px;
+border-right:none;background:#2a2a3e}
+
+/* Room 2 - Top Right (Large) */
+.room2-outer{position:absolute;left:45%;top:0;width:55%;height:52%;
+border-bottom:4px solid #555}
+
+/* Corridor - Bottom Left */
+.corridor-outer{position:absolute;left:0;top:50%;width:62%;height:50%;}
+.corridor-door{position:absolute;left:0;bottom:15%;width:60px;height:30px;
+border-left:none;background:#2a2a3e}
+.corridor-door2{position:absolute;right:40%;bottom:0;width:30px;height:60px;
+border-bottom:none;background:#2a2a3e}
+
+/* Room 3 - Bottom Right */
+.room3-outer{position:absolute;left:62%;top:52%;width:38%;height:48%;
+border-left:4px solid #555;border-top:4px solid #555}
+.room3-door{position:absolute;left:0;top:10%;width:30px;height:50px;
+border-left:none;background:#2a2a3e}
+
+/* Room Labels and Lights */
+.room-content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+text-align:center}
+.room-label{font-size:2.5rem;font-weight:bold;margin-bottom:15px;opacity:0.8}
+.light-bulb{width:80px;height:80px;border-radius:50%;background:#333;
+margin:15px auto 0;display:flex;align-items:center;justify-content:center;
+font-size:3rem;transition:all 0.5s;box-shadow:0 0 0 rgba(255,255,255,0)}
+.light-bulb.on{box-shadow:0 0 40px rgba(255,255,255,0.8)}
 
 footer{text-align:center;padding:24px;font-size:.8rem;opacity:.4;margin-top:24px}
 </style>
@@ -103,11 +136,12 @@ footer{text-align:center;padding:24px;font-size:.8rem;opacity:.4;margin-top:24px
 <div class="clk" id="clk">Loading...</div>
 
 <div class="nav">
-  <button class="nav-btn active" onclick="showPage('weather')">Weather</button>
-  <button class="nav-btn" onclick="showPage('office')">Office Map</button>
+  <button class="nav-btn active" onclick="showPage('weather')">Weather Dashboard</button>
+  <button class="nav-btn" onclick="showPage('office')">Office Lighting Map</button>
 </div>
 
-<div class="hero">
+<!-- Weather Hero (only shows on weather page) -->
+<div class="hero" id="weather-hero">
 <div class="wx-icon">🌤️</div>
 <div>
 <div class="wx-temp"><span id="t">--</span><span class="wx-deg">°C</span></div>
@@ -115,6 +149,14 @@ footer{text-align:center;padding:24px;font-size:.8rem;opacity:.4;margin-top:24px
 <div class="wx-hl">H: <span id="hi">--</span>°C | L: <span id="lo">--</span>°C</div>
 </div>
 </div>
+
+<!-- Office Hero (only shows on office page) -->
+<div class="office-hero" id="office-hero">
+<div class="light-info">
+  Current Lighting Level: <span class="light-level" id="light-level-text">Loading...</span>
+</div>
+</div>
+
 </div>
 
 <div class="wrap">
@@ -159,33 +201,46 @@ footer{text-align:center;padding:24px;font-size:.8rem;opacity:.4;margin-top:24px
 
 <!-- Office Map Page -->
 <div id="office-page" class="page">
+<div class="sb">
+<div class="sd ok" id="st2"></div>
+<span id="light-status">Monitoring lighting system...</span>
+</div>
+
 <div class="office-container">
-  <div class="office-title">🏢 Office Lighting Control</div>
-  <div class="light-info">
-    Current Level: <span class="light-level" id="light-level-text">Loading...</span>
-  </div>
+  <div class="office-title">🏢 Office Lighting Control System</div>
   
   <div class="office-map">
-    <div class="door"></div>
-    
-    <div class="room room1">
-      <div class="room-label">Room 1</div>
-      <div class="light-bulb" id="bulb1">💡</div>
+    <!-- Room 1 - Top Left -->
+    <div class="room1-outer">
+      <div class="room1-door"></div>
+      <div class="room-content">
+        <div class="room-label">1</div>
+        <div class="light-bulb" id="bulb1">💡</div>
+      </div>
     </div>
     
-    <div class="room room2">
-      <div class="room-label">Room 2</div>
-      <div class="light-bulb" id="bulb2">💡</div>
+    <!-- Room 2 - Top Right (Large) -->
+    <div class="room2-outer">
+      <div class="room-content">
+        <div class="room-label">2</div>
+        <div class="light-bulb" id="bulb2">💡</div>
+      </div>
     </div>
     
-    <div class="room room3">
-      <div class="room-label">Room 3</div>
-      <div class="light-bulb" id="bulb3">💡</div>
+    <!-- Corridor - Bottom Left -->
+    <div class="corridor-outer">
+      <div class="corridor-door"></div>
+      <div class="corridor-door2"></div>
     </div>
-  </div>
-  
-  <div class="sb" style="margin-top:20px">
-    <span id="light-status">Monitoring lighting system...</span>
+    
+    <!-- Room 3 - Bottom Right -->
+    <div class="room3-outer">
+      <div class="room3-door"></div>
+      <div class="room-content">
+        <div class="room-label">3</div>
+        <div class="light-bulb" id="bulb3">💡</div>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -209,14 +264,22 @@ function $(id){return document.getElementById(id)}
 
 function showPage(page) {
   currentPage = page;
+  
+  // Hide all pages
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   
+  // Hide/show heroes
+  $('weather-hero').style.display = 'none';
+  $('office-hero').classList.remove('active');
+  
   if(page === 'weather') {
     $('weather-page').classList.add('active');
+    $('weather-hero').style.display = 'flex';
     document.querySelectorAll('.nav-btn')[0].classList.add('active');
   } else if(page === 'office') {
     $('office-page').classList.add('active');
+    $('office-hero').classList.add('active');
     document.querySelectorAll('.nav-btn')[1].classList.add('active');
   }
 }
@@ -239,13 +302,14 @@ function updateOfficeLights(lightLevel) {
   if(lightLevel === 0) {
     levelText.textContent = 'OFF (0%)';
     levelText.style.color = '#888';
-    statusText.textContent = 'All lights are off';
+    statusText.textContent = '⚫ All lights are OFF';
   } else if(lightLevel === 10) {
     levelText.textContent = 'ECO (10%)';
     levelText.style.color = '#ffff99';
     bulb1.classList.add('on');
     bulb1.style.background = 'radial-gradient(circle, #ffff99, #888800)';
-    statusText.textContent = 'Room 1 is dimly lit';
+    bulb1.parentElement.parentElement.style.background = 'rgba(255, 255, 153, 0.1)';
+    statusText.textContent = '🟡 Room 1 is dimly lit (ECO mode)';
   } else if(lightLevel === 30) {
     levelText.textContent = 'NORMAL (30%)';
     levelText.style.color = '#ffff99';
@@ -253,7 +317,9 @@ function updateOfficeLights(lightLevel) {
     bulb2.classList.add('on');
     bulb1.style.background = 'radial-gradient(circle, #ffffaa, #aaaa00)';
     bulb2.style.background = 'radial-gradient(circle, #ffff99, #888800)';
-    statusText.textContent = 'Rooms 1 & 2 are lit';
+    bulb1.parentElement.parentElement.style.background = 'rgba(255, 255, 170, 0.15)';
+    bulb2.parentElement.parentElement.style.background = 'rgba(255, 255, 153, 0.1)';
+    statusText.textContent = '🟡 Rooms 1 & 2 are lit (NORMAL mode)';
   } else if(lightLevel === 40) {
     levelText.textContent = 'BLUE (40%)';
     levelText.style.color = '#99ffff';
@@ -261,7 +327,9 @@ function updateOfficeLights(lightLevel) {
     bulb2.classList.add('on');
     bulb1.style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
     bulb2.style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
-    statusText.textContent = 'Rooms 1 & 2 blue lighting';
+    bulb1.parentElement.parentElement.style.background = 'rgba(153, 255, 255, 0.15)';
+    bulb2.parentElement.parentElement.style.background = 'rgba(153, 255, 255, 0.15)';
+    statusText.textContent = '🔵 Rooms 1 & 2 with blue lighting';
   } else if(lightLevel === 50) {
     levelText.textContent = 'BRIGHT (50%)';
     levelText.style.color = '#ccffff';
@@ -271,7 +339,10 @@ function updateOfficeLights(lightLevel) {
     bulb1.style.background = 'radial-gradient(circle, #ccffff, #00aacc)';
     bulb2.style.background = 'radial-gradient(circle, #ccffff, #00aacc)';
     bulb3.style.background = 'radial-gradient(circle, #aaffff, #005566)';
-    statusText.textContent = 'All rooms are lit (bright mode)';
+    bulb1.parentElement.parentElement.style.background = 'rgba(204, 255, 255, 0.2)';
+    bulb2.parentElement.parentElement.style.background = 'rgba(204, 255, 255, 0.2)';
+    bulb3.parentElement.parentElement.style.background = 'rgba(170, 255, 255, 0.15)';
+    statusText.textContent = '⚪ All rooms are lit (BRIGHT mode)';
   } else if(lightLevel >= 70) {
     levelText.textContent = 'MAX (70%)';
     levelText.style.color = '#ffffff';
@@ -281,7 +352,10 @@ function updateOfficeLights(lightLevel) {
     bulb1.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
     bulb2.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
     bulb3.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
-    statusText.textContent = 'All rooms at maximum brightness';
+    bulb1.parentElement.parentElement.style.background = 'rgba(255, 255, 255, 0.25)';
+    bulb2.parentElement.parentElement.style.background = 'rgba(255, 255, 255, 0.25)';
+    bulb3.parentElement.parentElement.style.background = 'rgba(255, 255, 255, 0.25)';
+    statusText.textContent = '⚪ All rooms at MAXIMUM brightness';
   }
 }
 
@@ -380,12 +454,13 @@ function fetch(){
           drawChart($('c4'),lightData,'#ffd93d','%');
 
           $('st').className='sd ok';
+          $('st2').className='sd ok';
           $('su').textContent='Live · Updated '+fc+' times';
         }
-      }catch(e){$('st').className='sd er';$('su').textContent='Parse error'}}
-    else{$('st').className='sd er';$('su').textContent='Connection failed'}
+      }catch(e){$('st').className='sd er';$('st2').className='sd er';$('su').textContent='Parse error'}}
+    else{$('st').className='sd er';$('st2').className='sd er';$('su').textContent='Connection failed'}
   };
-  xhr.onerror=function(){$('st').className='sd er';$('su').textContent='Network error'};
+  xhr.onerror=function(){$('st').className='sd er';$('st2').className='sd er';$('su').textContent='Network error'};
   xhr.send()}
 
 fetch();

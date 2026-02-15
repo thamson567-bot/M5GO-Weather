@@ -61,9 +61,19 @@ background-clip:text;animation:gradient 3s ease infinite}
 @keyframes gradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 .home-subtitle{font-size:1.3rem;opacity:.8;margin-bottom:40px;letter-spacing:1px}
 
+.home-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;margin-top:20px;margin-bottom:40px}
+.stat-card{background:rgba(255,255,255,.1);backdrop-filter:blur(10px);
+padding:30px;border-radius:20px;border:1px solid rgba(255,255,255,.2);
+transition:transform 0.3s}
+.stat-card:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.stat-icon{font-size:3rem;margin-bottom:10px}
+.stat-value{font-size:2rem;font-weight:600;color:var(--accent)}
+.stat-label{font-size:0.9rem;opacity:.7;margin-top:5px}
+
 /* Navigation Cards with Descriptions */
 .nav-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:20px;margin-top:40px;margin-bottom:40px}
+gap:20px;margin-top:20px}
 .nav-card{background:rgba(255,255,255,.1);backdrop-filter:blur(10px);
 padding:25px;border-radius:16px;border:2px solid rgba(255,255,255,.2);
 transition:all 0.3s;cursor:pointer;text-align:left}
@@ -72,16 +82,6 @@ border-color:rgba(255,255,255,.4)}
 .nav-card-icon{font-size:2.5rem;margin-bottom:15px}
 .nav-card-title{font-size:1.3rem;font-weight:600;margin-bottom:10px;color:#fff}
 .nav-card-desc{font-size:0.9rem;opacity:.8;line-height:1.5}
-
-.home-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;margin-top:20px}
-.stat-card{background:rgba(255,255,255,.1);backdrop-filter:blur(10px);
-padding:30px;border-radius:20px;border:1px solid rgba(255,255,255,.2);
-transition:transform 0.3s}
-.stat-card:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,.3)}
-.stat-icon{font-size:3rem;margin-bottom:10px}
-.stat-value{font-size:2rem;font-weight:600;color:var(--accent)}
-.stat-label{font-size:0.9rem;opacity:.7;margin-top:5px}
 
 /* Main Content */
 .wrap{max-width:1200px;margin:0 auto;padding:30px 20px}
@@ -180,9 +180,9 @@ right:20px;top:50%;transform:translateY(-50%)}
 border-left:5px solid #333;background:#2a2a3e;transition:background 0.5s}
 .room2-door{position:absolute;left:-5px;top:20%;width:30px;height:50px;background:#1a1a2e}
 
-.gateway{position:absolute;left:18%;bottom:30px;font-size:0.95rem;opacity:0.85;
-font-weight:500;padding:8px 16px;background:rgba(0,0,0,.3);border-radius:8px;
-border:1px solid rgba(255,255,255,.1)}
+.gateway{position:absolute;left:18%;bottom:35px;font-size:0.9rem;opacity:0.85;
+font-weight:500;padding:6px 14px;background:rgba(0,0,0,.4);border-radius:6px;
+border:1px solid rgba(255,255,255,.15)}
 
 .room-content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
 .room-label{font-size:3rem;font-weight:bold;margin-bottom:10px;opacity:0.9}
@@ -283,7 +283,31 @@ border-top:1px solid rgba(255,255,255,.1)}
       <h1 class="home-title">Smart Office Hub</h1>
       <p class="home-subtitle">IoT-Powered Workspace Management System</p>
       
-      <!-- Navigation Cards with Descriptions -->
+      <!-- Live Stats (moved above descriptions) -->
+      <div class="home-stats">
+        <div class="stat-card">
+          <div class="stat-icon">🌡️</div>
+          <div class="stat-value" id="homeTemp">--°C</div>
+          <div class="stat-label">Current Temperature</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💡</div>
+          <div class="stat-value" id="homeLights">--</div>
+          <div class="stat-label">Active Lights</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-value" id="homeEntries">0</div>
+          <div class="stat-label">Today's Entries</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-value" id="homeStatus">LIVE</div>
+          <div class="stat-label">System Status</div>
+        </div>
+      </div>
+      
+      <!-- Navigation Cards with Descriptions (moved below stats) -->
       <div class="nav-cards">
         <div class="nav-card" onclick="showPage('weather')">
           <div class="nav-card-icon">🌤️</div>
@@ -307,30 +331,6 @@ border-top:1px solid rgba(255,255,255,.1)}
           <div class="nav-card-icon">🎨</div>
           <div class="nav-card-title">LED Color Control</div>
           <div class="nav-card-desc">Customize RGB LED strip colors for each room individually using HEX codes or color picker interface.</div>
-        </div>
-      </div>
-      
-      <!-- Live Stats -->
-      <div class="home-stats">
-        <div class="stat-card">
-          <div class="stat-icon">🌡️</div>
-          <div class="stat-value" id="homeTemp">--°C</div>
-          <div class="stat-label">Current Temperature</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">💡</div>
-          <div class="stat-value" id="homeLights">--</div>
-          <div class="stat-label">Active Lights</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">👥</div>
-          <div class="stat-value" id="homeEntries">0</div>
-          <div class="stat-label">Today's Entries</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">⚡</div>
-          <div class="stat-value" id="homeStatus">LIVE</div>
-          <div class="stat-label">System Status</div>
         </div>
       </div>
     </div>
@@ -523,7 +523,7 @@ border-top:1px solid rgba(255,255,255,.1)}
           </div>
         </div>
         
-        <!-- Room 1 - Bottom Left (Main Office - NO LIGHT ICON) -->
+        <!-- Room 1 - Bottom Left (Main Office - NO LIGHT) -->
         <div class="room1-outer" id="room1bg">
           <div class="room1-main-door">
             <div class="door-handle"></div>
@@ -842,13 +842,12 @@ setInterval(updateClock, 1000);
 updateClock();
 
 function updateOfficeLights(lightLevel) {
-  var bulbs = [null, $('bulb2'), $('bulb3'), $('bulb4')]; // Room 1 has no bulb
+  var bulbs = [null, $('bulb2'), $('bulb3'), $('bulb4')];
   var rooms = [$('room1bg'), $('room2bg'), $('room3bg'), $('room4bg')];
-  var statuses = [null, $('status2'), $('status3'), $('status4')]; // Room 1 has no status
+  var statuses = [null, $('status2'), $('status3'), $('status4')];
   var levelText = $('lightLevelText');
   var statusText = $('lightStatus');
   
-  // Reset all
   for(let i = 1; i < 4; i++) {
     if(bulbs[i]) {
       bulbs[i].classList.remove('on');

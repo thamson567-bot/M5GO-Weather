@@ -19,15 +19,25 @@
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-/* Header */
+/* Header with Navigation */
 .header{background:linear-gradient(135deg,#0a1628,#1a3a5c,#2d6187,#3a7ca5);
 color:#fff;padding:20px;position:sticky;top:0;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,.3)}
-.header-content{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+.header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
 .logo{font-size:1.5rem;font-weight:600;display:flex;align-items:center;gap:10px}
 .logo-icon{font-size:2rem}
-.clock-header{font-size:1rem;opacity:.8;font-variant-numeric:tabular-nums;order:3}
 
-/* Navigation moved to hero */
+/* Header Navigation */
+.nav-header{display:flex;gap:10px;flex-wrap:wrap;flex:1;justify-content:center}
+.nav-header button{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);
+color:#fff;padding:10px 20px;border-radius:10px;cursor:pointer;font-size:0.9rem;
+transition:all 0.3s;font-weight:500}
+.nav-header button:hover{background:rgba(255,255,255,.25);transform:translateY(-2px)}
+.nav-header button.active{background:rgba(255,255,255,.35);border-color:rgba(255,255,255,.6);
+box-shadow:0 4px 12px rgba(255,255,255,.3)}
+
+.clock-header{font-size:1rem;opacity:.8;font-variant-numeric:tabular-nums}
+
+/* Home Page Hero Navigation */
 .nav-hero{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:30px}
 .nav-hero button{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);
 color:#fff;padding:12px 24px;border-radius:12px;cursor:pointer;font-size:0.95rem;
@@ -128,45 +138,48 @@ border-radius:7px;position:relative;margin-top:15px;box-shadow:inset 0 2px 4px r
 position:absolute;top:-7px;transform:translateX(-50%);box-shadow:0 3px 10px rgba(0,0,0,.4);transition:left .3s}
 .hg-labels{display:flex;justify-content:space-between;font-size:.8rem;opacity:.6;margin-top:12px}
 
-/* Office Map */
+/* Office Map - Matching your exact layout */
 .office-container{background:var(--card);border-radius:var(--r);padding:40px;
 margin-top:20px;border:1px solid rgba(255,255,255,.08)}
-.office-map{position:relative;width:100%;max-width:800px;height:500px;margin:0 auto;
-background:#1a1a2e;border:5px solid #555;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
-
-/* Room 1 - Main Office (Bottom Left - Large) */
-.room1-outer{position:absolute;left:0;top:52%;width:60%;height:48%;
-background:#2a2a3e;transition:background 0.5s}
-.room1-main-door{position:absolute;left:20%;bottom:-5px;width:50px;height:30px;background:#1a1a2e}
-
-/* Room 2 - Bottom Right */
-.room2-outer{position:absolute;left:60%;top:52%;width:40%;height:48%;
-border-left:5px solid #555;border-top:5px solid #555;background:#2a2a3e;transition:background 0.5s}
-.room2-door{position:absolute;left:-5px;top:30%;width:30px;height:50px;background:#1a1a2e}
-
-/* Room 3 - Top Right (Large) */
-.room3-outer{position:absolute;left:45%;top:0;width:55%;height:52%;
-border-bottom:5px solid #555;background:#2a2a3e;transition:background 0.5s}
-.room3-door{position:absolute;left:20%;bottom:-5px;width:40px;height:30px;background:#1a1a2e}
+.office-map{position:relative;width:100%;max-width:800px;height:450px;margin:0 auto;
+background:#1a1a2e;border:5px solid #333;border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
 
 /* Room 4 - Top Left */
-.room4-outer{position:absolute;left:0;top:0;width:45%;height:52%;
-border-right:5px solid #555;border-bottom:5px solid #555;background:#2a2a3e;transition:background 0.5s}
-.room4-door{position:absolute;right:-5px;bottom:25%;width:30px;height:60px;background:#1a1a2e}
+.room4-outer{position:absolute;left:0;top:0;width:45%;height:50%;
+border-right:5px solid #333;border-bottom:5px solid #333;background:#2a2a3e;transition:background 0.5s}
+.room4-door{position:absolute;left:0;bottom:-5px;width:15%;height:30px;background:#1a1a2e}
 
-.gateway{position:absolute;left:0;bottom:-50px;width:60%;padding:10px;
-text-align:center;font-size:0.9rem;opacity:0.7}
-.gateway-icon{font-size:1.5rem;margin-bottom:5px}
+/* Room 3 - Top Right */
+.room3-outer{position:absolute;left:45%;top:0;width:55%;height:50%;
+border-bottom:5px solid #333;background:#2a2a3e;transition:background 0.5s}
+.room3-door{position:absolute;left:15%;bottom:-5px;width:50px;height:30px;background:#1a1a2e}
+
+/* Room 1 - Bottom Left (Main Office - Large) */
+.room1-outer{position:absolute;left:0;top:50%;width:62%;height:50%;
+background:#2a2a3e;transition:background 0.5s}
+.room1-main-door{position:absolute;left:20%;bottom:-5px;width:80px;height:40px;
+background:#1a1a2e;border:3px solid #333;border-bottom:none;border-radius:2px 2px 0 0}
+.door-handle{position:absolute;width:8px;height:8px;background:#666;border-radius:50%;
+left:20px;top:50%;transform:translateY(-50%)}
+.door-handle2{position:absolute;width:8px;height:8px;background:#666;border-radius:50%;
+right:20px;top:50%;transform:translateY(-50%)}
+
+/* Room 2 - Bottom Right */
+.room2-outer{position:absolute;left:62%;top:50%;width:38%;height:50%;
+border-left:5px solid #333;background:#2a2a3e;transition:background 0.5s}
+.room2-door{position:absolute;left:-5px;top:20%;width:30px;height:50px;background:#1a1a2e}
+
+.gateway{position:absolute;left:0;bottom:-55px;width:62%;padding:10px;
+text-align:center;font-size:1rem;opacity:0.8;font-weight:500}
 
 .room-content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-.room-label{font-size:3rem;font-weight:bold;margin-bottom:15px;opacity:0.9}
-.light-bulb{width:90px;height:90px;border-radius:50%;background:#333;
+.room-label{font-size:3rem;font-weight:bold;margin-bottom:10px;opacity:0.9}
+.light-bulb{width:80px;height:80px;border-radius:50%;background:#333;
 margin:15px auto 0;display:flex;align-items:center;justify-content:center;
-font-size:3.5rem;transition:all 0.6s;box-shadow:0 0 0 rgba(255,255,255,0);
+font-size:3rem;transition:all 0.6s;box-shadow:0 0 0 rgba(255,255,255,0);
 border:3px solid #555}
 .light-bulb.on{box-shadow:0 0 50px rgba(255,255,255,0.9);border-color:#fff}
 
-/* Simple room status */
 .room-status{font-size:0.85rem;margin-top:8px;opacity:0.8;font-weight:500}
 .room-status.lit{color:#0f0}
 .room-status.off{color:#888}
@@ -222,22 +235,32 @@ border-top:1px solid rgba(255,255,255,.1)}
 
 @media (max-width:768px){
   .home-title{font-size:2.5rem}
-  .header-content{flex-direction:column;align-items:stretch}
+  .nav-header{order:3;width:100%;justify-content:center}
   .gr{grid-template-columns:1fr}
-  .office-map{height:400px}
+  .office-map{height:350px}
   .led-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 
-<!-- Header (Logo and Clock only) -->
+<!-- Header with Logo, Navigation, and Clock -->
 <div class="header">
   <div class="header-content">
     <div class="logo">
       <span class="logo-icon">🏢</span>
       <span>Smart Office Hub</span>
     </div>
+    
+    <!-- Header Navigation -->
+    <div class="nav-header">
+      <button class="nav-btn active" onclick="showPage('home')">🏠 Home</button>
+      <button class="nav-btn" onclick="showPage('weather')">🌤️ Weather</button>
+      <button class="nav-btn" onclick="showPage('office')">💡 Lighting</button>
+      <button class="nav-btn" onclick="showPage('entry')">🔐 Entry Log</button>
+      <button class="nav-btn" onclick="showPage('led')">🎨 LED Control</button>
+    </div>
+    
     <div class="clock-header" id="clockHeader">00:00:00</div>
   </div>
 </div>
@@ -249,7 +272,7 @@ border-top:1px solid rgba(255,255,255,.1)}
       <h1 class="home-title">Smart Office Hub</h1>
       <p class="home-subtitle">IoT-Powered Workspace Management System</p>
       
-      <!-- Navigation Buttons -->
+      <!-- Navigation Buttons (duplicate) -->
       <div class="nav-hero">
         <button class="nav-btn active" onclick="showPage('home')">🏠 Home</button>
         <button class="nav-btn" onclick="showPage('weather')">🌤️ Weather</button>
@@ -453,9 +476,32 @@ border-top:1px solid rgba(255,255,255,.1)}
 
     <div class="office-container">
       <div class="office-map">
-        <!-- Room 1 - Main Office (Bottom Left) -->
+        <!-- Room 4 - Top Left -->
+        <div class="room4-outer" id="room4bg">
+          <div class="room4-door"></div>
+          <div class="room-content">
+            <div class="room-label">4</div>
+            <div class="light-bulb" id="bulb4">💡</div>
+            <div class="room-status off" id="status4">OFF</div>
+          </div>
+        </div>
+        
+        <!-- Room 3 - Top Right -->
+        <div class="room3-outer" id="room3bg">
+          <div class="room3-door"></div>
+          <div class="room-content">
+            <div class="room-label">3</div>
+            <div class="light-bulb" id="bulb3">💡</div>
+            <div class="room-status off" id="status3">OFF</div>
+          </div>
+        </div>
+        
+        <!-- Room 1 - Bottom Left (Main Office) -->
         <div class="room1-outer" id="room1bg">
-          <div class="room1-main-door"></div>
+          <div class="room1-main-door">
+            <div class="door-handle"></div>
+            <div class="door-handle2"></div>
+          </div>
           <div class="room-content">
             <div class="room-label">1</div>
             <div class="light-bulb" id="bulb1">💡</div>
@@ -472,32 +518,9 @@ border-top:1px solid rgba(255,255,255,.1)}
             <div class="room-status off" id="status2">OFF</div>
           </div>
         </div>
-        
-        <!-- Room 3 - Top Right (Large) -->
-        <div class="room3-outer" id="room3bg">
-          <div class="room3-door"></div>
-          <div class="room-content">
-            <div class="room-label">3</div>
-            <div class="light-bulb" id="bulb3">💡</div>
-            <div class="room-status off" id="status3">OFF</div>
-          </div>
-        </div>
-        
-        <!-- Room 4 - Top Left -->
-        <div class="room4-outer" id="room4bg">
-          <div class="room4-door"></div>
-          <div class="room-content">
-            <div class="room-label">4</div>
-            <div class="light-bulb" id="bulb4">💡</div>
-            <div class="room-status off" id="status4">OFF</div>
-          </div>
-        </div>
       </div>
       
-      <div class="gateway">
-        <div class="gateway-icon">🚪</div>
-        <div>Main Office Gateway (Room 1)</div>
-      </div>
+      <div class="gateway">Main Office Entrance</div>
     </div>
 
     <div class="light-info-section">
@@ -766,15 +789,12 @@ border-top:1px solid rgba(255,255,255,.1)}
 
 <script>
 // ═══════════════════════════════════════════════════════════════
-// THINGSPEAK CONFIGURATION
+// CONFIGURATION
 // ═══════════════════════════════════════════════════════════════
 var CHANNEL = '3260324';
 var READ_KEY = 'RSDE9TXRGDX5HIL0';
-var UPDATE_INTERVAL = 5000; // 5 seconds
+var UPDATE_INTERVAL = 5000;
 
-// ═══════════════════════════════════════════════════════════════
-// GLOBAL VARIABLES
-// ═══════════════════════════════════════════════════════════════
 var fc = 0;
 var currentPage = 'home';
 var minTemp = 999, maxTemp = -999;
@@ -782,7 +802,7 @@ var minTemp = 999, maxTemp = -999;
 function $(id){return document.getElementById(id)}
 
 // ═══════════════════════════════════════════════════════════════
-// NAVIGATION
+// NAVIGATION - Updates both header and hero buttons
 // ═══════════════════════════════════════════════════════════════
 function showPage(page) {
   currentPage = page;
@@ -790,6 +810,8 @@ function showPage(page) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   
   $(page + '-page').classList.add('active');
+  
+  // Update both header and hero navigation
   document.querySelectorAll('.nav-btn').forEach(b => {
     if(b.textContent.toLowerCase().includes(page) || 
        (page === 'home' && b.textContent.includes('Home'))) {
@@ -811,7 +833,7 @@ setInterval(updateClock, 1000);
 updateClock();
 
 // ═══════════════════════════════════════════════════════════════
-// OFFICE LIGHTING CONTROL - 4 ROOMS
+// OFFICE LIGHTING - Shows which rooms are lit
 // ═══════════════════════════════════════════════════════════════
 function updateOfficeLights(lightLevel) {
   var bulbs = [$('bulb1'), $('bulb2'), $('bulb3'), $('bulb4')];
@@ -820,7 +842,7 @@ function updateOfficeLights(lightLevel) {
   var levelText = $('lightLevelText');
   var statusText = $('lightStatus');
   
-  // Reset all
+  // Reset
   bulbs.forEach(b => {
     b.classList.remove('on');
     b.style.background = '#333';
@@ -831,10 +853,12 @@ function updateOfficeLights(lightLevel) {
     s.className = 'room-status off';
   });
   
+  var activeRooms = [];
+  
   if(lightLevel === 0) {
     levelText.textContent = 'OFF (0%)';
     levelText.style.color = '#888';
-    statusText.textContent = '⚫ All lights OFF';
+    statusText.textContent = 'All lights are OFF';
   } else if(lightLevel === 10) {
     levelText.textContent = 'ECO MODE (10%)';
     levelText.style.color = '#ffff99';
@@ -843,7 +867,7 @@ function updateOfficeLights(lightLevel) {
     rooms[0].style.background = 'rgba(255, 255, 153, 0.12)';
     statuses[0].textContent = 'ON';
     statuses[0].className = 'room-status lit';
-    statusText.textContent = '🟡 Room 1 dimly lit (ECO)';
+    activeRooms = ['Room 1'];
   } else if(lightLevel === 30) {
     levelText.textContent = 'NORMAL MODE (30%)';
     levelText.style.color = '#ffff99';
@@ -857,7 +881,7 @@ function updateOfficeLights(lightLevel) {
     statuses[1].textContent = 'ON';
     statuses[0].className = 'room-status lit';
     statuses[1].className = 'room-status lit';
-    statusText.textContent = '�� Rooms 1 & 2 active';
+    activeRooms = ['Room 1', 'Room 2'];
   } else if(lightLevel === 40) {
     levelText.textContent = 'BLUE MODE (40%)';
     levelText.style.color = '#99ffff';
@@ -871,7 +895,7 @@ function updateOfficeLights(lightLevel) {
     statuses[1].textContent = 'ON';
     statuses[0].className = 'room-status lit';
     statuses[1].className = 'room-status lit';
-    statusText.textContent = '🔵 Cool blue lighting';
+    activeRooms = ['Room 1', 'Room 2'];
   } else if(lightLevel === 50) {
     levelText.textContent = 'BRIGHT MODE (50%)';
     levelText.style.color = '#ccffff';
@@ -882,7 +906,7 @@ function updateOfficeLights(lightLevel) {
       statuses[i].textContent = 'ON';
       statuses[i].className = 'room-status lit';
     }
-    statusText.textContent = '⚪ Rooms 1, 2 & 3 lit';
+    activeRooms = ['Room 1', 'Room 2', 'Room 3'];
   } else if(lightLevel >= 70) {
     levelText.textContent = 'MAXIMUM (70%)';
     levelText.style.color = '#ffffff';
@@ -893,10 +917,17 @@ function updateOfficeLights(lightLevel) {
       statuses[i].textContent = 'ON';
       statuses[i].className = 'room-status lit';
     }
-    statusText.textContent = '⚪ ALL rooms at MAX';
+    activeRooms = ['Room 1', 'Room 2', 'Room 3', 'Room 4'];
   }
   
-  // Update home
+  // Status text showing which rooms are active
+  if(activeRooms.length === 0) {
+    statusText.textContent = 'All lights are OFF';
+  } else {
+    statusText.textContent = 'Active: ' + activeRooms.join(', ');
+  }
+  
+  // Home page
   var lightMode = ['OFF', 'ECO', 'NORMAL', 'BLUE', 'BRIGHT', 'MAX'];
   var modeIdx = lightLevel === 0 ? 0 : lightLevel === 10 ? 1 : 
                 lightLevel === 30 ? 2 : lightLevel === 40 ? 3 : 
@@ -915,7 +946,6 @@ function drawChart(cv, data, color, unit, statsIds) {
   cv.width = W; cv.height = H;
   c.clearRect(0, 0, W, H);
 
-  // Grid
   c.strokeStyle = 'rgba(255,255,255,.05)';
   c.lineWidth = 1;
   for(var g = 0; g < 5; g++) {
@@ -926,7 +956,6 @@ function drawChart(cv, data, color, unit, statsIds) {
     c.stroke();
   }
 
-  // Stats
   var mn = Math.min(...data);
   var mx = Math.max(...data);
   var avg = data.reduce((a,b) => a+b, 0) / data.length;
@@ -940,7 +969,6 @@ function drawChart(cv, data, color, unit, statsIds) {
     pts.push([x, y]);
   }
 
-  // Gradient fill
   var gr = c.createLinearGradient(0, 0, 0, H);
   gr.addColorStop(0, color + '40');
   gr.addColorStop(0.5, color + '15');
@@ -953,7 +981,6 @@ function drawChart(cv, data, color, unit, statsIds) {
   c.closePath();
   c.fill();
 
-  // Line
   c.strokeStyle = color;
   c.lineWidth = 3 * dpr;
   c.lineJoin = 'round';
@@ -963,7 +990,6 @@ function drawChart(cv, data, color, unit, statsIds) {
   for(var i = 1; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]);
   c.stroke();
 
-  // Points
   for(var i = 0; i < pts.length; i++) {
     c.fillStyle = color;
     c.beginPath();
@@ -974,7 +1000,6 @@ function drawChart(cv, data, color, unit, statsIds) {
     c.stroke();
   }
 
-  // Labels
   c.fillStyle = 'rgba(255,255,255,.7)';
   c.font = (12*dpr) + 'px sans-serif';
   c.textAlign = 'left';
@@ -982,7 +1007,6 @@ function drawChart(cv, data, color, unit, statsIds) {
   c.textAlign = 'right';
   c.fillText(mx.toFixed(1) + unit, W - 8, 20*dpr);
   
-  // Update stats
   if(statsIds) {
     $(statsIds.min).textContent = mn.toFixed(1) + unit;
     $(statsIds.max).textContent = mx.toFixed(1) + unit;
@@ -1012,21 +1036,18 @@ function fetchData() {
         var dew = parseFloat(f.field5) || 0;
         var heat = parseFloat(f.field6) || 0;
 
-        // Update displays
         $('tv').innerHTML = temp.toFixed(1) + '<span class="un">°C</span>';
         $('hv').innerHTML = hum.toFixed(1) + '<span class="un">%</span>';
         $('pv').innerHTML = pres.toFixed(1) + '<span class="un">hPa</span>';
         $('hiv').innerHTML = heat.toFixed(1) + '<span class="un">°C</span>';
         $('dv').innerHTML = dew.toFixed(1) + '<span class="un">°C</span>';
         
-        // Weather hero
         $('weatherTemp').textContent = temp.toFixed(1);
         if(temp < minTemp) minTemp = temp;
         if(temp > maxTemp) maxTemp = temp;
         $('weatherHi').textContent = maxTemp.toFixed(1);
         $('weatherLo').textContent = minTemp.toFixed(1);
         
-        // Weather description
         var icon = '🌤️', desc = 'Pleasant';
         if(temp < 10) { icon = '❄️'; desc = 'Very Cold'; }
         else if(temp < 18) { icon = '🌥️'; desc = 'Cold'; }
@@ -1037,7 +1058,6 @@ function fetchData() {
         $('weatherIcon').textContent = icon;
         $('weatherDesc').textContent = desc;
         
-        // Weather forecast based on pressure trend
         var presData = d.feeds.map(x => parseFloat(x.field3) || 0);
         var presTrend = presData.length > 1 ? presData[presData.length-1] - presData[0] : 0;
         var forecast = '';
@@ -1046,16 +1066,11 @@ function fetchData() {
         else forecast = '⛅ Stable';
         $('forecast').textContent = forecast;
         
-        // Home page
         $('homeTemp').textContent = temp.toFixed(1) + '°C';
-        
-        // Humidity pin
         $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
         
-        // Update lights
         updateOfficeLights(light);
 
-        // Chart data
         var tempData = [], humData = [], presData = [], lightData = [];
         for(var i = 0; i < d.feeds.length; i++) {
           tempData.push(parseFloat(d.feeds[i].field1) || 0);
@@ -1064,7 +1079,6 @@ function fetchData() {
           lightData.push(parseFloat(d.feeds[i].field4) || 0);
         }
 
-        // Draw charts
         drawChart($('c1'), tempData, '#ff6b6b', '°C', 
                   {min:'tempMin', max:'tempMax', avg:'tempAvg', count:'tempCount'});
         drawChart($('c2'), humData, '#4ecdc4', '%', 
@@ -1074,16 +1088,13 @@ function fetchData() {
         drawChart($('c4'), lightData, '#ffd93d', '%', 
                   {min:'lightMin', max:'lightMax', avg:'lightAvg', count:null});
         
-        // Pressure trend
         $('presTrend').textContent = presTrend > 0 ? '📈 Rising' : presTrend < 0 ? '📉 Falling' : '➡️ Stable';
         
-        // Light mode
         var lMode = light === 0 ? 'OFF' : light <= 10 ? 'ECO' : 
                     light <= 30 ? 'NORMAL' : light <= 40 ? 'BLUE' : 
                     light <= 50 ? 'BRIGHT' : 'MAX';
         $('lightMode').textContent = lMode;
 
-        // Status
         $('st').className = 'sd ok';
         $('st2').className = 'sd ok';
         $('st3').className = 'sd ok';

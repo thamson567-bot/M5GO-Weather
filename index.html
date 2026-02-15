@@ -283,7 +283,7 @@ border-top:1px solid rgba(255,255,255,.1)}
       <h1 class="home-title">Smart Office Hub</h1>
       <p class="home-subtitle">IoT-Powered Workspace Management System</p>
       
-      <!-- Live Stats (moved above descriptions) -->
+      <!-- Live Stats -->
       <div class="home-stats">
         <div class="stat-card">
           <div class="stat-icon">🌡️</div>
@@ -291,7 +291,7 @@ border-top:1px solid rgba(255,255,255,.1)}
           <div class="stat-label">Current Temperature</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">💡</div>
+          <div class="stat-icon">��</div>
           <div class="stat-value" id="homeLights">--</div>
           <div class="stat-label">Active Lights</div>
         </div>
@@ -307,7 +307,7 @@ border-top:1px solid rgba(255,255,255,.1)}
         </div>
       </div>
       
-      <!-- Navigation Cards with Descriptions (moved below stats) -->
+      <!-- Navigation Cards -->
       <div class="nav-cards">
         <div class="nav-card" onclick="showPage('weather')">
           <div class="nav-card-icon">🌤️</div>
@@ -523,7 +523,7 @@ border-top:1px solid rgba(255,255,255,.1)}
           </div>
         </div>
         
-        <!-- Room 1 - Bottom Left (Main Office - NO LIGHT) -->
+        <!-- Room 1 - Bottom Left (Main Office) -->
         <div class="room1-outer" id="room1bg">
           <div class="room1-main-door">
             <div class="door-handle"></div>
@@ -842,23 +842,44 @@ setInterval(updateClock, 1000);
 updateClock();
 
 function updateOfficeLights(lightLevel) {
-  var bulbs = [null, $('bulb2'), $('bulb3'), $('bulb4')];
-  var rooms = [$('room1bg'), $('room2bg'), $('room3bg'), $('room4bg')];
-  var statuses = [null, $('status2'), $('status3'), $('status4')];
+  // Room 1 has no bulb, Rooms 2, 3, 4 have bulbs
+  var bulb2 = $('bulb2');
+  var bulb3 = $('bulb3');
+  var bulb4 = $('bulb4');
+  
+  var room1 = $('room1bg');
+  var room2 = $('room2bg');
+  var room3 = $('room3bg');
+  var room4 = $('room4bg');
+  
+  var status2 = $('status2');
+  var status3 = $('status3');
+  var status4 = $('status4');
+  
   var levelText = $('lightLevelText');
   var statusText = $('lightStatus');
   
-  for(let i = 1; i < 4; i++) {
-    if(bulbs[i]) {
-      bulbs[i].classList.remove('on');
-      bulbs[i].style.background = '#333';
-    }
-    if(statuses[i]) {
-      statuses[i].textContent = 'OFF';
-      statuses[i].className = 'room-status off';
-    }
-  }
-  rooms.forEach(r => r.style.background = '#2a2a3e');
+  // Reset all lights
+  bulb2.classList.remove('on');
+  bulb3.classList.remove('on');
+  bulb4.classList.remove('on');
+  
+  bulb2.style.background = '#333';
+  bulb3.style.background = '#333';
+  bulb4.style.background = '#333';
+  
+  room1.style.background = '#2a2a3e';
+  room2.style.background = '#2a2a3e';
+  room3.style.background = '#2a2a3e';
+  room4.style.background = '#2a2a3e';
+  
+  status2.textContent = 'OFF';
+  status3.textContent = 'OFF';
+  status4.textContent = 'OFF';
+  
+  status2.className = 'room-status off';
+  status3.className = 'room-status off';
+  status4.className = 'room-status off';
   
   var activeRooms = [];
   
@@ -867,54 +888,82 @@ function updateOfficeLights(lightLevel) {
     levelText.style.color = '#888';
     statusText.textContent = 'All lights are OFF';
   } else if(lightLevel <= 25) {
+    // ECO - Room 2 only
     levelText.textContent = 'ECO MODE (25%)';
     levelText.style.color = '#ffff99';
-    bulbs[2].classList.add('on');
-    bulbs[2].style.background = 'radial-gradient(circle, #ffff99, #888800)';
-    rooms[1].style.background = 'rgba(255, 255, 153, 0.12)';
-    statuses[2].textContent = 'ON';
-    statuses[2].className = 'room-status lit';
+    
+    bulb2.classList.add('on');
+    bulb2.style.background = 'radial-gradient(circle, #ffff99, #888800)';
+    room2.style.background = 'rgba(255, 255, 153, 0.12)';
+    status2.textContent = 'ON';
+    status2.className = 'room-status lit';
+    
     activeRooms = ['Room 2'];
   } else if(lightLevel <= 50) {
+    // NORMAL - Rooms 2 & 3
     levelText.textContent = 'NORMAL MODE (50%)';
     levelText.style.color = '#ffff99';
-    bulbs[2].classList.add('on');
-    bulbs[3].classList.add('on');
-    bulbs[2].style.background = 'radial-gradient(circle, #ffffaa, #aaaa00)';
-    bulbs[3].style.background = 'radial-gradient(circle, #ffff99, #888800)';
-    rooms[1].style.background = 'rgba(255, 255, 170, 0.18)';
-    rooms[2].style.background = 'rgba(255, 255, 153, 0.12)';
-    statuses[2].textContent = 'ON';
-    statuses[3].textContent = 'ON';
-    statuses[2].className = 'room-status lit';
-    statuses[3].className = 'room-status lit';
+    
+    bulb2.classList.add('on');
+    bulb2.style.background = 'radial-gradient(circle, #ffffaa, #aaaa00)';
+    room2.style.background = 'rgba(255, 255, 170, 0.18)';
+    status2.textContent = 'ON';
+    status2.className = 'room-status lit';
+    
+    bulb3.classList.add('on');
+    bulb3.style.background = 'radial-gradient(circle, #ffff99, #888800)';
+    room3.style.background = 'rgba(255, 255, 153, 0.12)';
+    status3.textContent = 'ON';
+    status3.className = 'room-status lit';
+    
     activeRooms = ['Room 2', 'Room 3'];
   } else if(lightLevel <= 75) {
+    // BRIGHT - All 3 rooms
     levelText.textContent = 'BRIGHT MODE (75%)';
     levelText.style.color = '#ccffff';
-    for(let i = 2; i <= 3; i++) {
-      bulbs[i].classList.add('on');
-      bulbs[i].style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
-      rooms[i-1].style.background = 'rgba(153, 255, 255, 0.18)';
-      statuses[i].textContent = 'ON';
-      statuses[i].className = 'room-status lit';
-    }
-    bulbs[4].classList.add('on');
-    bulbs[4].style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
-    rooms[3].style.background = 'rgba(153, 255, 255, 0.18)';
-    statuses[4].textContent = 'ON';
-    statuses[4].className = 'room-status lit';
+    
+    bulb2.classList.add('on');
+    bulb2.style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
+    room2.style.background = 'rgba(153, 255, 255, 0.18)';
+    status2.textContent = 'ON';
+    status2.className = 'room-status lit';
+    
+    bulb3.classList.add('on');
+    bulb3.style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
+    room3.style.background = 'rgba(153, 255, 255, 0.18)';
+    status3.textContent = 'ON';
+    status3.className = 'room-status lit';
+    
+    bulb4.classList.add('on');
+    bulb4.style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
+    room4.style.background = 'rgba(153, 255, 255, 0.18)';
+    status4.textContent = 'ON';
+    status4.className = 'room-status lit';
+    
     activeRooms = ['Room 2', 'Room 3', 'Room 4'];
   } else {
+    // MAXIMUM - All 3 rooms
     levelText.textContent = 'MAXIMUM (100%)';
     levelText.style.color = '#ffffff';
-    for(let i = 2; i <= 4; i++) {
-      bulbs[i].classList.add('on');
-      bulbs[i].style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
-      rooms[i-1].style.background = 'rgba(255, 255, 255, 0.28)';
-      statuses[i].textContent = 'ON';
-      statuses[i].className = 'room-status lit';
-    }
+    
+    bulb2.classList.add('on');
+    bulb2.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
+    room2.style.background = 'rgba(255, 255, 255, 0.28)';
+    status2.textContent = 'ON';
+    status2.className = 'room-status lit';
+    
+    bulb3.classList.add('on');
+    bulb3.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
+    room3.style.background = 'rgba(255, 255, 255, 0.28)';
+    status3.textContent = 'ON';
+    status3.className = 'room-status lit';
+    
+    bulb4.classList.add('on');
+    bulb4.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
+    room4.style.background = 'rgba(255, 255, 255, 0.28)';
+    status4.textContent = 'ON';
+    status4.className = 'room-status lit';
+    
     activeRooms = ['Room 2', 'Room 3', 'Room 4'];
   }
   
@@ -1012,89 +1061,96 @@ function fetchData() {
             '/feeds.json?api_key=' + READ_KEY + '&results=30';
   
   fetch(url)
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error('HTTP error! status: ' + res.status);
+      return res.json();
+    })
     .then(d => {
-      if(d.feeds && d.feeds.length > 0) {
-        fc++;
-        var f = d.feeds[d.feeds.length - 1];
-        
-        var temp = parseFloat(f.field1) || 0;
-        var hum = parseFloat(f.field2) || 0;
-        var pres = parseFloat(f.field3) || 0;
-        var light = parseFloat(f.field4) || 0;
-        var dew = parseFloat(f.field5) || 0;
-        var heat = parseFloat(f.field6) || 0;
+      if(!d.feeds || d.feeds.length === 0) throw new Error('No data feeds available');
+      
+      fc++;
+      var f = d.feeds[d.feeds.length - 1];
+      
+      var temp = parseFloat(f.field1) || 0;
+      var hum = parseFloat(f.field2) || 0;
+      var pres = parseFloat(f.field3) || 0;
+      var light = parseFloat(f.field4) || 0;
+      var dew = parseFloat(f.field5) || 0;
+      var heat = parseFloat(f.field6) || 0;
 
-        $('tv').innerHTML = temp.toFixed(1) + '<span class="un">°C</span>';
-        $('hv').innerHTML = hum.toFixed(1) + '<span class="un">%</span>';
-        $('pv').innerHTML = pres.toFixed(1) + '<span class="un">hPa</span>';
-        $('hiv').innerHTML = heat.toFixed(1) + '<span class="un">°C</span>';
-        $('dv').innerHTML = dew.toFixed(1) + '<span class="un">°C</span>';
-        
-        $('weatherTemp').textContent = temp.toFixed(1);
-        if(temp < minTemp) minTemp = temp;
-        if(temp > maxTemp) maxTemp = temp;
-        $('weatherHi').textContent = maxTemp.toFixed(1);
-        $('weatherLo').textContent = minTemp.toFixed(1);
-        
-        var icon = '🌤️', desc = 'Pleasant';
-        if(temp < 10) { icon = '❄️'; desc = 'Very Cold'; }
-        else if(temp < 18) { icon = '🌥️'; desc = 'Cold'; }
-        else if(temp < 25) { icon = '🌤️'; desc = 'Comfortable'; }
-        else if(temp < 30) { icon = '🌞'; desc = 'Warm'; }
-        else { icon = '🔥'; desc = 'Hot'; }
-        
-        $('weatherIcon').textContent = icon;
-        $('weatherDesc').textContent = desc;
-        
-        var presData = d.feeds.map(x => parseFloat(x.field3) || 0);
-        var presTrend = presData.length > 1 ? presData[presData.length-1] - presData[0] : 0;
-        var forecast = '';
-        if(presTrend < -2) forecast = '🌧️ Rain Likely';
-        else if(presTrend > 2) forecast = '☀️ Clear Skies';
-        else forecast = '⛅ Stable';
-        $('forecast').textContent = forecast;
-        
-        $('homeTemp').textContent = temp.toFixed(1) + '°C';
-        $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
-        
-        updateOfficeLights(light);
+      $('tv').innerHTML = temp.toFixed(1) + '<span class="un">°C</span>';
+      $('hv').innerHTML = hum.toFixed(1) + '<span class="un">%</span>';
+      $('pv').innerHTML = pres.toFixed(1) + '<span class="un">hPa</span>';
+      $('hiv').innerHTML = heat.toFixed(1) + '<span class="un">°C</span>';
+      $('dv').innerHTML = dew.toFixed(1) + '<span class="un">°C</span>';
+      
+      $('weatherTemp').textContent = temp.toFixed(1);
+      if(temp < minTemp) minTemp = temp;
+      if(temp > maxTemp) maxTemp = temp;
+      $('weatherHi').textContent = maxTemp.toFixed(1);
+      $('weatherLo').textContent = minTemp.toFixed(1);
+      
+      var icon = '🌤️', desc = 'Pleasant';
+      if(temp < 10) { icon = '❄️'; desc = 'Very Cold'; }
+      else if(temp < 18) { icon = '🌥️'; desc = 'Cold'; }
+      else if(temp < 25) { icon = '🌤️'; desc = 'Comfortable'; }
+      else if(temp < 30) { icon = '🌞'; desc = 'Warm'; }
+      else { icon = '🔥'; desc = 'Hot'; }
+      
+      $('weatherIcon').textContent = icon;
+      $('weatherDesc').textContent = desc;
+      
+      var presData = d.feeds.map(x => parseFloat(x.field3) || 0);
+      var presTrend = presData.length > 1 ? presData[presData.length-1] - presData[0] : 0;
+      var forecast = '';
+      if(presTrend < -2) forecast = '🌧️ Rain Likely';
+      else if(presTrend > 2) forecast = '☀️ Clear Skies';
+      else forecast = '⛅ Stable';
+      $('forecast').textContent = forecast;
+      
+      $('homeTemp').textContent = temp.toFixed(1) + '��C';
+      $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
+      
+      updateOfficeLights(light);
 
-        var tempData = [], humData = [], presData = [], lightData = [];
-        for(var i = 0; i < d.feeds.length; i++) {
-          tempData.push(parseFloat(d.feeds[i].field1) || 0);
-          humData.push(parseFloat(d.feeds[i].field2) || 0);
-          presData.push(parseFloat(d.feeds[i].field3) || 0);
-          lightData.push(parseFloat(d.feeds[i].field4) || 0);
-        }
-
-        drawChart($('c1'), tempData, '#ff6b6b', '°C', 
-                  {min:'tempMin', max:'tempMax', avg:'tempAvg', count:'tempCount'});
-        drawChart($('c2'), humData, '#4ecdc4', '%', 
-                  {min:'humMin', max:'humMax', avg:'humAvg', count:'humCount'});
-        drawChart($('c3'), presData, '#ffd93d', 'hPa', 
-                  {min:'presMin', max:'presMax', avg:'presAvg', count:null});
-        drawChart($('c4'), lightData, '#ffd93d', '%', 
-                  {min:'lightMin', max:'lightMax', avg:'lightAvg', count:null});
-        
-        $('presTrend').textContent = presTrend > 0 ? '📈 Rising' : presTrend < 0 ? '📉 Falling' : '➡️ Stable';
-        
-        var lMode = light === 0 ? 'OFF' : light <= 25 ? 'ECO' : 
-                    light <= 50 ? 'NORMAL' : light <= 75 ? 'BRIGHT' : 'MAX';
-        $('lightMode').textContent = lMode;
-
-        $('st').className = 'sd ok';
-        $('st2').className = 'sd ok';
-        $('st3').className = 'sd ok';
-        $('st4').className = 'sd ok';
-        $('su').textContent = 'Live · ' + fc + ' updates';
-        $('homeStatus').textContent = 'LIVE';
+      var tempData = [], humData = [], presData = [], lightData = [];
+      for(var i = 0; i < d.feeds.length; i++) {
+        tempData.push(parseFloat(d.feeds[i].field1) || 0);
+        humData.push(parseFloat(d.feeds[i].field2) || 0);
+        presData.push(parseFloat(d.feeds[i].field3) || 0);
+        lightData.push(parseFloat(d.feeds[i].field4) || 0);
       }
+
+      drawChart($('c1'), tempData, '#ff6b6b', '°C', 
+                {min:'tempMin', max:'tempMax', avg:'tempAvg', count:'tempCount'});
+      drawChart($('c2'), humData, '#4ecdc4', '%', 
+                {min:'humMin', max:'humMax', avg:'humAvg', count:'humCount'});
+      drawChart($('c3'), presData, '#ffd93d', 'hPa', 
+                {min:'presMin', max:'presMax', avg:'presAvg', count:null});
+      drawChart($('c4'), lightData, '#ffd93d', '%', 
+                {min:'lightMin', max:'lightMax', avg:'lightAvg', count:null});
+      
+      $('presTrend').textContent = presTrend > 0 ? '📈 Rising' : presTrend < 0 ? '📉 Falling' : '➡️ Stable';
+      
+      var lMode = light === 0 ? 'OFF' : light <= 25 ? 'ECO' : 
+                  light <= 50 ? 'NORMAL' : light <= 75 ? 'BRIGHT' : 'MAX';
+      $('lightMode').textContent = lMode;
+
+      $('st').className = 'sd ok';
+      $('st2').className = 'sd ok';
+      $('st3').className = 'sd ok';
+      $('st4').className = 'sd ok';
+      $('su').textContent = 'Live · Updated ' + fc + ' times';
+      $('homeStatus').textContent = 'LIVE';
     })
     .catch(err => {
-      console.error('Error:', err);
+      console.error('Fetch Error:', err);
       $('st').className = 'sd er';
-      $('su').textContent = 'Connection error';
+      $('st2').className = 'sd er';
+      $('st3').className = 'sd er';
+      $('st4').className = 'sd er';
+      $('su').textContent = 'Error: ' + err.message;
+      $('homeStatus').textContent = 'ERROR';
     });
 }
 

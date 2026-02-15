@@ -815,6 +815,15 @@ var fc = 0;
 var currentPage = 'home';
 var minTemp = 999, maxTemp = -999;
 
+// Enhanced forecasting - store historical data
+var historicalData = {
+  pressure: [],
+  temperature: [],
+  humidity: [],
+  timestamps: [],
+  maxHistory: 720  // Store up to 1 hour of data (720 * 5 seconds = 3600 seconds)
+};
+
 function $(id){return document.getElementById(id)}
 
 function showPage(page) {
@@ -1050,6 +1059,137 @@ function drawChart(cv, data, color, unit, statsIds) {
   }
 }
 
+// ========================================================================
+// ENHANCED WEATHER FORECASTING ALGORITHM
+// ========================================================================
+function getAdvancedForecast(currentTemp, currentHum, currentPres) {
+  var forecast = {
+    icon: '⛅',
+    text: 'Loading...',
+    confidence: 'low',
+    details: ''
+  };
+  
+  // Need at least 10 minutes of data for meaningful forecast
+  if(historicalData.pressure.length < 120) {
+    forecast.text = 'Collecting Data...';
+    forecast.details = 'Need ' + Math.floor((120 - historicalData.pressure.length) * 5 / 60) + ' more minutes';
+    return forecast;
+  }
+  
+  var len = historicalData.pressure.length;
+  
+  // Calculate trends over different time periods
+  var pressure15min = len > 180 ? historicalData.pressure[len - 180] : historicalData.pressure[0];
+  var pressure30min = len > 360 ? historicalData.pressure[len - 360] : historicalData.pressure[0];
+  var pressure60min = len > 720 ? historicalData.pressure[len - 720] : historicalData.pressure[0];
+  
+  var temp15min = len > 180 ? historicalData.temperature[len - 180] : historicalData.temperature[0];
+  var hum15min = len > 180 ? historicalData.humidity[len - 180] : historicalData.humidity[0];
+  
+  // Calculate pressure trends (hPa change)
+  var trend15 = currentPres - pressure15min;
+  var trend30 = currentPres - pressure30min;
+  var trend60 = currentPres - pressure60min;
+  
+  // Calculate temperature and humidity trends
+  var tempChange = currentTemp - temp15min;
+  var humChange = currentHum - hum15min;
+  
+  // Calculate rate of pressure change (hPa per hour)
+  var pressureRate = trend15 * 4; // 15min * 4 = 1 hour
+  
+  console.log('Forecast Analysis:', {
+    trend15: trend15.toFixed(2),
+    trend30: trend30.toFixed(2),
+    pressureRate: pressureRate.toFixed(2),
+    tempChange: tempChange.toFixed(1),
+    humChange: humChange.toFixed(1)
+  });
+  
+  // ADVANCED WEATHER PREDICTION LOGIC
+  
+  // 1. RAPID PRESSURE DROP + RISING HUMIDITY = RAIN INCOMING
+  if(trend15 < -1 && pressureRate < -3 && humChange > 5) {
+    forecast.icon = '🌧️';
+    forecast.text = 'Heavy Rain Soon';
+    forecast.confidence = 'high';
+    forecast.details = 'Pressure dropping fast (' + pressureRate.toFixed(1) + ' hPa/hr), humidity rising';
+  }
+  // 2. STEADY PRESSURE DROP + HIGH HUMIDITY = RAIN LIKELY
+  else if(trend30 < -2 && currentHum > 75) {
+    forecast.icon = '🌦️';
+    forecast.text = 'Rain Likely';
+    forecast.confidence = 'medium';
+    forecast.details = 'Pressure falling, high humidity (' + currentHum.toFixed(0) + '%)';
+  }
+  // 3. MODERATE PRESSURE DROP = CLOUDY/POSSIBLE RAIN
+  else if(trend15 < -0.5 && trend30 < -1) {
+    forecast.icon = '☁️';
+    forecast.text = 'Cloudy Weather';
+    forecast.confidence = 'medium';
+    forecast.details = 'Pressure declining steadily';
+  }
+  // 4. RAPID PRESSURE RISE = CLEARING/FAIR WEATHER
+  else if(trend15 > 1 && pressureRate > 3) {
+    forecast.icon = '☀️';
+    forecast.text = 'Clear Skies Ahead';
+    forecast.confidence = 'high';
+    forecast.details = 'Pressure rising rapidly (' + pressureRate.toFixed(1) + ' hPa/hr)';
+  }
+  // 5. STEADY PRESSURE RISE = IMPROVING WEATHER
+  else if(trend30 > 1.5) {
+    forecast.icon = '🌤️';
+    forecast.text = 'Weather Improving';
+    forecast.confidence = 'medium';
+    forecast.details = 'Pressure steadily rising';
+  }
+  // 6. HIGH PRESSURE + LOW HUMIDITY = STABLE FAIR
+  else if(currentPres > 1013 && currentHum < 60 && Math.abs(trend15) < 0.3) {
+    forecast.icon = '☀️';
+    forecast.text = 'Fair & Stable';
+    forecast.confidence = 'high';
+    forecast.details = 'High pressure (' + currentPres.toFixed(0) + ' hPa), low humidity';
+  }
+  // 7. LOW PRESSURE + HIGH HUMIDITY = UNSTABLE
+  else if(currentPres < 1010 && currentHum > 70) {
+    forecast.icon = '🌧️';
+    forecast.text = 'Unsettled Weather';
+    forecast.confidence = 'medium';
+    forecast.details = 'Low pressure (' + currentPres.toFixed(0) + ' hPa), high humidity';
+  }
+  // 8. PRESSURE RISING + TEMP FALLING = COLD FRONT
+  else if(trend15 > 0.5 && tempChange < -1) {
+    forecast.icon = '❄️';
+    forecast.text = 'Cold Front Moving In';
+    forecast.confidence = 'medium';
+    forecast.details = 'Temperature dropping, pressure rising';
+  }
+  // 9. PRESSURE FALLING + TEMP RISING = WARM FRONT
+  else if(trend15 < -0.5 && tempChange > 1) {
+    forecast.icon = '🌡️';
+    forecast.text = 'Warm Front Approaching';
+    forecast.confidence = 'medium';
+    forecast.details = 'Temperature rising, pressure falling';
+  }
+  // 10. STABLE CONDITIONS
+  else if(Math.abs(trend15) < 0.3 && Math.abs(trend30) < 0.5) {
+    forecast.icon = '⛅';
+    forecast.text = 'Stable Conditions';
+    forecast.confidence = 'high';
+    forecast.details = 'No significant pressure changes';
+  }
+  // 11. DEFAULT - PARTLY CLOUDY
+  else {
+    forecast.icon = '⛅';
+    forecast.text = 'Partly Cloudy';
+    forecast.confidence = 'low';
+    forecast.details = 'Conditions unclear, monitoring trends';
+  }
+  
+  return forecast;
+}
+
 function fetchData() {
   var url = 'https://api.thingspeak.com/channels/' + CHANNEL + 
             '/feeds.json?api_key=' + READ_KEY + '&results=30';
@@ -1071,6 +1211,20 @@ function fetchData() {
       var light = parseFloat(f.field4) || 0;
       var dew = parseFloat(f.field5) || 0;
       var heat = parseFloat(f.field6) || 0;
+
+      // Store historical data for better forecasting
+      historicalData.pressure.push(pres);
+      historicalData.temperature.push(temp);
+      historicalData.humidity.push(hum);
+      historicalData.timestamps.push(new Date().getTime());
+      
+      // Keep only last hour of data
+      if(historicalData.pressure.length > historicalData.maxHistory) {
+        historicalData.pressure.shift();
+        historicalData.temperature.shift();
+        historicalData.humidity.shift();
+        historicalData.timestamps.shift();
+      }
 
       $('tv').innerHTML = temp.toFixed(1) + '<span class="un">&deg;C</span>';
       $('hv').innerHTML = hum.toFixed(1) + '<span class="un">%</span>';
@@ -1094,13 +1248,18 @@ function fetchData() {
       $('weatherIcon').textContent = icon;
       $('weatherDesc').textContent = desc;
       
-      var presData = d.feeds.map(x => parseFloat(x.field3) || 0);
-      var presTrend = presData.length > 1 ? presData[presData.length-1] - presData[0] : 0;
-      var forecast = '';
-      if(presTrend < -2) forecast = '🌧️ Rain Likely';
-      else if(presTrend > 2) forecast = '☀️ Clear Skies';
-      else forecast = '⛅ Stable';
-      $('forecast').textContent = forecast;
+      // ENHANCED FORECASTING - Use advanced algorithm
+      var advancedForecast = getAdvancedForecast(temp, hum, pres);
+      $('forecast').innerHTML = advancedForecast.icon + ' ' + advancedForecast.text;
+      
+      // Update forecast card subtitle with details
+      var forecastCard = $('forecast').closest('.cd');
+      if(forecastCard) {
+        var subtitle = forecastCard.querySelector('.su');
+        if(subtitle) {
+          subtitle.textContent = advancedForecast.details;
+        }
+      }
       
       $('homeTemp').innerHTML = temp.toFixed(1) + '&deg;C';
       $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
@@ -1124,6 +1283,8 @@ function fetchData() {
       drawChart($('c4'), lightData, '#ffd93d', '%', 
                 {min:'lightMin', max:'lightMax', avg:'lightAvg', count:null});
       
+      // Simple pressure trend for display
+      var presTrend = presData.length > 1 ? presData[presData.length-1] - presData[0] : 0;
       $('presTrend').textContent = presTrend > 0 ? '📈 Rising' : presTrend < 0 ? '📉 Falling' : '➡️ Stable';
       
       var lMode = light === 0 ? 'OFF' : light <= 25 ? 'ECO' : 
@@ -1180,6 +1341,3 @@ setInterval(fetchData, UPDATE_INTERVAL);
 $('homeEntries').textContent = '12';
 $('todayCount').textContent = '12';
 </script>
-
-</body>
-</html>

@@ -287,11 +287,11 @@ border-top:1px solid rgba(255,255,255,.1)}
       <div class="home-stats">
         <div class="stat-card">
           <div class="stat-icon">🌡️</div>
-          <div class="stat-value" id="homeTemp">--°C</div>
+          <div class="stat-value" id="homeTemp">--&deg;C</div>
           <div class="stat-label">Current Temperature</div>
         </div>
         <div class="stat-card">
-          <div class="stat-icon">��</div>
+          <div class="stat-icon">💡</div>
           <div class="stat-value" id="homeLights">--</div>
           <div class="stat-label">Active Lights</div>
         </div>
@@ -353,11 +353,11 @@ border-top:1px solid rgba(255,255,255,.1)}
         <div class="weather-main">
           <div>
             <span class="weather-temp" id="weatherTemp">--</span>
-            <span class="weather-deg">°C</span>
+            <span class="weather-deg">&deg;C</span>
           </div>
           <div class="weather-desc" id="weatherDesc">Loading...</div>
           <div class="weather-hl">
-            H: <span id="weatherHi">--</span>°C | L: <span id="weatherLo">--</span>°C
+            H: <span id="weatherHi">--</span>&deg;C | L: <span id="weatherLo">--</span>&deg;C
           </div>
         </div>
       </div>
@@ -367,7 +367,7 @@ border-top:1px solid rgba(255,255,255,.1)}
       <div class="cd">
         <div class="ic">🌡️</div>
         <div class="lb">Temperature</div>
-        <div class="vl" id="tv">--<span class="un">°C</span></div>
+        <div class="vl" id="tv">--<span class="un">&deg;C</span></div>
         <div class="su">Current ambient temperature</div>
       </div>
       <div class="cd">
@@ -385,13 +385,13 @@ border-top:1px solid rgba(255,255,255,.1)}
       <div class="cd">
         <div class="ic">🌡️</div>
         <div class="lb">Heat Index</div>
-        <div class="vl" id="hiv">--<span class="un">°C</span></div>
+        <div class="vl" id="hiv">--<span class="un">&deg;C</span></div>
         <div class="su">Perceived temperature</div>
       </div>
       <div class="cd">
         <div class="ic">💎</div>
         <div class="lb">Dew Point</div>
-        <div class="vl" id="dv">--<span class="un">°C</span></div>
+        <div class="vl" id="dv">--<span class="un">&deg;C</span></div>
         <div class="su">Condensation point</div>
       </div>
       <div class="cd">
@@ -422,15 +422,15 @@ border-top:1px solid rgba(255,255,255,.1)}
       <div class="chart-info">
         <div class="chart-stat">
           <span class="chart-stat-label">Min:</span>
-          <span class="chart-stat-value" id="tempMin">--°C</span>
+          <span class="chart-stat-value" id="tempMin">--&deg;C</span>
         </div>
         <div class="chart-stat">
           <span class="chart-stat-label">Max:</span>
-          <span class="chart-stat-value" id="tempMax">--°C</span>
+          <span class="chart-stat-value" id="tempMax">--&deg;C</span>
         </div>
         <div class="chart-stat">
           <span class="chart-stat-label">Avg:</span>
-          <span class="chart-stat-value" id="tempAvg">--°C</span>
+          <span class="chart-stat-value" id="tempAvg">--&deg;C</span>
         </div>
         <div class="chart-stat">
           <span class="chart-stat-label">Data Points:</span>
@@ -803,7 +803,7 @@ border-top:1px solid rgba(255,255,255,.1)}
 </div>
 
 <footer>
-  Smart Office Hub © 2026 | NYP Engineering Project | Powered by M5GO + ThingSpeak + Arduino Mega
+  Smart Office Hub &copy; 2026 | NYP Engineering Project | Powered by M5GO + ThingSpeak + Arduino Mega
 </footer>
 
 <script>
@@ -842,7 +842,6 @@ setInterval(updateClock, 1000);
 updateClock();
 
 function updateOfficeLights(lightLevel) {
-  // Room 1 has no bulb, Rooms 2, 3, 4 have bulbs
   var bulb2 = $('bulb2');
   var bulb3 = $('bulb3');
   var bulb4 = $('bulb4');
@@ -859,7 +858,6 @@ function updateOfficeLights(lightLevel) {
   var levelText = $('lightLevelText');
   var statusText = $('lightStatus');
   
-  // Reset all lights
   bulb2.classList.remove('on');
   bulb3.classList.remove('on');
   bulb4.classList.remove('on');
@@ -888,7 +886,6 @@ function updateOfficeLights(lightLevel) {
     levelText.style.color = '#888';
     statusText.textContent = 'All lights are OFF';
   } else if(lightLevel <= 25) {
-    // ECO - Room 2 only
     levelText.textContent = 'ECO MODE (25%)';
     levelText.style.color = '#ffff99';
     
@@ -900,7 +897,6 @@ function updateOfficeLights(lightLevel) {
     
     activeRooms = ['Room 2'];
   } else if(lightLevel <= 50) {
-    // NORMAL - Rooms 2 & 3
     levelText.textContent = 'NORMAL MODE (50%)';
     levelText.style.color = '#ffff99';
     
@@ -918,7 +914,6 @@ function updateOfficeLights(lightLevel) {
     
     activeRooms = ['Room 2', 'Room 3'];
   } else if(lightLevel <= 75) {
-    // BRIGHT - All 3 rooms
     levelText.textContent = 'BRIGHT MODE (75%)';
     levelText.style.color = '#ccffff';
     
@@ -942,7 +937,6 @@ function updateOfficeLights(lightLevel) {
     
     activeRooms = ['Room 2', 'Room 3', 'Room 4'];
   } else {
-    // MAXIMUM - All 3 rooms
     levelText.textContent = 'MAXIMUM (100%)';
     levelText.style.color = '#ffffff';
     
@@ -1049,9 +1043,9 @@ function drawChart(cv, data, color, unit, statsIds) {
   c.fillText(mx.toFixed(1) + unit, W - 8, 20*dpr);
   
   if(statsIds) {
-    $(statsIds.min).textContent = mn.toFixed(1) + unit;
-    $(statsIds.max).textContent = mx.toFixed(1) + unit;
-    $(statsIds.avg).textContent = avg.toFixed(1) + unit;
+    $(statsIds.min).innerHTML = mn.toFixed(1) + unit;
+    $(statsIds.max).innerHTML = mx.toFixed(1) + unit;
+    $(statsIds.avg).innerHTML = avg.toFixed(1) + unit;
     if(statsIds.count) $(statsIds.count).textContent = data.length;
   }
 }
@@ -1078,11 +1072,11 @@ function fetchData() {
       var dew = parseFloat(f.field5) || 0;
       var heat = parseFloat(f.field6) || 0;
 
-      $('tv').innerHTML = temp.toFixed(1) + '<span class="un">°C</span>';
+      $('tv').innerHTML = temp.toFixed(1) + '<span class="un">&deg;C</span>';
       $('hv').innerHTML = hum.toFixed(1) + '<span class="un">%</span>';
       $('pv').innerHTML = pres.toFixed(1) + '<span class="un">hPa</span>';
-      $('hiv').innerHTML = heat.toFixed(1) + '<span class="un">°C</span>';
-      $('dv').innerHTML = dew.toFixed(1) + '<span class="un">°C</span>';
+      $('hiv').innerHTML = heat.toFixed(1) + '<span class="un">&deg;C</span>';
+      $('dv').innerHTML = dew.toFixed(1) + '<span class="un">&deg;C</span>';
       
       $('weatherTemp').textContent = temp.toFixed(1);
       if(temp < minTemp) minTemp = temp;
@@ -1108,7 +1102,7 @@ function fetchData() {
       else forecast = '⛅ Stable';
       $('forecast').textContent = forecast;
       
-      $('homeTemp').textContent = temp.toFixed(1) + '��C';
+      $('homeTemp').innerHTML = temp.toFixed(1) + '&deg;C';
       $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
       
       updateOfficeLights(light);
@@ -1121,7 +1115,7 @@ function fetchData() {
         lightData.push(parseFloat(d.feeds[i].field4) || 0);
       }
 
-      drawChart($('c1'), tempData, '#ff6b6b', '°C', 
+      drawChart($('c1'), tempData, '#ff6b6b', '&deg;C', 
                 {min:'tempMin', max:'tempMax', avg:'tempAvg', count:'tempCount'});
       drawChart($('c2'), humData, '#4ecdc4', '%', 
                 {min:'humMin', max:'humMax', avg:'humAvg', count:'humCount'});

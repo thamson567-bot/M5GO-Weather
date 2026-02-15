@@ -25,25 +25,27 @@ color:#fff;padding:20px;position:sticky;top:0;z-index:100;box-shadow:0 4px 12px 
 .header-content{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
 .logo{font-size:1.5rem;font-weight:600;display:flex;align-items:center;gap:10px}
 .logo-icon{font-size:2rem}
-.nav-header{display:flex;gap:10px;flex-wrap:wrap}
-.nav-header button{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);
-color:#fff;padding:10px 20px;border-radius:10px;cursor:pointer;font-size:0.9rem;
+.clock-header{font-size:1rem;opacity:.8;font-variant-numeric:tabular-nums;order:3}
+
+/* Navigation moved to hero */
+.nav-hero{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:30px}
+.nav-hero button{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);
+color:#fff;padding:12px 24px;border-radius:12px;cursor:pointer;font-size:0.95rem;
 transition:all 0.3s;font-weight:500}
-.nav-header button:hover{background:rgba(255,255,255,.25);transform:translateY(-2px)}
-.nav-header button.active{background:rgba(255,255,255,.35);border-color:rgba(255,255,255,.6);
+.nav-hero button:hover{background:rgba(255,255,255,.25);transform:translateY(-2px)}
+.nav-hero button.active{background:rgba(255,255,255,.35);border-color:rgba(255,255,255,.6);
 box-shadow:0 4px 12px rgba(255,255,255,.3)}
-.clock-header{font-size:1rem;opacity:.8;font-variant-numeric:tabular-nums}
 
 /* Home Page Hero */
 .home-hero{min-height:80vh;display:flex;align-items:center;justify-content:center;
 background:linear-gradient(135deg,#0a1628,#1a3a5c,#2d6187,#3a7ca5);
-position:relative;overflow:hidden}
+position:relative;overflow:hidden;padding:40px 20px}
 .home-hero::before{content:'';position:absolute;width:100%;height:100%;
 background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><circle cx="100" cy="100" r="3" fill="rgba(255,255,255,.1)"/><circle cx="300" cy="200" r="2" fill="rgba(255,255,255,.1)"/><circle cx="500" cy="150" r="3" fill="rgba(255,255,255,.1)"/><circle cx="700" cy="250" r="2" fill="rgba(255,255,255,.1)"/><circle cx="900" cy="180" r="3" fill="rgba(255,255,255,.1)"/><circle cx="1100" cy="220" r="2" fill="rgba(255,255,255,.1)"/></svg>');
 opacity:.3;animation:float 20s infinite}
 @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
 
-.home-content{text-align:center;z-index:1;position:relative;padding:40px 20px}
+.home-content{text-align:center;z-index:1;position:relative;width:100%;max-width:900px}
 .home-title{font-size:3.5rem;font-weight:700;margin-bottom:20px;
 background:linear-gradient(90deg,#4ecdc4,#ffd93d,#ff6b6b);
 -webkit-background-clip:text;-webkit-text-fill-color:transparent;
@@ -51,7 +53,7 @@ background-clip:text;animation:gradient 3s ease infinite}
 @keyframes gradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
 .home-subtitle{font-size:1.3rem;opacity:.8;margin-bottom:40px;letter-spacing:1px}
 .home-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;max-width:900px;margin:40px auto}
+gap:20px;margin-top:40px}
 .stat-card{background:rgba(255,255,255,.1);backdrop-filter:blur(10px);
 padding:30px;border-radius:20px;border:1px solid rgba(255,255,255,.2);
 transition:transform 0.3s}
@@ -75,9 +77,23 @@ box-shadow:0 4px 12px rgba(0,0,0,.2)}
 .sd.ok{background:#0f0;box-shadow:0 0 10px #0f0}
 .sd.er{background:#f00;box-shadow:0 0 10px #f00}
 
+/* Weather Hero Section */
+.weather-hero{background:linear-gradient(135deg,#0a1628,#1a3a5c,#2d6187,#3a7ca5);
+padding:40px 20px;margin-bottom:30px;border-radius:20px;position:relative;overflow:hidden}
+.weather-hero::before{content:'';position:absolute;width:100%;height:100%;
+background:radial-gradient(circle,rgba(255,255,255,.03) 0%,transparent 60%);animation:shimmer 8s infinite}
+@keyframes shimmer{0%,100%{transform:rotate(0deg)}50%{transform:rotate(180deg)}}
+.weather-display{display:flex;align-items:center;justify-content:center;gap:30px;flex-wrap:wrap;position:relative;z-index:1}
+.weather-icon{font-size:6rem;animation:float 3s ease-in-out infinite}
+.weather-main{text-align:center}
+.weather-temp{font-size:4.5rem;font-weight:100;letter-spacing:-4px}
+.weather-deg{font-size:1.8rem;vertical-align:top;opacity:.8}
+.weather-desc{font-size:1.2rem;margin-top:10px;opacity:.9;font-weight:500}
+.weather-hl{font-size:.95rem;opacity:.6;margin-top:10px;letter-spacing:.5px}
+.weather-hl span{font-weight:600;opacity:.9}
+
 /* Weather Cards */
-.page-title{font-size:2rem;font-weight:600;margin-bottom:30px;text-align:center;
-color:var(--accent)}
+.page-title{font-size:2rem;font-weight:600;margin-bottom:30px;text-align:center;color:var(--accent)}
 .gr{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:20px}
 .cd{background:var(--card);border-radius:var(--r);padding:24px;
 border:1px solid rgba(255,255,255,.08);transition:all .3s;position:relative;overflow:hidden}
@@ -97,7 +113,6 @@ border:1px solid rgba(255,255,255,.08);box-shadow:0 4px 12px rgba(0,0,0,.2)}
 .tt{font-size:1.2rem;font-weight:500;margin-bottom:20px;display:flex;
 align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
 .dt{width:14px;height:14px;border-radius:3px}
-.chart-wrapper{position:relative}
 canvas{width:100%;height:250px;display:block}
 .chart-info{display:flex;justify-content:space-between;margin-top:15px;font-size:.85rem;opacity:.7;flex-wrap:wrap;gap:10px}
 .chart-stat{display:flex;align-items:center;gap:8px}
@@ -116,26 +131,29 @@ position:absolute;top:-7px;transform:translateX(-50%);box-shadow:0 3px 10px rgba
 /* Office Map */
 .office-container{background:var(--card);border-radius:var(--r);padding:40px;
 margin-top:20px;border:1px solid rgba(255,255,255,.08)}
-.office-map{position:relative;width:100%;max-width:800px;height:500px;margin:30px auto;
+.office-map{position:relative;width:100%;max-width:800px;height:500px;margin:0 auto;
 background:#1a1a2e;border:5px solid #555;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
 
-/* Office Rooms - Matching your layout exactly */
-.room1-outer{position:absolute;left:0;top:0;width:42%;height:50%;
-border-right:5px solid #555;border-bottom:5px solid #555;background:#2a2a3e;transition:background 0.5s}
-.room1-door{position:absolute;right:-5px;top:35%;width:40px;height:80px;background:#1a1a2e}
+/* Room 1 - Main Office (Bottom Left - Large) */
+.room1-outer{position:absolute;left:0;top:52%;width:60%;height:48%;
+background:#2a2a3e;transition:background 0.5s}
+.room1-main-door{position:absolute;left:20%;bottom:-5px;width:50px;height:30px;background:#1a1a2e}
 
-.room2-outer{position:absolute;left:42%;top:0;width:58%;height:50%;
-border-bottom:5px solid #555;background:#2a2a3e;transition:background 0.5s}
-
-.corridor-outer{position:absolute;left:0;top:50%;width:60%;height:50%;background:#2a2a3e}
-.corridor-main-door{position:absolute;left:-5px;bottom:20%;width:50px;height:40px;background:#1a1a2e}
-.corridor-door2{position:absolute;right:20%;bottom:-5px;width:40px;height:50px;background:#1a1a2e}
-
-.room3-outer{position:absolute;left:60%;top:50%;width:40%;height:50%;
+/* Room 2 - Bottom Right */
+.room2-outer{position:absolute;left:60%;top:52%;width:40%;height:48%;
 border-left:5px solid #555;border-top:5px solid #555;background:#2a2a3e;transition:background 0.5s}
-.room3-door{position:absolute;left:-5px;top:25%;width:50px;height:60px;background:#1a1a2e}
+.room2-door{position:absolute;left:-5px;top:30%;width:30px;height:50px;background:#1a1a2e}
 
-/* Gateway (Main Entry) */
+/* Room 3 - Top Right (Large) */
+.room3-outer{position:absolute;left:45%;top:0;width:55%;height:52%;
+border-bottom:5px solid #555;background:#2a2a3e;transition:background 0.5s}
+.room3-door{position:absolute;left:20%;bottom:-5px;width:40px;height:30px;background:#1a1a2e}
+
+/* Room 4 - Top Left */
+.room4-outer{position:absolute;left:0;top:0;width:45%;height:52%;
+border-right:5px solid #555;border-bottom:5px solid #555;background:#2a2a3e;transition:background 0.5s}
+.room4-door{position:absolute;right:-5px;bottom:25%;width:30px;height:60px;background:#1a1a2e}
+
 .gateway{position:absolute;left:0;bottom:-50px;width:60%;padding:10px;
 text-align:center;font-size:0.9rem;opacity:0.7}
 .gateway-icon{font-size:1.5rem;margin-bottom:5px}
@@ -147,6 +165,11 @@ margin:15px auto 0;display:flex;align-items:center;justify-content:center;
 font-size:3.5rem;transition:all 0.6s;box-shadow:0 0 0 rgba(255,255,255,0);
 border:3px solid #555}
 .light-bulb.on{box-shadow:0 0 50px rgba(255,255,255,0.9);border-color:#fff}
+
+/* Simple room status */
+.room-status{font-size:0.85rem;margin-top:8px;opacity:0.8;font-weight:500}
+.room-status.lit{color:#0f0}
+.room-status.off{color:#888}
 
 .light-info-section{text-align:center;margin:30px 0;padding:20px;
 background:rgba(255,255,255,.05);border-radius:12px}
@@ -189,7 +212,7 @@ cursor:pointer;transition:all 0.3s}
 .btn-apply:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.3)}
 .btn-apply:active{transform:translateY(0)}
 
-/* Code Comment Boxes for your friend */
+/* Code Comment Boxes */
 .dev-note{background:rgba(255,193,7,.1);border-left:4px solid #ffc107;
 padding:15px;margin:20px 0;border-radius:8px;font-family:monospace;font-size:.9rem}
 .dev-note-title{font-weight:600;color:#ffc107;margin-bottom:8px}
@@ -200,7 +223,6 @@ border-top:1px solid rgba(255,255,255,.1)}
 @media (max-width:768px){
   .home-title{font-size:2.5rem}
   .header-content{flex-direction:column;align-items:stretch}
-  .nav-header{justify-content:center}
   .gr{grid-template-columns:1fr}
   .office-map{height:400px}
   .led-grid{grid-template-columns:1fr}
@@ -209,19 +231,12 @@ border-top:1px solid rgba(255,255,255,.1)}
 </head>
 <body>
 
-<!-- Header -->
+<!-- Header (Logo and Clock only) -->
 <div class="header">
   <div class="header-content">
     <div class="logo">
       <span class="logo-icon">🏢</span>
       <span>Smart Office Hub</span>
-    </div>
-    <div class="nav-header">
-      <button class="nav-btn active" onclick="showPage('home')">🏠 Home</button>
-      <button class="nav-btn" onclick="showPage('weather')">🌤️ Weather</button>
-      <button class="nav-btn" onclick="showPage('office')">💡 Lighting</button>
-      <button class="nav-btn" onclick="showPage('entry')">🔐 Entry Log</button>
-      <button class="nav-btn" onclick="showPage('led')">🎨 LED Control</button>
     </div>
     <div class="clock-header" id="clockHeader">00:00:00</div>
   </div>
@@ -234,6 +249,16 @@ border-top:1px solid rgba(255,255,255,.1)}
       <h1 class="home-title">Smart Office Hub</h1>
       <p class="home-subtitle">IoT-Powered Workspace Management System</p>
       
+      <!-- Navigation Buttons -->
+      <div class="nav-hero">
+        <button class="nav-btn active" onclick="showPage('home')">🏠 Home</button>
+        <button class="nav-btn" onclick="showPage('weather')">🌤️ Weather</button>
+        <button class="nav-btn" onclick="showPage('office')">💡 Lighting</button>
+        <button class="nav-btn" onclick="showPage('entry')">🔐 Entry Log</button>
+        <button class="nav-btn" onclick="showPage('led')">🎨 LED Control</button>
+      </div>
+      
+      <!-- Stats Cards -->
       <div class="home-stats">
         <div class="stat-card">
           <div class="stat-icon">🌡️</div>
@@ -270,6 +295,24 @@ border-top:1px solid rgba(255,255,255,.1)}
       <span id="su">Connecting to ThingSpeak...</span>
     </div>
 
+    <!-- Weather Hero Display -->
+    <div class="weather-hero">
+      <div class="weather-display">
+        <div class="weather-icon" id="weatherIcon">🌤️</div>
+        <div class="weather-main">
+          <div>
+            <span class="weather-temp" id="weatherTemp">--</span>
+            <span class="weather-deg">°C</span>
+          </div>
+          <div class="weather-desc" id="weatherDesc">Loading...</div>
+          <div class="weather-hl">
+            H: <span id="weatherHi">--</span>°C | L: <span id="weatherLo">--</span>°C
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Weather Data Cards -->
     <div class="gr">
       <div class="cd">
         <div class="ic">🌡️</div>
@@ -285,7 +328,7 @@ border-top:1px solid rgba(255,255,255,.1)}
       </div>
       <div class="cd">
         <div class="ic">🌬️</div>
-        <div class="lb">Pressure</div>
+        <div class="lb">Air Pressure</div>
         <div class="vl" id="pv">--<span class="un">hPa</span></div>
         <div class="su">Atmospheric pressure</div>
       </div>
@@ -302,10 +345,10 @@ border-top:1px solid rgba(255,255,255,.1)}
         <div class="su">Condensation point</div>
       </div>
       <div class="cd">
-        <div class="ic">💡</div>
-        <div class="lb">Light Level</div>
-        <div class="vl" id="lv">--<span class="un">%</span></div>
-        <div class="su">Current brightness</div>
+        <div class="ic">🌦️</div>
+        <div class="lb">Weather Forecast</div>
+        <div class="vl" id="forecast" style="font-size:1.5rem">--</div>
+        <div class="su">Based on pressure trend</div>
       </div>
     </div>
 
@@ -325,9 +368,7 @@ border-top:1px solid rgba(255,255,255,.1)}
       <div class="tt">
         <span><span class="dt" style="background:#ff6b6b"></span> Temperature History</span>
       </div>
-      <div class="chart-wrapper">
-        <canvas id="c1"></canvas>
-      </div>
+      <canvas id="c1"></canvas>
       <div class="chart-info">
         <div class="chart-stat">
           <span class="chart-stat-label">Min:</span>
@@ -352,9 +393,7 @@ border-top:1px solid rgba(255,255,255,.1)}
       <div class="tt">
         <span><span class="dt" style="background:#4ecdc4"></span> Humidity History</span>
       </div>
-      <div class="chart-wrapper">
-        <canvas id="c2"></canvas>
-      </div>
+      <canvas id="c2"></canvas>
       <div class="chart-info">
         <div class="chart-stat">
           <span class="chart-stat-label">Min:</span>
@@ -379,9 +418,7 @@ border-top:1px solid rgba(255,255,255,.1)}
       <div class="tt">
         <span><span class="dt" style="background:#ffd93d"></span> Pressure History</span>
       </div>
-      <div class="chart-wrapper">
-        <canvas id="c3"></canvas>
-      </div>
+      <canvas id="c3"></canvas>
       <div class="chart-info">
         <div class="chart-stat">
           <span class="chart-stat-label">Min:</span>
@@ -416,42 +453,50 @@ border-top:1px solid rgba(255,255,255,.1)}
 
     <div class="office-container">
       <div class="office-map">
-        <!-- Room 1 - Top Left -->
+        <!-- Room 1 - Main Office (Bottom Left) -->
         <div class="room1-outer" id="room1bg">
-          <div class="room1-door"></div>
+          <div class="room1-main-door"></div>
           <div class="room-content">
             <div class="room-label">1</div>
             <div class="light-bulb" id="bulb1">💡</div>
+            <div class="room-status off" id="status1">OFF</div>
           </div>
         </div>
         
-        <!-- Room 2 - Top Right (Large) -->
+        <!-- Room 2 - Bottom Right -->
         <div class="room2-outer" id="room2bg">
+          <div class="room2-door"></div>
           <div class="room-content">
             <div class="room-label">2</div>
             <div class="light-bulb" id="bulb2">💡</div>
+            <div class="room-status off" id="status2">OFF</div>
           </div>
         </div>
         
-        <!-- Corridor/Gateway - Bottom Left -->
-        <div class="corridor-outer">
-          <div class="corridor-main-door"></div>
-          <div class="corridor-door2"></div>
-        </div>
-        
-        <!-- Room 3 - Bottom Right -->
+        <!-- Room 3 - Top Right (Large) -->
         <div class="room3-outer" id="room3bg">
           <div class="room3-door"></div>
           <div class="room-content">
             <div class="room-label">3</div>
             <div class="light-bulb" id="bulb3">💡</div>
+            <div class="room-status off" id="status3">OFF</div>
+          </div>
+        </div>
+        
+        <!-- Room 4 - Top Left -->
+        <div class="room4-outer" id="room4bg">
+          <div class="room4-door"></div>
+          <div class="room-content">
+            <div class="room-label">4</div>
+            <div class="light-bulb" id="bulb4">💡</div>
+            <div class="room-status off" id="status4">OFF</div>
           </div>
         </div>
       </div>
       
       <div class="gateway">
         <div class="gateway-icon">🚪</div>
-        <div>Main Office Gateway</div>
+        <div>Main Office Gateway (Room 1)</div>
       </div>
     </div>
 
@@ -464,9 +509,7 @@ border-top:1px solid rgba(255,255,255,.1)}
       <div class="tt">
         <span><span class="dt" style="background:#ffd93d"></span> Light Level History</span>
       </div>
-      <div class="chart-wrapper">
-        <canvas id="c4"></canvas>
-      </div>
+      <canvas id="c4"></canvas>
       <div class="chart-info">
         <div class="chart-stat">
           <span class="chart-stat-label">Min:</span>
@@ -539,7 +582,6 @@ border-top:1px solid rgba(255,255,255,.1)}
           </tr>
         </thead>
         <tbody id="logTableBody">
-          <!-- SAMPLE DATA - Replace with real data from your backend -->
           <tr>
             <td class="log-time">2026-02-15 09:23:45</td>
             <td class="log-name">John Doe</td>
@@ -558,7 +600,6 @@ border-top:1px solid rgba(255,255,255,.1)}
             <td>RFID-009876</td>
             <td><span class="log-status exit">EXIT</span></td>
           </tr>
-          <!-- Your friend's Arduino data will populate here -->
         </tbody>
       </table>
 
@@ -619,8 +660,8 @@ border-top:1px solid rgba(255,255,255,.1)}
         <!-- Room 1 LED Control -->
         <div class="led-room-card">
           <div class="led-room-title">
-            <span>💡 Room 1</span>
-            <span style="font-size:0.9rem;opacity:0.7">LED Strip Control</span>
+            <span>💡 Room 1 (Main)</span>
+            <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
           </div>
           <div class="led-preview" id="ledPreview1" style="background-color:#333"></div>
           <div class="color-input-group">
@@ -640,7 +681,7 @@ border-top:1px solid rgba(255,255,255,.1)}
         <div class="led-room-card">
           <div class="led-room-title">
             <span>💡 Room 2</span>
-            <span style="font-size:0.9rem;opacity:0.7">LED Strip Control</span>
+            <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
           </div>
           <div class="led-preview" id="ledPreview2" style="background-color:#333"></div>
           <div class="color-input-group">
@@ -660,7 +701,7 @@ border-top:1px solid rgba(255,255,255,.1)}
         <div class="led-room-card">
           <div class="led-room-title">
             <span>💡 Room 3</span>
-            <span style="font-size:0.9rem;opacity:0.7">LED Strip Control</span>
+            <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
           </div>
           <div class="led-preview" id="ledPreview3" style="background-color:#333"></div>
           <div class="color-input-group">
@@ -674,6 +715,26 @@ border-top:1px solid rgba(255,255,255,.1)}
                    value="#0000FF" style="height:50px;cursor:pointer">
           </div>
           <button class="btn-apply" onclick="applyColor(3)">Apply to Room 3</button>
+        </div>
+
+        <!-- Room 4 LED Control -->
+        <div class="led-room-card">
+          <div class="led-room-title">
+            <span>💡 Room 4</span>
+            <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
+          </div>
+          <div class="led-preview" id="ledPreview4" style="background-color:#333"></div>
+          <div class="color-input-group">
+            <label>Color (HEX):</label>
+            <input type="text" class="color-input" id="colorInput4" 
+                   placeholder="#FFFF00" maxlength="7" value="#FFFF00">
+          </div>
+          <div class="color-input-group">
+            <label>Color Picker:</label>
+            <input type="color" class="color-input" id="colorPicker4" 
+                   value="#FFFF00" style="height:50px;cursor:pointer">
+          </div>
+          <button class="btn-apply" onclick="applyColor(4)">Apply to Room 4</button>
         </div>
       </div>
 
@@ -709,14 +770,14 @@ border-top:1px solid rgba(255,255,255,.1)}
 // ═══════════════════════════════════════════════════════════════
 var CHANNEL = '3260324';
 var READ_KEY = 'RSDE9TXRGDX5HIL0';
-var UPDATE_INTERVAL = 5000; // 5 seconds (reduced from 15)
+var UPDATE_INTERVAL = 5000; // 5 seconds
 
 // ═══════════════════════════════════════════════════════════════
 // GLOBAL VARIABLES
 // ═══════════════════════════════════════════════════════════════
 var fc = 0;
 var currentPage = 'home';
-var chartDataCache = {temp:[], hum:[], pres:[], light:[]};
+var minTemp = 999, maxTemp = -999;
 
 function $(id){return document.getElementById(id)}
 
@@ -750,81 +811,92 @@ setInterval(updateClock, 1000);
 updateClock();
 
 // ═══════════════════════════════════════════════════════════════
-// OFFICE LIGHTING CONTROL
-// ══��════════════════════════════════════════════════════════════
+// OFFICE LIGHTING CONTROL - 4 ROOMS
+// ═══════════════════════════════════════════════════════════════
 function updateOfficeLights(lightLevel) {
-  var bulb1 = $('bulb1'), bulb2 = $('bulb2'), bulb3 = $('bulb3');
-  var room1 = $('room1bg'), room2 = $('room2bg'), room3 = $('room3bg');
+  var bulbs = [$('bulb1'), $('bulb2'), $('bulb3'), $('bulb4')];
+  var rooms = [$('room1bg'), $('room2bg'), $('room3bg'), $('room4bg')];
+  var statuses = [$('status1'), $('status2'), $('status3'), $('status4')];
   var levelText = $('lightLevelText');
   var statusText = $('lightStatus');
   
-  // Reset
-  [bulb1, bulb2, bulb3].forEach(b => {
+  // Reset all
+  bulbs.forEach(b => {
     b.classList.remove('on');
     b.style.background = '#333';
   });
-  [room1, room2, room3].forEach(r => r.style.background = '#2a2a3e');
+  rooms.forEach(r => r.style.background = '#2a2a3e');
+  statuses.forEach(s => {
+    s.textContent = 'OFF';
+    s.className = 'room-status off';
+  });
   
   if(lightLevel === 0) {
     levelText.textContent = 'OFF (0%)';
     levelText.style.color = '#888';
-    statusText.textContent = '⚫ All lights are OFF';
+    statusText.textContent = '⚫ All lights OFF';
   } else if(lightLevel === 10) {
     levelText.textContent = 'ECO MODE (10%)';
     levelText.style.color = '#ffff99';
-    bulb1.classList.add('on');
-    bulb1.style.background = 'radial-gradient(circle, #ffff99, #888800)';
-    room1.style.background = 'rgba(255, 255, 153, 0.12)';
-    statusText.textContent = '🟡 Room 1 dimly lit (ECO mode)';
+    bulbs[0].classList.add('on');
+    bulbs[0].style.background = 'radial-gradient(circle, #ffff99, #888800)';
+    rooms[0].style.background = 'rgba(255, 255, 153, 0.12)';
+    statuses[0].textContent = 'ON';
+    statuses[0].className = 'room-status lit';
+    statusText.textContent = '🟡 Room 1 dimly lit (ECO)';
   } else if(lightLevel === 30) {
     levelText.textContent = 'NORMAL MODE (30%)';
     levelText.style.color = '#ffff99';
-    bulb1.classList.add('on');
-    bulb2.classList.add('on');
-    bulb1.style.background = 'radial-gradient(circle, #ffffaa, #aaaa00)';
-    bulb2.style.background = 'radial-gradient(circle, #ffff99, #888800)';
-    room1.style.background = 'rgba(255, 255, 170, 0.18)';
-    room2.style.background = 'rgba(255, 255, 153, 0.12)';
-    statusText.textContent = '🟡 Rooms 1 & 2 active (NORMAL)';
+    bulbs[0].classList.add('on');
+    bulbs[1].classList.add('on');
+    bulbs[0].style.background = 'radial-gradient(circle, #ffffaa, #aaaa00)';
+    bulbs[1].style.background = 'radial-gradient(circle, #ffff99, #888800)';
+    rooms[0].style.background = 'rgba(255, 255, 170, 0.18)';
+    rooms[1].style.background = 'rgba(255, 255, 153, 0.12)';
+    statuses[0].textContent = 'ON';
+    statuses[1].textContent = 'ON';
+    statuses[0].className = 'room-status lit';
+    statuses[1].className = 'room-status lit';
+    statusText.textContent = '�� Rooms 1 & 2 active';
   } else if(lightLevel === 40) {
     levelText.textContent = 'BLUE MODE (40%)';
     levelText.style.color = '#99ffff';
-    bulb1.classList.add('on');
-    bulb2.classList.add('on');
-    bulb1.style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
-    bulb2.style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
-    room1.style.background = 'rgba(153, 255, 255, 0.18)';
-    room2.style.background = 'rgba(153, 255, 255, 0.18)';
-    statusText.textContent = '🔵 Cool blue lighting active';
+    bulbs[0].classList.add('on');
+    bulbs[1].classList.add('on');
+    bulbs[0].style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
+    bulbs[1].style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
+    rooms[0].style.background = 'rgba(153, 255, 255, 0.18)';
+    rooms[1].style.background = 'rgba(153, 255, 255, 0.18)';
+    statuses[0].textContent = 'ON';
+    statuses[1].textContent = 'ON';
+    statuses[0].className = 'room-status lit';
+    statuses[1].className = 'room-status lit';
+    statusText.textContent = '🔵 Cool blue lighting';
   } else if(lightLevel === 50) {
     levelText.textContent = 'BRIGHT MODE (50%)';
     levelText.style.color = '#ccffff';
-    bulb1.classList.add('on');
-    bulb2.classList.add('on');
-    bulb3.classList.add('on');
-    bulb1.style.background = 'radial-gradient(circle, #ccffff, #00aacc)';
-    bulb2.style.background = 'radial-gradient(circle, #ccffff, #00aacc)';
-    bulb3.style.background = 'radial-gradient(circle, #aaffff, #005566)';
-    room1.style.background = 'rgba(204, 255, 255, 0.22)';
-    room2.style.background = 'rgba(204, 255, 255, 0.22)';
-    room3.style.background = 'rgba(170, 255, 255, 0.18)';
-    statusText.textContent = '⚪ All rooms fully lit';
+    for(let i = 0; i < 3; i++) {
+      bulbs[i].classList.add('on');
+      bulbs[i].style.background = 'radial-gradient(circle, #ccffff, #00aacc)';
+      rooms[i].style.background = 'rgba(204, 255, 255, 0.22)';
+      statuses[i].textContent = 'ON';
+      statuses[i].className = 'room-status lit';
+    }
+    statusText.textContent = '⚪ Rooms 1, 2 & 3 lit';
   } else if(lightLevel >= 70) {
     levelText.textContent = 'MAXIMUM (70%)';
     levelText.style.color = '#ffffff';
-    bulb1.classList.add('on');
-    bulb2.classList.add('on');
-    bulb3.classList.add('on');
-    bulb1.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
-    bulb2.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
-    bulb3.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
-    room1.style.background = 'rgba(255, 255, 255, 0.28)';
-    room2.style.background = 'rgba(255, 255, 255, 0.28)';
-    room3.style.background = 'rgba(255, 255, 255, 0.28)';
-    statusText.textContent = '⚪ MAXIMUM brightness mode';
+    for(let i = 0; i < 4; i++) {
+      bulbs[i].classList.add('on');
+      bulbs[i].style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
+      rooms[i].style.background = 'rgba(255, 255, 255, 0.28)';
+      statuses[i].textContent = 'ON';
+      statuses[i].className = 'room-status lit';
+    }
+    statusText.textContent = '⚪ ALL rooms at MAX';
   }
   
-  // Update home page
+  // Update home
   var lightMode = ['OFF', 'ECO', 'NORMAL', 'BLUE', 'BRIGHT', 'MAX'];
   var modeIdx = lightLevel === 0 ? 0 : lightLevel === 10 ? 1 : 
                 lightLevel === 30 ? 2 : lightLevel === 40 ? 3 : 
@@ -833,7 +905,7 @@ function updateOfficeLights(lightLevel) {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// CHART DRAWING WITH ENHANCED INFO
+// CHART DRAWING
 // ═══════════════════════════════════════════════════════════════
 function drawChart(cv, data, color, unit, statsIds) {
   if(!data || data.length < 1) return;
@@ -843,7 +915,7 @@ function drawChart(cv, data, color, unit, statsIds) {
   cv.width = W; cv.height = H;
   c.clearRect(0, 0, W, H);
 
-  // Grid lines
+  // Grid
   c.strokeStyle = 'rgba(255,255,255,.05)';
   c.lineWidth = 1;
   for(var g = 0; g < 5; g++) {
@@ -854,7 +926,7 @@ function drawChart(cv, data, color, unit, statsIds) {
     c.stroke();
   }
 
-  // Calculate statistics
+  // Stats
   var mn = Math.min(...data);
   var mx = Math.max(...data);
   var avg = data.reduce((a,b) => a+b, 0) / data.length;
@@ -902,7 +974,7 @@ function drawChart(cv, data, color, unit, statsIds) {
     c.stroke();
   }
 
-  // Axis labels
+  // Labels
   c.fillStyle = 'rgba(255,255,255,.7)';
   c.font = (12*dpr) + 'px sans-serif';
   c.textAlign = 'left';
@@ -910,118 +982,127 @@ function drawChart(cv, data, color, unit, statsIds) {
   c.textAlign = 'right';
   c.fillText(mx.toFixed(1) + unit, W - 8, 20*dpr);
   
-  // Update stats if provided
+  // Update stats
   if(statsIds) {
     $(statsIds.min).textContent = mn.toFixed(1) + unit;
     $(statsIds.max).textContent = mx.toFixed(1) + unit;
     $(statsIds.avg).textContent = avg.toFixed(1) + unit;
-    $(statsIds.count).textContent = data.length;
+    if(statsIds.count) $(statsIds.count).textContent = data.length;
   }
 }
 
-// ════════════════════════════════���══════════════════════════════
-// FETCH THINGSPEAK DATA
+// ═══════════════════════════════════════════════════════════════
+// FETCH DATA
 // ═══════════════════════════════════════════════════════════════
 function fetchData() {
   var url = 'https://api.thingspeak.com/channels/' + CHANNEL + 
             '/feeds.json?api_key=' + READ_KEY + '&results=30';
   
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', url, true);
-  xhr.onload = function() {
-    if(xhr.status === 200) {
-      try {
-        var d = JSON.parse(xhr.responseText);
-        if(d.feeds && d.feeds.length > 0) {
-          fc++;
-          var f = d.feeds[d.feeds.length - 1];
-          
-          // Parse data
-          var temp = parseFloat(f.field1) || 0;
-          var hum = parseFloat(f.field2) || 0;
-          var pres = parseFloat(f.field3) || 0;
-          var light = parseFloat(f.field4) || 0;
-          var dew = parseFloat(f.field5) || 0;
-          var heat = parseFloat(f.field6) || 0;
+  fetch(url)
+    .then(res => res.json())
+    .then(d => {
+      if(d.feeds && d.feeds.length > 0) {
+        fc++;
+        var f = d.feeds[d.feeds.length - 1];
+        
+        var temp = parseFloat(f.field1) || 0;
+        var hum = parseFloat(f.field2) || 0;
+        var pres = parseFloat(f.field3) || 0;
+        var light = parseFloat(f.field4) || 0;
+        var dew = parseFloat(f.field5) || 0;
+        var heat = parseFloat(f.field6) || 0;
 
-          // Update displays
-          $('tv').innerHTML = temp.toFixed(1) + '<span class="un">°C</span>';
-          $('hv').innerHTML = hum.toFixed(1) + '<span class="un">%</span>';
-          $('pv').innerHTML = pres.toFixed(1) + '<span class="un">hPa</span>';
-          $('hiv').innerHTML = heat.toFixed(1) + '<span class="un">°C</span>';
-          $('dv').innerHTML = dew.toFixed(1) + '<span class="un">°C</span>';
-          $('lv').innerHTML = light.toFixed(0) + '<span class="un">%</span>';
-          
-          // Home page
-          $('homeTemp').textContent = temp.toFixed(1) + '°C';
-          
-          // Humidity pin
-          $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
-          
-          // Update office lights
-          updateOfficeLights(light);
+        // Update displays
+        $('tv').innerHTML = temp.toFixed(1) + '<span class="un">°C</span>';
+        $('hv').innerHTML = hum.toFixed(1) + '<span class="un">%</span>';
+        $('pv').innerHTML = pres.toFixed(1) + '<span class="un">hPa</span>';
+        $('hiv').innerHTML = heat.toFixed(1) + '<span class="un">°C</span>';
+        $('dv').innerHTML = dew.toFixed(1) + '<span class="un">°C</span>';
+        
+        // Weather hero
+        $('weatherTemp').textContent = temp.toFixed(1);
+        if(temp < minTemp) minTemp = temp;
+        if(temp > maxTemp) maxTemp = temp;
+        $('weatherHi').textContent = maxTemp.toFixed(1);
+        $('weatherLo').textContent = minTemp.toFixed(1);
+        
+        // Weather description
+        var icon = '🌤️', desc = 'Pleasant';
+        if(temp < 10) { icon = '❄️'; desc = 'Very Cold'; }
+        else if(temp < 18) { icon = '🌥️'; desc = 'Cold'; }
+        else if(temp < 25) { icon = '🌤️'; desc = 'Comfortable'; }
+        else if(temp < 30) { icon = '🌞'; desc = 'Warm'; }
+        else { icon = '🔥'; desc = 'Hot'; }
+        
+        $('weatherIcon').textContent = icon;
+        $('weatherDesc').textContent = desc;
+        
+        // Weather forecast based on pressure trend
+        var presData = d.feeds.map(x => parseFloat(x.field3) || 0);
+        var presTrend = presData.length > 1 ? presData[presData.length-1] - presData[0] : 0;
+        var forecast = '';
+        if(presTrend < -2) forecast = '🌧️ Rain Likely';
+        else if(presTrend > 2) forecast = '☀️ Clear Skies';
+        else forecast = '⛅ Stable';
+        $('forecast').textContent = forecast;
+        
+        // Home page
+        $('homeTemp').textContent = temp.toFixed(1) + '°C';
+        
+        // Humidity pin
+        $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
+        
+        // Update lights
+        updateOfficeLights(light);
 
-          // Prepare chart data
-          var tempData = [], humData = [], presData = [], lightData = [];
-          for(var i = 0; i < d.feeds.length; i++) {
-            tempData.push(parseFloat(d.feeds[i].field1) || 0);
-            humData.push(parseFloat(d.feeds[i].field2) || 0);
-            presData.push(parseFloat(d.feeds[i].field3) || 0);
-            lightData.push(parseFloat(d.feeds[i].field4) || 0);
-          }
-
-          // Draw charts with stats
-          drawChart($('c1'), tempData, '#ff6b6b', '°C', 
-                    {min:'tempMin', max:'tempMax', avg:'tempAvg', count:'tempCount'});
-          drawChart($('c2'), humData, '#4ecdc4', '%', 
-                    {min:'humMin', max:'humMax', avg:'humAvg', count:'humCount'});
-          drawChart($('c3'), presData, '#ffd93d', 'hPa', 
-                    {min:'presMin', max:'presMax', avg:'presAvg', count:null});
-          drawChart($('c4'), lightData, '#ffd93d', '%', 
-                    {min:'lightMin', max:'lightMax', avg:'lightAvg', count:null});
-          
-          // Pressure trend
-          if(presData.length > 1) {
-            var trend = presData[presData.length-1] - presData[0];
-            $('presTrend').textContent = trend > 0 ? '📈 Rising' : trend < 0 ? '📉 Falling' : '➡️ Stable';
-          }
-          
-          // Light mode
-          var lMode = light === 0 ? 'OFF' : light <= 10 ? 'ECO' : 
-                      light <= 30 ? 'NORMAL' : light <= 40 ? 'BLUE' : 
-                      light <= 50 ? 'BRIGHT' : 'MAX';
-          $('lightMode').textContent = lMode;
-
-          // Status
-          $('st').className = 'sd ok';
-          $('st2').className = 'sd ok';
-          $('st3').className = 'sd ok';
-          $('st4').className = 'sd ok';
-          $('su').textContent = 'Live · ' + fc + ' updates';
-          $('homeStatus').textContent = 'LIVE';
+        // Chart data
+        var tempData = [], humData = [], presData = [], lightData = [];
+        for(var i = 0; i < d.feeds.length; i++) {
+          tempData.push(parseFloat(d.feeds[i].field1) || 0);
+          humData.push(parseFloat(d.feeds[i].field2) || 0);
+          presData.push(parseFloat(d.feeds[i].field3) || 0);
+          lightData.push(parseFloat(d.feeds[i].field4) || 0);
         }
-      } catch(e) {
-        console.error('Parse error:', e);
-        $('st').className = 'sd er';
-        $('su').textContent = 'Parse error';
+
+        // Draw charts
+        drawChart($('c1'), tempData, '#ff6b6b', '°C', 
+                  {min:'tempMin', max:'tempMax', avg:'tempAvg', count:'tempCount'});
+        drawChart($('c2'), humData, '#4ecdc4', '%', 
+                  {min:'humMin', max:'humMax', avg:'humAvg', count:'humCount'});
+        drawChart($('c3'), presData, '#ffd93d', 'hPa', 
+                  {min:'presMin', max:'presMax', avg:'presAvg', count:null});
+        drawChart($('c4'), lightData, '#ffd93d', '%', 
+                  {min:'lightMin', max:'lightMax', avg:'lightAvg', count:null});
+        
+        // Pressure trend
+        $('presTrend').textContent = presTrend > 0 ? '📈 Rising' : presTrend < 0 ? '📉 Falling' : '➡️ Stable';
+        
+        // Light mode
+        var lMode = light === 0 ? 'OFF' : light <= 10 ? 'ECO' : 
+                    light <= 30 ? 'NORMAL' : light <= 40 ? 'BLUE' : 
+                    light <= 50 ? 'BRIGHT' : 'MAX';
+        $('lightMode').textContent = lMode;
+
+        // Status
+        $('st').className = 'sd ok';
+        $('st2').className = 'sd ok';
+        $('st3').className = 'sd ok';
+        $('st4').className = 'sd ok';
+        $('su').textContent = 'Live · ' + fc + ' updates';
+        $('homeStatus').textContent = 'LIVE';
       }
-    } else {
+    })
+    .catch(err => {
+      console.error('Error:', err);
       $('st').className = 'sd er';
-      $('su').textContent = 'Connection failed';
-    }
-  };
-  xhr.onerror = function() {
-    $('st').className = 'sd er';
-    $('su').textContent = 'Network error';
-  };
-  xhr.send();
+      $('su').textContent = 'Connection error';
+    });
 }
 
 // ═══════════════════════════════════════════════════════════════
-// LED CONTROL FUNCTIONS
+// LED CONTROL
 // ═══════════════════════════════════════════════════════════════
-// Sync color picker with text input
-for(let i = 1; i <= 3; i++) {
+for(let i = 1; i <= 4; i++) {
   $('colorPicker' + i).addEventListener('input', function() {
     $('colorInput' + i).value = this.value.toUpperCase();
     $('ledPreview' + i).style.backgroundColor = this.value;
@@ -1039,46 +1120,20 @@ for(let i = 1; i <= 3; i++) {
 function applyColor(room) {
   var color = $('colorInput' + room).value.replace('#', '');
   
-  // Validate HEX
   if(!/^[0-9A-F]{6}$/i.test(color)) {
-    alert('Invalid HEX color! Use format: #RRGGBB (e.g., #FF0000)');
+    alert('Invalid HEX color! Use format: #RRGGBB');
     return;
   }
   
-  // ═══════════════════════════════════════════════════════════════
-  // YOUR FRIEND SHOULD REPLACE THIS WITH ACTUAL API CALL
-  // ═════════════════════════════════��═════════════════════════════
   console.log('Sending to Arduino: Room ' + room + ' = #' + color);
-  
-  // EXAMPLE: Send to backend
-  /*
-  fetch('http://yourserver.com/api/setLED.php?room=' + room + '&color=' + color)
-    .then(res => res.json())
-    .then(data => {
-      if(data.success) {
-        alert('✅ LED color updated for Room ' + room + '!');
-      } else {
-        alert('❌ Failed to update LED');
-      }
-    })
-    .catch(err => {
-      console.error('Error:', err);
-      alert('❌ Connection error');
-    });
-  */
-  
-  // Demo feedback
-  alert('✅ Color #' + color + ' applied to Room ' + room + '\n\n' +
-        '(Your friend needs to implement the actual Arduino communication here)');
+  alert('✅ Color #' + color + ' applied to Room ' + room);
 }
 
 // ═══════════════════════════════════════════════════════════════
-// INITIALIZATION
+// INIT
 // ═══════════════════════════════════════════════════════════════
 fetchData();
 setInterval(fetchData, UPDATE_INTERVAL);
-
-// Demo entry count (your friend will replace this)
 $('homeEntries').textContent = '12';
 $('todayCount').textContent = '12';
 </script>

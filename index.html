@@ -1017,7 +1017,47 @@ border-top:1px solid rgba(255,255,255,.1)}
 </footer>
 
 <script>
-// ... (keep all existing code until updateOfficeLights function)
+var CHANNEL = '3260324';
+var READ_KEY = 'RSDE9TXRGDX5HIL0';
+var UPDATE_INTERVAL = 5000;
+
+var fc = 0;
+var currentPage = 'home';
+var minTemp = 999, maxTemp = -999;
+
+var historicalData = {
+  pressure: [],
+  temperature: [],
+  humidity: [],
+  timestamps: [],
+  maxHistory: 720
+};
+
+function $(id){return document.getElementById(id)}
+
+function showPage(page) {
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  
+  $(page + '-page').classList.add('active');
+  
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if(b.textContent.toLowerCase().includes(page) || 
+       (page === 'home' && b.textContent.includes('Home'))) {
+      b.classList.add('active');
+    }
+  });
+}
+
+function updateClock(){
+  var n = new Date();
+  var h = n.getHours(), m = n.getMinutes(), s = n.getSeconds();
+  $('clockHeader').textContent = 
+    (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+}
+setInterval(updateClock, 1000);
+updateClock();
 
 // NEW: Updated room mapping
 // Room 1 (Bottom Left) = M5GO LED (Field 5)
@@ -1068,7 +1108,7 @@ function updateOfficeLights(room1Light, room2Light, room3Light) {
   
   var activeRooms = [];
   
-  // Room 1 (Bottom Left) - M5GO LED (bulb3)
+  // Room 1 (Bottom Left) - M5GO LED (bulb3 in room1bg)
   if(room1Light > 0) {
     bulb3.classList.add('on');
     var color = room1Light <= 25 ? '#ffff99' : room1Light <= 50 ? '#ffffaa' : 
@@ -1080,7 +1120,7 @@ function updateOfficeLights(room1Light, room2Light, room3Light) {
     activeRooms.push('Room 1 (M5GO)');
   }
   
-  // Room 2 (Bottom Right) - RGB LED (bulb2)
+  // Room 2 (Bottom Right) - RGB LED (bulb2 in room2bg)
   if(room2Light > 0) {
     bulb2.classList.add('on');
     var color = room2Light <= 25 ? '#ffff99' : room2Light <= 50 ? '#ffffaa' : 
@@ -1092,7 +1132,7 @@ function updateOfficeLights(room1Light, room2Light, room3Light) {
     activeRooms.push('Room 2 (RGB)');
   }
   
-  // Room 3 (Top Left) - Arduino Mega (bulb4)
+  // Room 3 (Top Left) - Arduino Mega (bulb4 in room4bg)
   if(room3Light > 0) {
     bulb4.classList.add('on');
     var color = room3Light <= 25 ? '#ffff99' : room3Light <= 50 ? '#ffffaa' : 
@@ -1121,6 +1161,221 @@ function updateOfficeLights(room1Light, room2Light, room3Light) {
   var lightMode = maxLight === 0 ? 'OFF' : maxLight <= 25 ? 'ECO' : 
                   maxLight <= 50 ? 'NORMAL' : maxLight <= 75 ? 'BRIGHT' : 'MAX';
   $('homeLights').textContent = lightMode;
+}
+
+function drawChart(cv, data, color, unit, statsIds) {
+  if(!data || data.length < 1) return;
+  
+  var c = cv.getContext('2d'), dpr = window.devicePixelRatio || 1;
+  var W = cv.clientWidth * dpr, H = cv.clientHeight * dpr;
+  cv.width = W; cv.height = H;
+  c.clearRect(0, 0, W, H);
+
+  c.strokeStyle = 'rgba(255,255,255,.05)';
+  c.lineWidth = 1;
+  for(var g = 0; g < 5; g++) {
+    var gy = H * (g * 0.2);
+    c.beginPath();
+    c.moveTo(0, gy);
+    c.lineTo(W, gy);
+    c.stroke();
+  }
+
+  var mn = Math.min(...data);
+  var mx = Math.max(...data);
+  var avg = data.reduce((a,b) => a+b, 0) / data.length;
+  var rn = mx - mn || 1;
+  var pd = H * 0.15;
+  var pts = [];
+  
+  for(var i = 0; i < data.length; i++) {
+    var x = data.length === 1 ? W/2 : (i/(data.length-1)) * W;
+    var y = H - pd - ((data[i] - mn) / rn) * (H - 2*pd);
+    pts.push([x, y]);
+  }
+
+  var gr = c.createLinearGradient(0, 0, 0, H);
+  gr.addColorStop(0, color + '40');
+  gr.addColorStop(0.5, color + '15');
+  gr.addColorStop(1, color + '00');
+  c.fillStyle = gr;
+  c.beginPath();
+  c.moveTo(pts[0][0], H);
+  for(var i = 0; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]);
+  c.lineTo(pts[pts.length-1][0], H);
+  c.closePath();
+  c.fill();
+
+  c.strokeStyle = color;
+  c.lineWidth = 3 * dpr;
+  c.lineJoin = 'round';
+  c.lineCap = 'round';
+  c.beginPath();
+  c.moveTo(pts[0][0], pts[0][1]);
+  for(var i = 1; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]);
+  c.stroke();
+
+  for(var i = 0; i < pts.length; i++) {
+    c.fillStyle = color;
+    c.beginPath();
+    c.arc(pts[i][0], pts[i][1], 4*dpr, 0, Math.PI*2);
+    c.fill();
+    c.strokeStyle = '#1a1a2e';
+    c.lineWidth = 2*dpr;
+    c.stroke();
+  }
+
+  c.fillStyle = 'rgba(255,255,255,.7)';
+  c.font = (12*dpr) + 'px sans-serif';
+  c.textAlign = 'left';
+  c.fillText(mn.toFixed(1) + unit, 8, H - 8);
+  c.textAlign = 'right';
+  c.fillText(mx.toFixed(1) + unit, W - 8, 20*dpr);
+  
+  if(statsIds) {
+    $(statsIds.min).innerHTML = mn.toFixed(1) + unit;
+    $(statsIds.max).innerHTML = mx.toFixed(1) + unit;
+    $(statsIds.avg).innerHTML = avg.toFixed(1) + unit;
+    if(statsIds.count) $(statsIds.count).textContent = data.length;
+  }
+}
+
+function getAdvancedForecast(currentTemp, currentHum, currentPres) {
+  var forecast = {
+    icon: '⛅',
+    text: 'Loading...',
+    confidence: 'low',
+    details: ''
+  };
+  
+  if(historicalData.pressure.length < 120) {
+    forecast.text = 'Collecting Data...';
+    forecast.details = 'Need ' + Math.floor((120 - historicalData.pressure.length) * 5 / 60) + ' more minutes';
+    return forecast;
+  }
+  
+  var len = historicalData.pressure.length;
+  var pressure15min = len > 180 ? historicalData.pressure[len - 180] : historicalData.pressure[0];
+  var pressure30min = len > 360 ? historicalData.pressure[len - 360] : historicalData.pressure[0];
+  var temp15min = len > 180 ? historicalData.temperature[len - 180] : historicalData.temperature[0];
+  var hum15min = len > 180 ? historicalData.humidity[len - 180] : historicalData.humidity[0];
+  
+  var trend15 = currentPres - pressure15min;
+  var trend30 = currentPres - pressure30min;
+  var tempChange = currentTemp - temp15min;
+  var humChange = currentHum - hum15min;
+  var pressureRate = trend15 * 4;
+  
+  if(trend15 < -1 && pressureRate < -3 && humChange > 5) {
+    forecast.icon = '🌧️';
+    forecast.text = 'Heavy Rain Soon';
+    forecast.confidence = 'high';
+    forecast.details = 'Pressure dropping fast (' + pressureRate.toFixed(1) + ' hPa/hr), humidity rising';
+  }
+  else if(trend30 < -2 && currentHum > 75) {
+    forecast.icon = '🌦️';
+    forecast.text = 'Rain Likely';
+    forecast.confidence = 'medium';
+    forecast.details = 'Pressure falling, high humidity (' + currentHum.toFixed(0) + '%)';
+  }
+  else if(trend15 < -0.5 && trend30 < -1) {
+    forecast.icon = '☁️';
+    forecast.text = 'Cloudy Weather';
+    forecast.confidence = 'medium';
+    forecast.details = 'Pressure declining steadily';
+  }
+  else if(trend15 > 1 && pressureRate > 3) {
+    forecast.icon = '☀️';
+    forecast.text = 'Clear Skies Ahead';
+    forecast.confidence = 'high';
+    forecast.details = 'Pressure rising rapidly (' + pressureRate.toFixed(1) + ' hPa/hr)';
+  }
+  else if(trend30 > 1.5) {
+    forecast.icon = '🌤️';
+    forecast.text = 'Weather Improving';
+    forecast.confidence = 'medium';
+    forecast.details = 'Pressure steadily rising';
+  }
+  else if(currentPres > 1013 && currentHum < 60 && Math.abs(trend15) < 0.3) {
+    forecast.icon = '☀️';
+    forecast.text = 'Fair & Stable';
+    forecast.confidence = 'high';
+    forecast.details = 'High pressure (' + currentPres.toFixed(0) + ' hPa), low humidity';
+  }
+  else if(currentPres < 1010 && currentHum > 70) {
+    forecast.icon = '🌧️';
+    forecast.text = 'Unsettled Weather';
+    forecast.confidence = 'medium';
+    forecast.details = 'Low pressure (' + currentPres.toFixed(0) + ' hPa), high humidity';
+  }
+  else if(trend15 > 0.5 && tempChange < -1) {
+    forecast.icon = '❄️';
+    forecast.text = 'Cold Front Moving In';
+    forecast.confidence = 'medium';
+    forecast.details = 'Temperature dropping, pressure rising';
+  }
+  else if(trend15 < -0.5 && tempChange > 1) {
+    forecast.icon = '🌡️';
+    forecast.text = 'Warm Front Approaching';
+    forecast.confidence = 'medium';
+    forecast.details = 'Temperature rising, pressure falling';
+  }
+  else if(Math.abs(trend15) < 0.3 && Math.abs(trend30) < 0.5) {
+    forecast.icon = '⛅';
+    forecast.text = 'Stable Conditions';
+    forecast.confidence = 'high';
+    forecast.details = 'No significant pressure changes';
+  }
+  else {
+    forecast.icon = '⛅';
+    forecast.text = 'Partly Cloudy';
+    forecast.confidence = 'low';
+    forecast.details = 'Conditions unclear, monitoring trends';
+  }
+  
+  return forecast;
+}
+
+function highlightCurrentCondition(forecastText) {
+  document.querySelectorAll('.condition-card').forEach(card => {
+    card.classList.remove('active');
+  });
+  
+  document.querySelectorAll('.current-badge').forEach(badge => {
+    badge.remove();
+  });
+  
+  var conditionMap = {
+    'Heavy Rain Soon': 'heavy-rain',
+    'Rain Likely': 'rain-likely',
+    'Cloudy Weather': 'cloudy',
+    'Clear Skies Ahead': 'clear-skies',
+    'Weather Improving': 'improving',
+    'Fair & Stable': 'fair-stable',
+    'Unsettled Weather': 'unsettled',
+    'Cold Front Moving In': 'cold-front',
+    'Warm Front Approaching': 'warm-front',
+    'Stable Conditions': 'stable',
+    'Partly Cloudy': 'partly-cloudy'
+  };
+  
+  var conditionKey = conditionMap[forecastText];
+  if(conditionKey) {
+    var activeCard = document.querySelector('.condition-card[data-condition="' + conditionKey + '"]');
+    if(activeCard) {
+      activeCard.classList.add('active');
+      
+      var nameEl = activeCard.querySelector('.condition-name');
+      var badge = document.createElement('span');
+      badge.className = 'current-badge';
+      badge.textContent = 'CURRENT';
+      nameEl.appendChild(badge);
+      
+      if(window.innerWidth < 768) {
+        activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  }
 }
 
 function fetchData() {
@@ -1193,7 +1448,6 @@ function fetchData() {
       $('homeTemp').innerHTML = temp.toFixed(1) + '°C';
       $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
       
-      // Pass room lights in correct order: Room1, Room2, Room3
       updateOfficeLights(room1Light, room2Light, room3Light);
 
       var tempData = [], humData = [], presData = [], lightData = [];
@@ -1201,7 +1455,6 @@ function fetchData() {
         tempData.push(parseFloat(d.feeds[i].field1) || 0);
         humData.push(parseFloat(d.feeds[i].field2) || 0);
         presData.push(parseFloat(d.feeds[i].field3) || 0);
-        // Average of all lights for chart
         var avgLight = Math.round(((parseInt(d.feeds[i].field4) || 0) + 
                                     (parseInt(d.feeds[i].field5) || 0) + 
                                     (parseInt(d.feeds[i].field6) || 0)) / 3);
@@ -1274,7 +1527,6 @@ fetchData();
 setInterval(fetchData, UPDATE_INTERVAL);
 $('homeEntries').textContent = '12';
 $('todayCount').textContent = '12';
-  
 </script>
 
 </body>

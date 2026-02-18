@@ -3,664 +3,181 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Smart Office Hub - IoT Management System</title>
+<title>Smart Office Hub</title>
 <style>
 :root{
   --bg:#0f0f23;
   --card:#1a1a2e;
-  --card2:#16213e;
   --text:#e0e0e0;
-  --dim:#888;
   --accent:#4ecdc4;
   --accent2:#ffd93d;
-  --r:16px;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:20px}
 
-.header{background:linear-gradient(135deg,#0a1628,#1a3a5c,#2d6187,#3a7ca5);
-color:#fff;padding:20px;position:sticky;top:0;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,.3)}
-.header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
-.logo{font-size:1.5rem;font-weight:600;display:flex;align-items:center;gap:10px}
-.logo-icon{font-size:2rem}
+.wrap{max-width:1200px;margin:0 auto}
+h1{text-align:center;margin-bottom:30px;color:var(--accent)}
 
-.nav-header{display:flex;gap:10px;flex-wrap:wrap;flex:1;justify-content:center}
-.nav-header button{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);
-color:#fff;padding:10px 20px;border-radius:10px;cursor:pointer;font-size:0.9rem;
-transition:all 0.3s;font-weight:500}
-.nav-header button:hover{background:rgba(255,255,255,.25);transform:translateY(-2px)}
-.nav-header button.active{background:rgba(255,255,255,.35);border-color:rgba(255,255,255,.6);
-box-shadow:0 4px 12px rgba(255,255,255,.3)}
-
-.clock-header{font-size:1rem;opacity:.8;font-variant-numeric:tabular-nums}
-
-.home-hero{min-height:80vh;display:flex;align-items:center;justify-content:center;
-background:linear-gradient(135deg,#0a1628,#1a3a5c,#2d6187,#3a7ca5);
-position:relative;overflow:hidden;padding:40px 20px}
-.home-hero::before{content:'';position:absolute;width:100%;height:100%;
-background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><circle cx="100" cy="100" r="3" fill="rgba(255,255,255,.1)"/><circle cx="300" cy="200" r="2" fill="rgba(255,255,255,.1)"/><circle cx="500" cy="150" r="3" fill="rgba(255,255,255,.1)"/><circle cx="700" cy="250" r="2" fill="rgba(255,255,255,.1)"/><circle cx="900" cy="180" r="3" fill="rgba(255,255,255,.1)"/><circle cx="1100" cy="220" r="2" fill="rgba(255,255,255,.1)"/></svg>');
-opacity:.3;animation:float 20s infinite}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
-
-.home-content{text-align:center;z-index:1;position:relative;width:100%;max-width:1000px}
-.home-title{font-size:3.5rem;font-weight:700;margin-bottom:20px;
-background:linear-gradient(90deg,#4ecdc4,#ffd93d,#ff6b6b);
--webkit-background-clip:text;-webkit-text-fill-color:transparent;
-background-clip:text;animation:gradient 3s ease infinite}
-@keyframes gradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-.home-subtitle{font-size:1.3rem;opacity:.8;margin-bottom:40px;letter-spacing:1px}
-
-.home-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:20px;margin-top:20px;margin-bottom:40px}
-.stat-card{background:rgba(255,255,255,.1);backdrop-filter:blur(10px);
-padding:30px;border-radius:20px;border:1px solid rgba(255,255,255,.2);
-transition:transform 0.3s}
-.stat-card:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,.3)}
-.stat-icon{font-size:3rem;margin-bottom:10px}
-.stat-value{font-size:2rem;font-weight:600;color:var(--accent)}
-.stat-label{font-size:0.9rem;opacity:.7;margin-top:5px}
-
-.nav-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-gap:20px;margin-top:20px}
-.nav-card{background:rgba(255,255,255,.1);backdrop-filter:blur(10px);
-padding:25px;border-radius:16px;border:2px solid rgba(255,255,255,.2);
-transition:all 0.3s;cursor:pointer;text-align:left}
-.nav-card:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,.4);
-border-color:rgba(255,255,255,.4)}
-.nav-card-icon{font-size:2.5rem;margin-bottom:15px}
-.nav-card-title{font-size:1.3rem;font-weight:600;margin-bottom:10px;color:#fff}
-.nav-card-desc{font-size:0.9rem;opacity:.8;line-height:1.5}
-
-.wrap{max-width:1200px;margin:0 auto;padding:30px 20px}
-.page{display:none}
-.page.active{display:block}
-
-.sb{display:flex;align-items:center;justify-content:center;gap:8px;
-padding:12px 24px;border-radius:24px;font-size:.9rem;margin:0 auto 20px;
-background:var(--card);width:fit-content;border:1px solid rgba(255,255,255,.08);
-box-shadow:0 4px 12px rgba(0,0,0,.2)}
-.sd{width:10px;height:10px;border-radius:50%;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.2)}}
-.sd.ok{background:#0f0;box-shadow:0 0 10px #0f0}
-.sd.er{background:#f00;box-shadow:0 0 10px #f00}
-
-.weather-hero{background:linear-gradient(135deg,#0a1628,#1a3a5c,#2d6187,#3a7ca5);
-padding:40px 20px;margin-bottom:30px;border-radius:20px;position:relative;overflow:hidden}
-.weather-hero::before{content:'';position:absolute;width:100%;height:100%;
-background:radial-gradient(circle,rgba(255,255,255,.03) 0%,transparent 60%);animation:shimmer 8s infinite}
-@keyframes shimmer{0%,100%{transform:rotate(0deg)}50%{transform:rotate(180deg)}}
-.weather-display{display:flex;align-items:center;justify-content:center;gap:30px;flex-wrap:wrap;position:relative;z-index:1}
-.weather-icon{font-size:6rem;animation:float 3s ease-in-out infinite}
-.weather-main{text-align:center}
-.weather-temp{font-size:4.5rem;font-weight:100;letter-spacing:-4px}
-.weather-deg{font-size:1.8rem;vertical-align:top;opacity:.8}
-.weather-desc{font-size:1.2rem;margin-top:10px;opacity:.9;font-weight:500}
-.weather-hl{font-size:.95rem;opacity:.6;margin-top:10px;letter-spacing:.5px}
-.weather-hl span{font-weight:600;opacity:.9}
-
-.page-title{font-size:2rem;font-weight:600;margin-bottom:30px;text-align:center;color:var(--accent)}
-.gr{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:20px}
-.cd{background:var(--card);border-radius:var(--r);padding:24px;
-border:1px solid rgba(255,255,255,.08);transition:all .3s;position:relative;overflow:hidden}
-.cd::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
-background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity .3s}
-.cd:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,.3)}
-.cd:hover::before{opacity:1}
-.ic{font-size:2.5rem;margin-bottom:12px}
-.lb{font-size:.9rem;opacity:.6;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:500}
-.vl{font-size:2.5rem;font-weight:300;margin-bottom:8px}
-.un{font-size:1.1rem;opacity:.6;margin-left:6px}
-.su{font-size:.8rem;opacity:.5}
-
-.ch{background:var(--card);border-radius:var(--r);padding:24px;margin-top:20px;
-border:1px solid rgba(255,255,255,.08);box-shadow:0 4px 12px rgba(0,0,0,.2)}
-.tt{font-size:1.2rem;font-weight:500;margin-bottom:20px;display:flex;
-align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
-.dt{width:14px;height:14px;border-radius:3px}
-canvas{width:100%;height:250px;display:block}
-.chart-info{display:flex;justify-content:space-between;margin-top:15px;font-size:.85rem;opacity:.7;flex-wrap:wrap;gap:10px}
-.chart-stat{display:flex;align-items:center;gap:8px}
-.chart-stat-label{opacity:.6}
-.chart-stat-value{font-weight:600;color:var(--accent)}
-
-.hg-card{background:var(--card);border-radius:var(--r);padding:28px;margin-top:20px;
-border:1px solid rgba(255,255,255,.08)}
-.hg-track{height:14px;background:linear-gradient(90deg,#8B4513 0%,#a0a0a0 25%,#4ecdc4 50%,#95e1d3 75%,#4a90e2 100%);
-border-radius:7px;position:relative;margin-top:15px;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
-.hg-pin{width:28px;height:28px;background:#fff;border:4px solid var(--bg);border-radius:50%;
-position:absolute;top:-7px;transform:translateX(-50%);box-shadow:0 3px 10px rgba(0,0,0,.4);transition:left .3s}
-.hg-labels{display:flex;justify-content:space-between;font-size:.8rem;opacity:.6;margin-top:12px}
-
-.office-container{background:var(--card);border-radius:var(--r);padding:40px;
-margin-top:20px;border:1px solid rgba(255,255,255,.08)}
-.office-map{position:relative;width:100%;max-width:800px;height:450px;margin:0 auto;
-background:#1a1a2e;border:5px solid #333;border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.office-map{position:relative;width:100%;max-width:800px;height:450px;margin:30px auto;
+background:#1a1a2e;border:5px solid #333;border-radius:4px}
 
 .room4-outer{position:absolute;left:0;top:0;width:45%;height:50%;
 border-right:5px solid #333;border-bottom:5px solid #333;background:#2a2a3e;transition:background 0.5s}
-.room4-door{position:absolute;left:0;bottom:-5px;width:15%;height:30px;background:#1a1a2e}
 
 .room3-outer{position:absolute;left:45%;top:0;width:55%;height:50%;
 border-bottom:5px solid #333;background:#2a2a3e;transition:background 0.5s}
-.room3-door{position:absolute;left:15%;bottom:-5px;width:50px;height:30px;background:#1a1a2e}
 
-.room1-outer{position:absolute;left:0;top:50%;width:62%;height:50%;
-background:#2a2a3e;transition:background 0.5s}
+.room1-outer{position:absolute;left:0;top:50%;width:62%;height:50%;background:#2a2a3e}
 .room1-main-door{position:absolute;left:20%;bottom:-5px;width:80px;height:40px;
-background:#1a1a2e;border:3px solid #333;border-bottom:none;border-radius:2px 2px 0 0}
-.door-handle{position:absolute;width:8px;height:8px;background:#666;border-radius:50%;
-left:20px;top:50%;transform:translateY(-50%)}
-.door-handle2{position:absolute;width:8px;height:8px;background:#666;border-radius:50%;
-right:20px;top:50%;transform:translateY(-50%)}
+background:#1a1a2e;border:3px solid #333;border-bottom:none}
 
 .room2-outer{position:absolute;left:62%;top:50%;width:38%;height:50%;
 border-left:5px solid #333;background:#2a2a3e;transition:background 0.5s}
-.room2-door{position:absolute;left:-5px;top:20%;width:30px;height:50px;background:#1a1a2e}
 
 .gateway{position:absolute;left:13%;bottom:35px;font-size:0.9rem;opacity:0.85;
-font-weight:500;padding:6px 14px;background:rgba(0,0,0,.4);border-radius:6px;
-border:1px solid rgba(255,255,255,.15)}
+padding:6px 14px;background:rgba(0,0,0,.4);border-radius:6px}
 
 .room-content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-.room-label{font-size:3rem;font-weight:bold;margin-bottom:10px;opacity:0.9}
+.room-label{font-size:3rem;font-weight:bold;opacity:0.9}
 .light-bulb{width:80px;height:80px;border-radius:50%;background:#333;
 margin:15px auto 0;display:flex;align-items:center;justify-content:center;
-font-size:3rem;transition:all 0.6s;box-shadow:0 0 0 rgba(255,255,255,0);
-border:3px solid #555}
+font-size:3rem;transition:all 0.6s;border:3px solid #555}
 .light-bulb.on{box-shadow:0 0 50px rgba(255,255,255,0.9);border-color:#fff}
 
 .room-status{font-size:0.85rem;margin-top:8px;opacity:0.8;font-weight:500}
 .room-status.lit{color:#0f0}
 .room-status.off{color:#888}
 
-.light-info-section{text-align:center;margin:30px 0;padding:20px;
-background:rgba(255,255,255,.05);border-radius:12px}
-.light-level{font-weight:bold;font-size:1.5rem;color:var(--accent2);line-height:1.8}
-
-.log-container{background:var(--card);border-radius:var(--r);padding:30px;
-margin-top:20px;border:1px solid rgba(255,255,255,.08)}
-.log-table{width:100%;border-collapse:collapse;margin-top:20px}
-.log-table thead{background:rgba(78,205,196,.2)}
-.log-table th{padding:15px;text-align:left;font-weight:600;border-bottom:2px solid var(--accent)}
-.log-table td{padding:15px;border-bottom:1px solid rgba(255,255,255,.1)}
-.log-table tbody tr{transition:background 0.2s}
-.log-table tbody tr:hover{background:rgba(255,255,255,.05)}
-.log-time{opacity:.7;font-size:.9rem}
-.log-name{font-weight:500}
-.log-status{padding:4px 12px;border-radius:20px;font-size:.85rem;font-weight:500}
-.log-status.entry{background:rgba(0,255,0,.2);color:#0f0}
-.log-status.exit{background:rgba(255,0,0,.2);color:#f55}
-
-.led-container{background:var(--card);border-radius:var(--r);padding:30px;
-margin-top:20px;border:1px solid rgba(255,255,255,.08)}
-.led-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px;margin-top:30px}
-.led-room-card{background:rgba(255,255,255,.05);padding:25px;border-radius:12px;
-border:2px solid rgba(255,255,255,.1);transition:all 0.3s}
-.led-room-card:hover{border-color:var(--accent);box-shadow:0 8px 20px rgba(0,0,0,.3)}
-.led-room-title{font-size:1.3rem;font-weight:600;margin-bottom:20px;display:flex;
-align-items:center;justify-content:space-between}
-.led-preview{width:80px;height:80px;border-radius:50%;margin:20px auto;
-transition:all 0.3s;box-shadow:0 0 30px currentColor;border:3px solid currentColor}
-.color-input-group{margin-top:20px}
-.color-input-group label{display:block;margin-bottom:8px;font-size:.9rem;opacity:.8}
-.color-input{width:100%;padding:12px;border-radius:8px;border:2px solid rgba(255,255,255,.2);
-background:rgba(255,255,255,.05);color:var(--text);font-size:1rem;transition:border-color 0.3s}
-.color-input:focus{outline:none;border-color:var(--accent)}
-.btn-apply{width:100%;padding:12px;margin-top:15px;background:var(--accent);
-border:none;border-radius:8px;color:#000;font-weight:600;font-size:1rem;
-cursor:pointer;transition:all 0.3s}
-.btn-apply:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.3)}
-.btn-apply:active{transform:translateY(0)}
-
-.dev-note{background:rgba(255,193,7,.1);border-left:4px solid #ffc107;
-padding:15px;margin:20px 0;border-radius:8px;font-family:monospace;font-size:.9rem}
-.dev-note-title{font-weight:600;color:#ffc107;margin-bottom:8px}
-
-footer{text-align:center;padding:30px;font-size:.85rem;opacity:.5;margin-top:40px;
-border-top:1px solid rgba(255,255,255,.1)}
-
-@media (max-width:768px){
-  .home-title{font-size:2.5rem}
-  .nav-header{order:3;width:100%;justify-content:center}
-  .gr{grid-template-columns:1fr}
-  .office-map{height:350px}
-  .led-grid{grid-template-columns:1fr}
-  .nav-cards{grid-template-columns:1fr}
-}
+.status{text-align:center;padding:20px;background:var(--card);border-radius:12px;margin:20px auto}
+.status h3{margin-bottom:10px;color:var(--accent2)}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-content">
-    <div class="logo">
-      <span class="logo-icon">🏢</span>
-      <span>Smart Office Hub</span>
+<div class="wrap">
+  <h1>🏢 Smart Office Hub</h1>
+  
+  <div class="status">
+    <h3 id="statusText">Loading...</h3>
+  </div>
+
+  <div class="office-map">
+    <div class="room4-outer" id="room4bg" style="display:none">
+      <div class="room-content">
+        <div class="room-label">4</div>
+        <div class="light-bulb" id="bulb4">💡</div>
+        <div class="room-status off" id="status4">OFF</div>
+      </div>
     </div>
     
-    <div class="nav-header">
-      <button class="nav-btn active" onclick="showPage('home')">🏠 Home</button>
-      <button class="nav-btn" onclick="showPage('weather')">🌤️ Weather</button>
-      <button class="nav-btn" onclick="showPage('office')">💡 Lighting</button>
-      <button class="nav-btn" onclick="showPage('entry')">🔐 Entry Log</button>
-      <button class="nav-btn" onclick="showPage('led')">🎨 LED Control</button>
+    <div class="room3-outer" id="room3bg">
+      <div class="room-content">
+        <div class="room-label">1</div>
+        <div class="light-bulb" id="bulb3">💡</div>
+        <div class="room-status off" id="status3">OFF</div>
+      </div>
     </div>
     
-    <div class="clock-header" id="clockHeader">00:00:00</div>
+    <div class="room1-outer" id="room1bg">
+      <div class="room1-main-door"></div>
+      <div class="room-content">
+        <div class="room-label">M</div>
+      </div>
+    </div>
+    
+    <div class="room2-outer" id="room2bg">
+      <div class="room-content">
+        <div class="room-label">2</div>
+        <div class="light-bulb" id="bulb2">💡</div>
+        <div class="room-status off" id="status2">OFF</div>
+      </div>
+    </div>
+    
+    <div class="gateway">Main Entrance</div>
   </div>
 </div>
 
-<div id="home-page" class="page active">
-  <div class="home-hero">
-    <div class="home-content">
-      <h1 class="home-title">Smart Office Hub</h1>
-      <p class="home-subtitle">IoT-Powered Workspace Management System</p>
+<script>
+var CHANNEL = '3260324';
+var READ_KEY = 'RSDE9TXRGDX5HIL0';
+
+function $(id){return document.getElementById(id)}
+
+function updateLights(room1Level, room2Level) {
+  var bulb2 = $('bulb2');
+  var bulb3 = $('bulb3');
+  var room2 = $('room2bg');
+  var room3 = $('room3bg');
+  var status2 = $('status2');
+  var status3 = $('status3');
+  var statusText = $('statusText');
+  
+  // Reset
+  bulb2.classList.remove('on');
+  bulb3.classList.remove('on');
+  bulb2.style.background = '#333';
+  bulb3.style.background = '#333';
+  room2.style.background = '#2a2a3e';
+  room3.style.background = '#2a2a3e';
+  status2.textContent = 'OFF';
+  status3.textContent = 'OFF';
+  status2.className = 'room-status off';
+  status3.className = 'room-status off';
+  
+  var active = [];
+  
+  // Room 1 (M5Stack)
+  if(room1Level > 0) {
+    bulb3.classList.add('on');
+    var color = room1Level <= 25 ? '#ffff99' : room1Level <= 50 ? '#ffffaa' : 
+                room1Level <= 75 ? '#99ffff' : '#ffffff';
+    bulb3.style.background = 'radial-gradient(circle, ' + color + ', #888)';
+    room3.style.background = 'rgba(255, 255, 200, 0.15)';
+    status3.textContent = room1Level + '%';
+    status3.className = 'room-status lit';
+    active.push('Room 1: ' + room1Level + '%');
+  }
+  
+  // Room 2 (RGB LED)
+  if(room2Level > 0) {
+    bulb2.classList.add('on');
+    var color = room2Level <= 25 ? '#ffff99' : room2Level <= 50 ? '#ffffaa' : 
+                room2Level <= 75 ? '#99ffff' : '#ffffff';
+    bulb2.style.background = 'radial-gradient(circle, ' + color + ', #888)';
+    room2.style.background = 'rgba(255, 255, 200, 0.15)';
+    status2.textContent = room2Level + '%';
+    status2.className = 'room-status lit';
+    active.push('Room 2: ' + room2Level + '%');
+  }
+  
+  if(active.length === 0) {
+    statusText.textContent = 'All Lights OFF';
+  } else {
+    statusText.textContent = active.join(' | ');
+  }
+}
+
+function fetchData() {
+  var url = 'https://api.thingspeak.com/channels/' + CHANNEL + 
+            '/feeds/last.json?api_key=' + READ_KEY;
+  
+  fetch(url)
+    .then(res => res.json())
+    .then(d => {
+      var room1 = parseInt(d.field4) || 0;
+      var room2 = parseInt(d.field5) || 0;
       
-      <div class="home-stats">
-        <div class="stat-card">
-          <div class="stat-icon">🌡️</div>
-          <div class="stat-value" id="homeTemp">--&deg;C</div>
-          <div class="stat-label">Current Temperature</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">💡</div>
-          <div class="stat-value" id="homeLights">--</div>
-          <div class="stat-label">Active Lights</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">👥</div>
-          <div class="stat-value" id="homeEntries">0</div>
-          <div class="stat-label">Today's Entries</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon">⚡</div>
-          <div class="stat-value" id="homeStatus">LIVE</div>
-          <div class="stat-label">System Status</div>
-        </div>
-      </div>
-      
-      <div class="nav-cards">
-        <div class="nav-card" onclick="showPage('weather')">
-          <div class="nav-card-icon">🌤️</div>
-          <div class="nav-card-title">Weather Monitoring</div>
-          <div class="nav-card-desc">Real-time environmental data including temperature, humidity, air pressure, and weather forecasting based on sensor readings.</div>
-        </div>
-        
-        <div class="nav-card" onclick="showPage('office')">
-          <div class="nav-card-icon">💡</div>
-          <div class="nav-card-title">Office Lighting</div>
-          <div class="nav-card-desc">Visual map showing current lighting status across all office rooms with automatic brightness control.</div>
-        </div>
-        
-        <div class="nav-card" onclick="showPage('entry')">
-          <div class="nav-card-icon">🔐</div>
-          <div class="nav-card-title">Entry Access Log</div>
-          <div class="nav-card-desc">Track employee access with RFID card scanning system, showing real-time entry and exit records.</div>
-        </div>
-        
-        <div class="nav-card" onclick="showPage('led')">
-          <div class="nav-card-icon">🎨</div>
-          <div class="nav-card-title">LED Color Control</div>
-          <div class="nav-card-desc">Customize RGB LED strip colors for each room individually using HEX codes or color picker interface.</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+      updateLights(room1, room2);
+    })
+    .catch(err => {
+      $('statusText').textContent = 'Error: ' + err.message;
+    });
+}
 
-<div id="weather-page" class="page">
-  <div class="wrap">
-    <h2 class="page-title">🌤️ Environmental Monitoring</h2>
-    
-    <div class="sb">
-      <div class="sd ok" id="st"></div>
-      <span id="su">Connecting to ThingSpeak...</span>
-    </div>
+fetchData();
+setInterval(fetchData, 5000);
+</script>
 
-    <div class="weather-hero">
-      <div class="weather-display">
-        <div class="weather-icon" id="weatherIcon">🌤️</div>
-        <div class="weather-main">
-          <div>
-            <span class="weather-temp" id="weatherTemp">--</span>
-            <span class="weather-deg">&deg;C</span>
-          </div>
-          <div class="weather-desc" id="weatherDesc">Loading...</div>
-          <div class="weather-hl">
-            H: <span id="weatherHi">--</span>&deg;C | L: <span id="weatherLo">--</span>&deg;C
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="gr">
-      <div class="cd">
-        <div class="ic">🌡️</div>
-        <div class="lb">Temperature</div>
-        <div class="vl" id="tv">--<span class="un">&deg;C</span></div>
-        <div class="su">Current ambient temperature</div>
-      </div>
-      <div class="cd">
-        <div class="ic">💧</div>
-        <div class="lb">Humidity</div>
-        <div class="vl" id="hv">--<span class="un">%</span></div>
-        <div class="su">Relative air humidity</div>
-      </div>
-      <div class="cd">
-        <div class="ic">🌬️</div>
-        <div class="lb">Air Pressure</div>
-        <div class="vl" id="pv">--<span class="un">hPa</span></div>
-        <div class="su">Atmospheric pressure</div>
-      </div>
-      <div class="cd">
-        <div class="ic">🌦️</div>
-        <div class="lb">Weather Forecast</div>
-        <div class="vl" id="forecast" style="font-size:1.5rem">--</div>
-        <div class="su">Based on pressure trend</div>
-      </div>
-    </div>
-
-    <div class="hg-card">
-      <div class="tt">Humidity Comfort Level</div>
-      <div class="hg-labels">
-        <span>🏜️ Very Dry</span>
-        <span>😊 Comfortable</span>
-        <span>💧 Very Humid</span>
-      </div>
-      <div class="hg-track">
-        <div class="hg-pin" id="hp" style="left:50%"></div>
-      </div>
-    </div>
-
-    <div class="ch">
-      <div class="tt">
-        <span><span class="dt" style="background:#ff6b6b"></span> Temperature History</span>
-      </div>
-      <canvas id="c1"></canvas>
-      <div class="chart-info">
-        <div class="chart-stat">
-          <span class="chart-stat-label">Min:</span>
-          <span class="chart-stat-value" id="tempMin">--&deg;C</span>
-        </div>
-        <div class="chart-stat">
-          <span class="chart-stat-label">Max:</span>
-          <span class="chart-stat-value" id="tempMax">--&deg;C</span>
-        </div>
-        <div class="chart-stat">
-          <span class="chart-stat-label">Avg:</span>
-          <span class="chart-stat-value" id="tempAvg">--&deg;C</span>
-        </div>
-        <div class="chart-stat">
-          <span class="chart-stat-label">Data Points:</span>
-          <span class="chart-stat-value" id="tempCount">--</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="ch">
-      <div class="tt">
-        <span><span class="dt" style="background:#4ecdc4"></span> Humidity History</span>
-      </div>
-      <canvas id="c2"></canvas>
-      <div class="chart-info">
-        <div class="chart-stat">
-          <span class="chart-stat-label">Min:</span>
-          <span class="chart-stat-value" id="humMin">--%</span>
-        </div>
-        <div class="chart-stat">
-          <span class="chart-stat-label">Max:</span>
-          <span class="chart-stat-value" id="humMax">--%</span>
-        </div>
-        <div class="chart-stat">
-          <span class="chart-stat-label">Avg:</span>
-          <span class="chart-stat-value" id="humAvg">--%</span>
-        </div>
-        <div class="chart-stat">
-          <span class="chart-stat-label">Data Points:</span>
-          <span class="chart-stat-value" id="humCount">--</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="ch">
-      <div class="tt">
-        <span><span class="dt" style="background:#ffd93d"></span> Pressure History</span>
-      </div>
-      <canvas id="c3"></canvas>
-      <div class="chart-info">
-        <div class="chart-stat">
-          <span class="chart-stat-label">Min:</span>
-          <span class="chart-stat-value" id="presMin">--hPa</span>
-        </div>
-        <div class="chart-stat">
-          <span class="chart-stat-label">Max:</span>
-          <span class="chart-stat-value" id="presMax">--hPa</span>
-        </div>
-        <div class="chart-stat">
-          <span class="chart-stat-label">Avg:</span>
-          <span class="chart-stat-value" id="presAvg">--hPa</span>
-        </div>
-        <div class="chart-stat">
-          <span class="chart-stat-label">Trend:</span>
-          <span class="chart-stat-value" id="presTrend">--</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="office-page" class="page">
-  <div class="wrap">
-    <h2 class="page-title">💡 Office Lighting Control Map</h2>
-    
-    <div class="sb">
-      <div class="sd ok" id="st2"></div>
-      <span id="lightStatus">Monitoring lighting system...</span>
-    </div>
-
-    <div class="office-container">
-      <div class="office-map">
-        <div class="room4-outer" id="room4bg">
-          <div class="room4-door"></div>
-          <div class="room-content">
-            <div class="room-label">4</div>
-            <div class="light-bulb" id="bulb4">💡</div>
-            <div class="room-status off" id="status4">OFF</div>
-          </div>
-        </div>
-        
-        <div class="room3-outer" id="room3bg">
-          <div class="room3-door"></div>
-          <div class="room-content">
-            <div class="room-label">1</div>
-            <div class="light-bulb" id="bulb3">💡</div>
-            <div class="room-status off" id="status3">OFF</div>
-          </div>
-        </div>
-        
-        <div class="room1-outer" id="room1bg">
-          <div class="room1-main-door">
-            <div class="door-handle"></div>
-            <div class="door-handle2"></div>
-          </div>
-          <div class="room-content">
-            <div class="room-label">M</div>
-          </div>
-        </div>
-        
-        <div class="room2-outer" id="room2bg">
-          <div class="room2-door"></div>
-          <div class="room-content">
-            <div class="room-label">2</div>
-            <div class="light-bulb" id="bulb2">💡</div>
-            <div class="room-status off" id="status2">OFF</div>
-          </div>
-        </div>
-        
-        <div class="gateway">Main Office Entrance</div>
-      </div>
-    </div>
-
-    <div class="light-info-section">
-      <div style="font-size:1.1rem;opacity:0.8;margin-bottom:10px">Current Lighting Levels</div>
-      <div class="light-level" id="lightLevelText">Loading...</div>
-    </div>
-
-    <div style="margin-top:30px;padding:25px;background:rgba(255,255,255,.05);border-radius:12px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:15px">
-        <h3>🎮 Control Panel</h3>
-        <div>
-          <button id="modeBtn" onclick="toggleMode()" 
-                  style="padding:10px 20px;background:#4ecdc4;border:none;border-radius:6px;
-                  color:#000;font-weight:600;cursor:pointer;transition:all 0.3s">
-            Mode: <span id="modeText">AUTO</span>
-          </button>
-        </div>
-      </div>
-      
-      <div id="manualControls" style="display:none">
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px">
-          <div style="padding:20px;background:rgba(255,255,255,.05);border-radius:8px">
-            <h4 style="margin-bottom:15px">🏢 Room 1 (M5Stack)</h4>
-            <input type="range" id="room1Slider" min="0" max="100" value="0" 
-                   style="width:100%" oninput="updateSlider(1, this.value)">
-            <div style="display:flex;justify-content:space-between;margin-top:10px">
-              <span>0%</span>
-              <span id="room1Value" style="font-weight:bold;color:#4ecdc4">0%</span>
-              <span>100%</span>
-            </div>
-            <button onclick="applyRoom(1)" style="width:100%;margin-top:15px;padding:10px;
-                    background:#4ecdc4;border:none;border-radius:6px;color:#000;
-                    font-weight:600;cursor:pointer;transition:all 0.3s">Apply Room 1</button>
-          </div>
-          
-          <div style="padding:20px;background:rgba(255,255,255,.05);border-radius:8px">
-            <h4 style="margin-bottom:15px">💡 Room 2 (RGB LED)</h4>
-            <input type="range" id="room2Slider" min="0" max="100" value="0" 
-                   style="width:100%" oninput="updateSlider(2, this.value)">
-            <div style="display:flex;justify-content:space-between;margin-top:10px">
-              <span>0%</span>
-              <span id="room2Value" style="font-weight:bold;color:#4ecdc4">0%</span>
-              <span>100%</span>
-            </div>
-            <button onclick="applyRoom(2)" style="width:100%;margin-top:15px;padding:10px;
-                    background:#4ecdc4;border:none;border-radius:6px;color:#000;
-                    font-weight:600;cursor:pointer;transition:all 0.3s">Apply Room 2</button>
-          </div>
-        </div>
-      </div>
-      
-      <div style="text-align:center;margin-top:15px;padding:15px;background:rgba(255,193,7,.1);
-                  border-left:4px solid #ffc107;border-radius:4px;font-size:0.85rem">
-        <strong>📡 How it works:</strong><br>
-        <span style="opacity:0.8">AUTO mode: Angle sensor controls lights | MANUAL mode: Use sliders below</span>
-      </div>
-    </div>
-
-    <div class="ch">
-      <div class="tt">
-        <span><span class="dt" style="background:#ffd93d"></span> Light Level History</span>
-      </div>
-      <canvas id="c4"></canvas>
-      <div class="chart-info">
-        <div class="chart-stat">
-          <span class="chart-stat-label">Min:</span>
-          <span class="chart-stat-value" id="lightMin">--%</span>
-        </div>
-        <div class="chart-stat">
-          <span class="chart-stat-label">Max:</span>
-          <span class="chart-stat-value" id="lightMax">--%</span>
-        </div>
-        <div class="chart-stat">
-          <span class="chart-stat-label">Avg:</span>
-          <span class="chart-stat-value" id="lightAvg">--%</span>
-        </div>
-        <div class="chart-stat">
-          <span class="chart-stat-label">Mode:</span>
-          <span class="chart-stat-value" id="lightMode">--</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="entry-page" class="page">
-  <div class="wrap">
-    <h2 class="page-title">🔐 Office Entry Access Log</h2>
-    
-    <div class="sb">
-      <div class="sd ok" id="st3"></div>
-      <span>Real-time RFID access monitoring</span>
-    </div>
-
-    <div class="dev-note">
-      <div class="dev-note-title">📝 DEVELOPER NOTE - Arduino Mega Integration:</div>
-      <div>Your friend should send data to this page using HTTP POST/GET requests.</div>
-      <div style="margin-top:8px"><strong>Endpoint:</strong> Create a backend endpoint (e.g., PHP/Node.js) to receive:</div>
-      <div style="margin-left:15px;margin-top:5px">
-        • <code>cardID</code> - RFID card unique identifier<br>
-        • <code>name</code> - Employee/User name<br>
-        • <code>timestamp</code> - Entry time (or use server time)<br>
-        • <code>action</code> - "entry" or "exit"
-      </div>
-    </div>
-
-    <div class="log-container">
-      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px">
-        <h3>Recent Access Records</h3>
-        <div style="font-size:0.9rem;opacity:0.7">
-          Today: <span style="color:var(--accent);font-weight:600" id="todayCount">0</span> entries
-        </div>
-      </div>
-      
-      <table class="log-table">
-        <thead>
-          <tr>
-            <th>Timestamp</th>
-            <th>Employee Name</th>
-            <th>Card ID</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="logTableBody">
-          <tr>
-            <td class="log-time">2026-02-15 09:23:45</td>
-            <td class="log-name">John Doe</td>
-            <td>RFID-001234</td>
-            <td><span class="log-status entry">ENTRY</span></td>
-          </tr>
-          <tr>
-            <td class="log-time">2026-02-15 09:15:32</td>
-            <td class="log-name">Jane Smith</td>
-            <td>RFID-005678</td>
-            <td><span class="log-status entry">ENTRY</span></td>
-          </tr>
-          <tr>
-            <td class="log-time">2026-02-15 08:45:12</td>
-            <td class="log-name">Mike Johnson</td>
-            <td>RFID-009876</td>
-            <td><span class="log-status exit">EXIT</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<div id="led-page" class="page">
-  <div class="wrap">
-    <h2 class="page-title">🎨 Smart RGB LED Controller</h2>
-    
-    <div class="sb">
-      <div class="sd ok" id="st4"></div>
-      <span>Web-based LED color management</span>
-    </div>
-
-    <div class="dev-note">
-      <div class="dev-note-title">📝 DEVELOPER NOTE - Arduino Mega LED Control:</div>
-      <div>This page sends color commands to Arduino Mega. Your friend needs to:</div>
-      <div style="margin-top:8px">
-        <strong>1. Arduino Setup:</strong> Listen for HTTP requests with color data<br>
-        <strong>2. Endpoint:</strong> Create API endpoint (e.g., <code>/api/setL*
-
+</body>
+</html>

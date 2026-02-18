@@ -1,535 +1,532 @@
-from m5stack import *
-from m5ui import *
-from uiflow import *
-import wifiCfg
-import ntptime
-import unit
-import socket
-import gc
-import math
-import _thread
-import time
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Office Hub - IoT Management System</title>
+<style>
+/* Keep all your existing CSS - no changes needed */
+:root{
+  --bg:#0f0f23;
+  --card:#1a1a2e;
+  --card2:#16213e;
+  --text:#e0e0e0;
+  --dim:#888;
+  --accent:#4ecdc4;
+  --accent2:#ffd93d;
+  --r:16px;
+}
 
-setScreenColor(0x222222)
-env3_1 = unit.get(unit.ENV3, unit.PORTA)
-angle_1 = unit.get(unit.ANGLE, unit.PORTB)
-rgb_1 = unit.get(unit.RGB, unit.PORTC)
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-i = None
-last_i = None
-j = None
-last_pressure = None
-wifi_connected = None
-ntp = None
-counter = None
+/* Header */
+.header{background:linear-gradient(135deg,#0a1628,#1a3a5c,#2d6187,#3a7ca5);
+color:#fff;padding:20px;position:sticky;top:0;z-index:100;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.header-content{max-width:1400px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px}
+.logo{font-size:1.5rem;font-weight:600;display:flex;align-items:center;gap:10px}
+.logo-icon{font-size:2rem}
 
-# NEW: Room control variables
-control_mode = 0  # 0 = Total Control, 1 = Individual Room
-selected_room = 1  # Which room (1, 2, or 3)
-room1_level = 0   # M5Stack LED
-room2_level = 0   # RGB LED
-room3_level = 0   # Arduino Mega
-manual_override = False  # NEW: Track if user manually set lights
+.nav-header{display:flex;gap:10px;flex-wrap:wrap;flex:1;justify-content:center}
+.nav-header button{background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);
+color:#fff;padding:10px 20px;border-radius:10px;cursor:pointer;font-size:0.9rem;
+transition:all 0.3s;font-weight:500}
+.nav-header button:hover{background:rgba(255,255,255,.25);transform:translateY(-2px)}
+.nav-header button.active{background:rgba(255,255,255,.35);border-color:rgba(255,255,255,.6);
+box-shadow:0 4px 12px rgba(255,255,255,.3)}
 
-wifiCfg.reconnect()
-wifiCfg.doConnect('Linksys32906', 'Aa98722580')
+.clock-header{font-size:1rem;opacity:.8;font-variant-numeric:tabular-nums}
 
-label3 = M5TextBox(210, 91, "Fri", lcd.FONT_DejaVu24, 0xffffff, rotate=0)
-rectangle0 = M5Rect(16, 130, 80, 50, 0x383333, 0x383333)
-rectangle1 = M5Rect(105, 130, 80, 50, 0x383333, 0x383333)
-rectangle2 = M5Rect(195, 130, 110, 50, 0x383333, 0x383333)
-circle1 = M5Circle(116, 213, 5, 0xFFFFFF, 0xFFFFFF)
-circle2 = M5Circle(144, 213, 5, 0xFFFFFF, 0xFFFFFF)
-circle3 = M5Circle(174, 213, 5, 0xFFFFFF, 0xFFFFFF)
-circle4 = M5Circle(203, 213, 5, 0xFFFFFF, 0xFFFFFF)
-Forward = M5TextBox(222, 224, "Forward", lcd.FONT_Default, 0xFFFFFF, rotate=0)
-label5 = M5TextBox(45, 224, "Back", lcd.FONT_Default, 0xFFFFFF, rotate=0)
-label8 = M5TextBox(139, 224, "Home", lcd.FONT_Default, 0xFFFFFF, rotate=0)
-label9 = M5TextBox(42, 134, "Temp", lcd.FONT_DefaultSmall, 0xffc400, rotate=0)
-label10 = M5TextBox(128, 134, "Humid", lcd.FONT_DefaultSmall, 0x24c7ff, rotate=0)
-label11 = M5TextBox(230, 134, "Pressure", lcd.FONT_DefaultSmall, 0xf8ff00, rotate=0)
-label0 = M5TextBox(110, 150, "Text", lcd.FONT_DejaVu18, 0xFFFFFF, rotate=0)
-label7 = M5TextBox(34, 28, "16:52:23", lcd.FONT_DejaVu56, 0xFFFFFF, rotate=0)
-label6 = M5TextBox(34, 91, "2026-01-22", lcd.FONT_DejaVu24, 0xFFFFFF, rotate=0)
-label2 = M5TextBox(20, 150, "Text", lcd.FONT_DejaVu18, 0xFFFFFF, rotate=0)
-label4 = M5TextBox(200, 150, "Text", lcd.FONT_DejaVu18, 0xFFFFFF, rotate=0)
-label1 = M5TextBox(268, 0, "Text", lcd.FONT_DejaVu18, 0xffffff, rotate=0)
-cloud_label = M5TextBox(10, 210, "", lcd.FONT_DefaultSmall, 0x00FF00, rotate=0)
+/* Home Page */
+.home-hero{min-height:80vh;display:flex;align-items:center;justify-content:center;
+background:linear-gradient(135deg,#0a1628,#1a3a5c,#2d6187,#3a7ca5);
+position:relative;overflow:hidden;padding:40px 20px}
+.home-hero::before{content:'';position:absolute;width:100%;height:100%;
+background:url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><circle cx="100" cy="100" r="3" fill="rgba(255,255,255,.1)"/><circle cx="300" cy="200" r="2" fill="rgba(255,255,255,.1)"/><circle cx="500" cy="150" r="3" fill="rgba(255,255,255,.1)"/><circle cx="700" cy="250" r="2" fill="rgba(255,255,255,.1)"/><circle cx="900" cy="180" r="3" fill="rgba(255,255,255,.1)"/><circle cx="1100" cy="220" r="2" fill="rgba(255,255,255,.1)"/></svg>');
+opacity:.3;animation:float 20s infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-20px)}}
 
-from numbers import Number
+.home-content{text-align:center;z-index:1;position:relative;width:100%;max-width:1000px}
+.home-title{font-size:3.5rem;font-weight:700;margin-bottom:20px;
+background:linear-gradient(90deg,#4ecdc4,#ffd93d,#ff6b6b);
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+background-clip:text;animation:gradient 3s ease infinite}
+@keyframes gradient{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.home-subtitle{font-size:1.3rem;opacity:.8;margin-bottom:40px;letter-spacing:1px}
 
-THINGSPEAK_KEY = 'W0R5AL9YS3DDDJHL'
-CHANNEL_ID = '3260324'
+.home-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:20px;margin-top:20px;margin-bottom:40px}
+.stat-card{background:rgba(255,255,255,.1);backdrop-filter:blur(10px);
+padding:30px;border-radius:20px;border:1px solid rgba(255,255,255,.2);
+transition:transform 0.3s}
+.stat-card:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.stat-icon{font-size:3rem;margin-bottom:10px}
+.stat-value{font-size:2rem;font-weight:600;color:var(--accent)}
+.stat-label{font-size:0.9rem;opacity:.7;margin-top:5px}
 
-send_ok = 0
-send_fail = 0
-cloud_status = 'Ready'
-cloud_color = 0x00FF00
+.nav-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+gap:20px;margin-top:20px}
+.nav-card{background:rgba(255,255,255,.1);backdrop-filter:blur(10px);
+padding:25px;border-radius:16px;border:2px solid rgba(255,255,255,.2);
+transition:all 0.3s;cursor:pointer;text-align:left}
+.nav-card:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,.4);
+border-color:rgba(255,255,255,.4)}
+.nav-card-icon{font-size:2.5rem;margin-bottom:15px}
+.nav-card-title{font-size:1.3rem;font-weight:600;margin-bottom:10px;color:#fff}
+.nav-card-desc{font-size:0.9rem;opacity:.8;line-height:1.5}
 
-sensor_temp = 25.0
-sensor_humid = 50.0
-sensor_pressure = 1013.0
-sensor_angle = 0
-sensor_dew = 0.0
-sensor_heat = 25.0
+.wrap{max-width:1200px;margin:0 auto;padding:30px 20px}
+.page{display:none}
+.page.active{display:block}
 
+.sb{display:flex;align-items:center;justify-content:center;gap:8px;
+padding:12px 24px;border-radius:24px;font-size:.9rem;margin:0 auto 20px;
+background:var(--card);width:fit-content;border:1px solid rgba(255,255,255,.08);
+box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.sd{width:10px;height:10px;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.2)}}
+.sd.ok{background:#0f0;box-shadow:0 0 10px #0f0}
+.sd.er{background:#f00;box-shadow:0 0 10px #f00}
 
-def cloud_thread():
-    """Background thread that sends data to ThingSpeak every 15 seconds"""
-    global send_ok, send_fail, cloud_status, cloud_color
-    global sensor_temp, sensor_humid, sensor_pressure, sensor_angle
-    global room1_level, room2_level, room3_level
+.weather-hero{background:linear-gradient(135deg,#0a1628,#1a3a5c,#2d6187,#3a7ca5);
+padding:40px 20px;margin-bottom:30px;border-radius:20px;position:relative;overflow:hidden}
+.weather-hero::before{content:'';position:absolute;width:100%;height:100%;
+background:radial-gradient(circle,rgba(255,255,255,.03) 0%,transparent 60%);animation:shimmer 8s infinite}
+@keyframes shimmer{0%,100%{transform:rotate(0deg)}50%{transform:rotate(180deg)}}
+.weather-display{display:flex;align-items:center;justify-content:center;gap:30px;flex-wrap:wrap;position:relative;z-index:1}
+.weather-icon{font-size:6rem;animation:float 3s ease-in-out infinite}
+.weather-main{text-align:center}
+.weather-temp{font-size:4.5rem;font-weight:100;letter-spacing:-4px}
+.weather-deg{font-size:1.8rem;vertical-align:top;opacity:.8}
+.weather-desc{font-size:1.2rem;margin-top:10px;opacity:.9;font-weight:500}
+.weather-hl{font-size:.95rem;opacity:.6;margin-top:10px;letter-spacing:.5px}
+.weather-hl span{font-weight:600;opacity:.9}
 
-    while True:
-        try:
-            time.sleep(15)
+.page-title{font-size:2rem;font-weight:600;margin-bottom:30px;text-align:center;color:var(--accent)}
+.gr{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:20px}
+.cd{background:var(--card);border-radius:var(--r);padding:24px;
+border:1px solid rgba(255,255,255,.08);transition:all .3s;position:relative;overflow:hidden}
+.cd::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity .3s}
+.cd:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.cd:hover::before{opacity:1}
+.ic{font-size:2.5rem;margin-bottom:12px}
+.lb{font-size:.9rem;opacity:.6;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:500}
+.vl{font-size:2.5rem;font-weight:300;margin-bottom:8px}
+.un{font-size:1.1rem;opacity:.6;margin-left:6px}
+.su{font-size:.8rem;opacity:.5}
 
-            if not wifiCfg.wlan_sta.isconnected():
-                cloud_status = 'No WiFi'
-                cloud_color = 0xFF0000
-                continue
+.ch{background:var(--card);border-radius:var(--r);padding:24px;margin-top:20px;
+border:1px solid rgba(255,255,255,.08);box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.tt{font-size:1.2rem;font-weight:500;margin-bottom:20px;display:flex;
+align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.dt{width:14px;height:14px;border-radius:3px}
+canvas{width:100%;height:250px;display:block}
+.chart-info{display:flex;justify-content:space-between;margin-top:15px;font-size:.85rem;opacity:.7;flex-wrap:wrap;gap:10px}
+.chart-stat{display:flex;align-items:center;gap:8px}
+.chart-stat-label{opacity:.6}
+.chart-stat-value{font-weight:600;color:var(--accent)}
 
-            s = None
-            try:
-                t = sensor_temp
-                h = sensor_humid
-                p = sensor_pressure
-                a = sensor_angle
+.hg-card{background:var(--card);border-radius:var(--r);padding:28px;margin-top:20px;
+border:1px solid rgba(255,255,255,.08)}
+.hg-track{height:14px;background:linear-gradient(90deg,#8B4513 0%,#a0a0a0 25%,#4ecdc4 50%,#95e1d3 75%,#4a90e2 100%);
+border-radius:7px;position:relative;margin-top:15px;box-shadow:inset 0 2px 4px rgba(0,0,0,.3)}
+.hg-pin{width:28px;height:28px;background:#fff;border:4px solid var(--bg);border-radius:50%;
+position:absolute;top:-7px;transform:translateX(-50%);box-shadow:0 3px 10px rgba(0,0,0,.4);transition:left .3s}
+.hg-labels{display:flex;justify-content:space-between;font-size:.8rem;opacity:.6;margin-top:12px}
 
-                # Dew point calculation
-                try:
-                    al = (17.27 * t) / (237.7 + t) + math.log(h / 100.0) if h > 0 else 0
-                    dp = round((237.7 * al) / (17.27 - al), 1)
-                except:
-                    dp = 0
+/* NEW: 3-Room Office Map */
+.office-container{background:var(--card);border-radius:var(--r);padding:40px;
+margin-top:20px;border:1px solid rgba(255,255,255,.08)}
+.office-map{position:relative;width:100%;max-width:800px;height:400px;margin:0 auto;
+background:#1a1a2e;border:5px solid #333;border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
 
-                # Heat index calculation
-                if t >= 20:
-                    hi = round(t + 0.33 * (h / 100.0 * 6.105 * (17.27 * t / (237.7 + t))) - 4.0, 1)
-                else:
-                    hi = t
+/* Room 1 - Left (M5Stack) */
+.room1-outer{position:absolute;left:0;top:0;width:33%;height:100%;
+border-right:5px solid #333;background:#2a2a3e;transition:background 0.5s}
 
-                # NEW: Send individual room levels
-                path = '/update?api_key=' + THINGSPEAK_KEY
-                path += '&field1=' + str(t)
-                path += '&field2=' + str(h)
-                path += '&field3=' + str(p)
-                path += '&field4=' + str(room1_level)  # Room 1 (M5Stack)
-                path += '&field5=' + str(room2_level)  # Room 2 (RGB LED)
-                path += '&field6=' + str(room3_level)  # Room 3 (Arduino Mega)
+/* Room 2 - Middle (RGB LED) */
+.room2-outer{position:absolute;left:33%;top:0;width:34%;height:100%;
+border-right:5px solid #333;background:#2a2a3e;transition:background 0.5s}
 
-                addr = socket.getaddrinfo('api.thingspeak.com', 80)[0][-1]
-                s = socket.socket()
-                s.settimeout(5)
-                s.connect(addr)
+/* Room 3 - Right (Arduino Mega) */
+.room3-outer{position:absolute;left:67%;top:0;width:33%;height:100%;
+background:#2a2a3e;transition:background 0.5s}
 
-                req = 'GET ' + path + ' HTTP/1.1\r\n'
-                req += 'Host: api.thingspeak.com\r\n'
-                req += 'Connection: close\r\n\r\n'
-                s.send(req.encode())
+.room-content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
+.room-label{font-size:2.5rem;font-weight:bold;margin-bottom:10px;opacity:0.9}
+.room-sublabel{font-size:0.8rem;opacity:0.6;margin-bottom:15px}
+.light-bulb{width:80px;height:80px;border-radius:50%;background:#333;
+margin:15px auto 0;display:flex;align-items:center;justify-content:center;
+font-size:3rem;transition:all 0.6s;box-shadow:0 0 0 rgba(255,255,255,0);
+border:3px solid #555}
+.light-bulb.on{box-shadow:0 0 50px rgba(255,255,255,0.9);border-color:#fff}
 
-                resp = s.recv(256)
-                s.close()
+.room-status{font-size:0.85rem;margin-top:8px;opacity:0.8;font-weight:500}
+.room-status.lit{color:#0f0}
+.room-status.off{color:#888}
 
-                send_ok += 1
-                cloud_status = 'OK:' + str(send_ok)
-                cloud_color = 0x00FF00
+.light-info-section{text-align:center;margin:30px 0;padding:20px;
+background:rgba(255,255,255,.05);border-radius:12px}
+.light-level{font-weight:bold;font-size:1.5rem;color:var(--accent2)}
 
-                gc.collect()
+.log-container{background:var(--card);border-radius:var(--r);padding:30px;
+margin-top:20px;border:1px solid rgba(255,255,255,.08)}
+.log-table{width:100%;border-collapse:collapse;margin-top:20px}
+.log-table thead{background:rgba(78,205,196,.2)}
+.log-table th{padding:15px;text-align:left;font-weight:600;border-bottom:2px solid var(--accent)}
+.log-table td{padding:15px;border-bottom:1px solid rgba(255,255,255,.1)}
+.log-table tbody tr{transition:background 0.2s}
+.log-table tbody tr:hover{background:rgba(255,255,255,.05)}
+.log-time{opacity:.7;font-size:.9rem}
+.log-name{font-weight:500}
+.log-status{padding:4px 12px;border-radius:20px;font-size:.85rem;font-weight:500}
+.log-status.entry{background:rgba(0,255,0,.2);color:#0f0}
+.log-status.exit{background:rgba(255,0,0,.2);color:#f55}
 
-            except Exception as e:
-                send_fail += 1
-                cloud_status = 'FAIL:' + str(send_fail)
-                cloud_color = 0xFF0000
-                if s:
-                    try:
-                        s.close()
-                    except:
-                        pass
+.led-container{background:var(--card);border-radius:var(--r);padding:30px;
+margin-top:20px;border:1px solid rgba(255,255,255,.08)}
+.led-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px;margin-top:30px}
+.led-room-card{background:rgba(255,255,255,.05);padding:25px;border-radius:12px;
+border:2px solid rgba(255,255,255,.1);transition:all 0.3s}
+.led-room-card:hover{border-color:var(--accent);box-shadow:0 8px 20px rgba(0,0,0,.3)}
+.led-room-title{font-size:1.3rem;font-weight:600;margin-bottom:20px;display:flex;
+align-items:center;justify-content:space-between}
+.led-preview{width:80px;height:80px;border-radius:50%;margin:20px auto;
+transition:all 0.3s;box-shadow:0 0 30px currentColor;border:3px solid currentColor}
+.color-input-group{margin-top:20px}
+.color-input-group label{display:block;margin-bottom:8px;font-size:.9rem;opacity:.8}
+.color-input{width:100%;padding:12px;border-radius:8px;border:2px solid rgba(255,255,255,.2);
+background:rgba(255,255,255,.05);color:var(--text);font-size:1rem;transition:border-color 0.3s}
+.color-input:focus{outline:none;border-color:var(--accent)}
+.btn-apply{width:100%;padding:12px;margin-top:15px;background:var(--accent);
+border:none;border-radius:8px;color:#000;font-weight:600;font-size:1rem;
+cursor:pointer;transition:all 0.3s}
+.btn-apply:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.3)}
+.btn-apply:active{transform:translateY(0)}
 
-        except Exception as e:
-            pass
+.dev-note{background:rgba(255,193,7,.1);border-left:4px solid #ffc107;
+padding:15px;margin:20px 0;border-radius:8px;font-family:monospace;font-size:.9rem}
+.dev-note-title{font-weight:600;color:#ffc107;margin-bottom:8px}
 
+footer{text-align:center;padding:30px;font-size:.85rem;opacity:.5;margin-top:40px;
+border-top:1px solid rgba(255,255,255,.1)}
 
-def buttonA_wasPressed():
-    global i, last_i, control_mode, selected_room
+@media (max-width:768px){
+  .home-title{font-size:2.5rem}
+  .nav-header{order:3;width:100%;justify-content:center}
+  .gr{grid-template-columns:1fr}
+  .office-map{height:350px}
+  .led-grid{grid-template-columns:1fr}
+  .nav-cards{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-content">
+    <div class="logo">
+      <span class="logo-icon">🏢</span>
+      <span>Smart Office Hub</span>
+    </div>
     
-    if i == 0:
-        # Home screen - go back
-        if i > 0:
-            last_i = i
-            i = (i if isinstance(i, Number) else 0) + -1
-    elif i == 4:
-        # Lighting page - toggle mode
-        control_mode = 1 - control_mode
-    else:
-        # Other pages - go back
-        if i > 0:
-            last_i = i
-            i = (i if isinstance(i, Number) else 0) + -1
-
-
-btnA.wasPressed(buttonA_wasPressed)
-
-
-def buttonB_wasPressed():
-    global i, last_i, selected_room, control_mode, manual_override
+    <div class="nav-header">
+      <button class="nav-btn active" onclick="showPage('home')">🏠 Home</button>
+      <button class="nav-btn" onclick="showPage('weather')">🌤️ Weather</button>
+      <button class="nav-btn" onclick="showPage('office')">💡 Lighting</button>
+      <button class="nav-btn" onclick="showPage('entry')">🔐 Entry Log</button>
+      <button class="nav-btn" onclick="showPage('led')">🎨 LED Control</button>
+    </div>
     
-    if i == 4 and control_mode == 1:
-        # Lighting page in individual mode - cycle rooms
-        selected_room = (selected_room % 3) + 1
-    else:
-        # Go home - reset manual override when leaving lighting page
-        if i == 4:
-            manual_override = False
-        i = 0
+    <div class="clock-header" id="clockHeader">00:00:00</div>
+  </div>
+</div>
 
-
-btnB.wasPressed(buttonB_wasPressed)
-
-
-def buttonC_wasPressed():
-    global i, last_i, room1_level, room2_level, room3_level, control_mode, selected_room, manual_override
-    
-    if i == 4:
-        # Lighting page - adjust brightness
-        manual_override = True  # User is manually controlling lights
+<div id="home-page" class="page active">
+  <div class="home-hero">
+    <div class="home-content">
+      <h1 class="home-title">Smart Office Hub</h1>
+      <p class="home-subtitle">IoT-Powered Workspace Management System</p>
+      
+      <div class="home-stats">
+        <div class="stat-card">
+          <div class="stat-icon">🌡️</div>
+          <div class="stat-value" id="homeTemp">--&deg;C</div>
+          <div class="stat-label">Current Temperature</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💡</div>
+          <div class="stat-value" id="homeLights">--</div>
+          <div class="stat-label">Active Lights</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-value" id="homeEntries">0</div>
+          <div class="stat-label">Today's Entries</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-value" id="homeStatus">LIVE</div>
+          <div class="stat-label">System Status</div>
+        </div>
+      </div>
+      
+      <div class="nav-cards">
+        <div class="nav-card" onclick="showPage('weather')">
+          <div class="nav-card-icon">🌤️</div>
+          <div class="nav-card-title">Weather Monitoring</div>
+          <div class="nav-card-desc">Real-time environmental data including temperature, humidity, air pressure, and weather forecasting.</div>
+        </div>
         
-        if control_mode == 0:
-            # Total control - all rooms
-            room1_level = (room1_level + 25) % 125
-            room2_level = (room2_level + 25) % 125
-            room3_level = (room3_level + 25) % 125
-            if room1_level > 100:
-                room1_level = 0
-                room2_level = 0
-                room3_level = 0
-        else:
-            # Individual room control
-            if selected_room == 1:
-                room1_level = (room1_level + 25) % 125
-                if room1_level > 100:
-                    room1_level = 0
-            elif selected_room == 2:
-                room2_level = (room2_level + 25) % 125
-                if room2_level > 100:
-                    room2_level = 0
-            elif selected_room == 3:
-                room3_level = (room3_level + 25) % 125
-                if room3_level > 100:
-                    room3_level = 0
+        <div class="nav-card" onclick="showPage('office')">
+          <div class="nav-card-icon">💡</div>
+          <div class="nav-card-title">Office Lighting</div>
+          <div class="nav-card-desc">Control 3 rooms individually: M5Stack LED, RGB LED Strip, and Arduino Mega lighting.</div>
+        </div>
         
-        update_physical_lights()
-    else:
-        # Navigate forward
-        if i < 4:
-            last_i = i
-            i = (i if isinstance(i, Number) else 0) + 1
-
-
-btnC.wasPressed(buttonC_wasPressed)
-
-
-def update_physical_lights():
-    """Update physical RGB LED based on room2_level"""
-    global room2_level
-    
-    rgb_1.setBrightness(room2_level)
-    rgb.setBrightness(room2_level)
-    
-    if room2_level == 0:
-        rgb_1.setColorAll(0x000000)
-        rgb.setColorAll(0x000000)
-    elif room2_level <= 25:
-        rgb_1.setColorAll(0xffff99)
-        rgb.setColorAll(0xffff99)
-    elif room2_level <= 50:
-        rgb_1.setColorAll(0xffffaa)
-        rgb.setColorAll(0xffffaa)
-    elif room2_level <= 75:
-        rgb_1.setColorAll(0x99ffff)
-        rgb.setColorAll(0x99ffff)
-    else:
-        rgb_1.setColorAll(0xffffff)
-        rgb.setColorAll(0xffffff)
-
-
-label0.hide()
-label2.hide()
-label4.hide()
-label6.hide()
-label7.hide()
-label3.hide()
-j = 10
-i = 0
-counter = 0
-last_pressure = env3_1.pressure
-
-try:
-    wifi_connected = wifiCfg.wlan_sta.isconnected()
-except:
-    wifi_connected = False
-
-if wifiCfg.wlan_sta.isconnected():
-    try:
-        ntp = ntptime.client(host='cn.pool.ntp.org', timezone=8)
-    except:
-        ntp = None
-        wifi_connected = False
-
-gc.collect()
-
-if wifi_connected:
-    _thread.start_new_thread(cloud_thread, ())
-    cloud_status = 'Starting...'
-
-# Main UI loop
-while True:
-    sensor_temp = round(env3_1.temperature, 1)
-    sensor_humid = round(env3_1.humidity, 1)
-    sensor_pressure = round(env3_1.pressure / 100, 1)
-    sensor_angle = angle_1.read()
-
-    if last_i != i:
-        if i == 0:
-            # HOME PAGE
-            lcd.clear()
-            label7.setFont(lcd.FONT_DejaVu56)
-            label7.setPosition(34, 28)
-            label6.setPosition(34, 91)
-            label3.setPosition(213, 91)
-            rectangle0.show()
-            rectangle1.show()
-            rectangle2.show()
-            label3.setColor(0xffffff)
-            circle1.setBgColor(0xff0000)
-            circle2.setBgColor(0xffffff)
-            circle3.setBgColor(0xffffff)
-            circle4.setBgColor(0xffffff)
-            circle1.show()
-            circle2.show()
-            circle3.show()
-            circle4.show()
-            label0.show()
-            label2.show()
-            label4.show()
-            label1.show()
-            label6.show()
-            label7.show()
-            label3.show()
-            label9.show()
-            label10.show()
-            label11.show()
-            label5.show()
-            Forward.show()
-            label8.show()
-            cloud_label.show()
-            last_i = i
-            
-        elif i == 1:
-            # TEMPERATURE PAGE
-            lcd.clear()
-            label7.setFont(lcd.FONT_DejaVu56)
-            label7.setPosition(70, 91)
-            label6.setPosition(34, 35)
-            label3.setPosition(20, 170)
-            label6.setText('Temperature')
-            circle2.setBgColor(0xff0000)
-            circle1.setBgColor(0xffffff)
-            circle3.setBgColor(0xffffff)
-            circle4.setBgColor(0xffffff)
-            circle1.show()
-            circle2.show()
-            circle3.show()
-            circle4.show()
-            label3.show()
-            label5.show()
-            Forward.show()
-            label8.show()
-            cloud_label.show()
-            if sensor_temp < 18:
-                label3.setColor(0x33ccff)
-                label3.setText('Cold')
-            elif sensor_temp < 25:
-                label3.setColor(0x33cc00)
-                label3.setText('Comfortable')
-            else:
-                label3.setColor(0xff0000)
-                label3.setText('Warm')
-            last_i = i
-            
-        elif i == 2:
-            # HUMIDITY PAGE
-            lcd.clear()
-            label6.setText('Humidity')
-            label7.setText('70.3%')
-            label3.setPosition(20, 170)
-            label7.setPosition(70, 91)
-            circle3.setBgColor(0xff0000)
-            circle1.setBgColor(0xffffff)
-            circle2.setBgColor(0xffffff)
-            circle4.setBgColor(0xffffff)
-            circle1.show()
-            circle2.show()
-            circle3.show()
-            circle4.show()
-            label3.show()
-            label5.show()
-            label8.show()
-            Forward.show()
-            cloud_label.show()
-            if sensor_humid < 30:
-                label3.setColor(0x999999)
-                label3.setText('Dry')
-            elif sensor_humid < 60:
-                label3.setColor(0x33cc00)
-                label3.setText('Comfortable')
-            else:
-                label3.setColor(0x33ccff)
-                label3.setText('Humid')
-            last_i = i
-            
-        elif i == 3:
-            # PRESSURE PAGE
-            lcd.clear()
-            label7.setFont(lcd.FONT_DejaVu56)
-            label7.setPosition(10, 91)
-            label3.setPosition(20, 170)
-            label6.setText('Air Pressure')
-            circle4.setBgColor(0xff0000)
-            circle1.setBgColor(0xffffff)
-            circle2.setBgColor(0xffffff)
-            circle3.setBgColor(0xffffff)
-            circle1.show()
-            circle2.show()
-            circle3.show()
-            circle4.show()
-            label5.show()
-            label3.show()
-            Forward.show()
-            label8.show()
-            cloud_label.show()
-            if (env3_1.pressure) - last_pressure < -300:
-                label3.setColor(0xff0000)
-                label3.setText('Rain Likely')
-            elif (env3_1.pressure) - last_pressure > 300:
-                label3.setColor(0x33ccff)
-                label3.setText('Clear Skies')
-            else:
-                label3.setColor(0xffff00)
-                label3.setText('Stable Weather')
-            last_i = i
-            
-        elif i == 4:
-            # NEW: LIGHTING CONTROL PAGE
-            lcd.clear()
-            label6.setFont(lcd.FONT_DejaVu24)
-            label6.setPosition(80, 10)
-            label6.setText('Lighting')
-            label6.setColor(0xFFFF00)
-            
-            # Mode display
-            label7.setFont(lcd.FONT_Default)
-            label7.setPosition(10, 45)
-            if control_mode == 0:
-                label7.setText('Mode: TOTAL CONTROL')
-            else:
-                label7.setText('Mode: INDIVIDUAL')
-            
-            # Room levels
-            label2.setFont(lcd.FONT_DejaVu18)
-            label2.setPosition(10, 80)
-            label2.setColor(0x00FF00)
-            label2.setText('Room 1 (M5):  ' + str(room1_level) + '%')
-            
-            label0.setFont(lcd.FONT_DejaVu18)
-            label0.setPosition(10, 110)
-            label0.setColor(0x00FFFF)
-            label0.setText('Room 2 (RGB): ' + str(room2_level) + '%')
-            
-            label4.setFont(lcd.FONT_DejaVu18)
-            label4.setPosition(10, 140)
-            label4.setColor(0xFFAA00)
-            label4.setText('Room 3 (Mega): ' + str(room3_level) + '%')
-            
-            # Selection indicator
-            if control_mode == 1:
-                label3.setFont(lcd.FONT_Default)
-                label3.setPosition(260, 75 + (selected_room - 1) * 30)
-                label3.setText('<--')
-                label3.setColor(0xFF0000)
-                label3.show()
-            else:
-                label3.hide()
-            
-            # Instructions
-            label5.setPosition(10, 180)
-            label5.setText('A:Mode B:Room C:+25%')
-            
-            label8.setPosition(110, 200)
-            label8.setText('Home')
-            
-            Forward.hide()
-            
-            label2.show()
-            label0.show()
-            label4.show()
-            label6.show()
-            label7.show()
-            label5.show()
-            label8.show()
-            cloud_label.show()
-            
-            last_i = i
-
-    # Update cloud label
-    if cloud_status:
-        cloud_label.setColor(cloud_color)
-        cloud_label.setText(cloud_status)
-
-    # FIXED: Only auto-sync angle sensor if NOT manually controlled
-    if not manual_override:
-        if sensor_angle < 200:
-            auto_level = 0
-        elif sensor_angle < 400:
-            auto_level = 25
-        elif sensor_angle < 600:
-            auto_level = 50
-        elif sensor_angle < 800:
-            auto_level = 75
-        else:
-            auto_level = 100
+        <div class="nav-card" onclick="showPage('entry')">
+          <div class="nav-card-icon">🔐</div>
+          <div class="nav-card-title">Entry Access Log</div>
+          <div class="nav-card-desc">Track employee access with RFID card scanning system.</div>
+        </div>
         
-        # Auto-update all rooms based on angle
-        if i == 0:
-            room1_level = auto_level
-            room2_level = auto_level
-            room3_level = auto_level
-            update_physical_lights()
-            label1.setText(str(auto_level) + '%')
-    else:
-        # Manual mode - just show status
-        if i == 0:
-            label1.setText('M:' + str(room2_level) + '%')
+        <div class="nav-card" onclick="showPage('led')">
+          <div class="nav-card-icon">🎨</div>
+          <div class="nav-card-title">LED Color Control</div>
+          <div class="nav-card-desc">Customize RGB LED colors for each room individually.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-    if counter == 30000:
-        last_pressure = env3_1.pressure
-        counter = 0
+<!-- Keep weather page as is -->
+<div id="weather-page" class="page">
+  <!-- Your existing weather page content -->
+</div>
 
-    if i == 0:
-        if wifi_connected and ntp:
-            label3.setText(str(ntp.weekday()))
-            label7.setText(str(ntp.formatTime(':')))
-            label6.setText(str(ntp.formatDate('-')))
-            label2.setText(str((str(("%.2f" % ((sensor_temp)))) + str('C'))))
-            label0.setText(str((str(("%.2f" % ((sensor_humid)))) + str('%'))))
-            label4.setText(str((str(("%.1f" % ((sensor_pressure)))) + str('hPa'))))
-    elif i == 1:
-        label7.setText(str((str(("%.1f" % ((sensor_temp)))) + str('C'))))
-    elif i == 2:
-        label7.setText(str((str(("%.1f" % ((sensor_humid)))) + str('%'))))
-    elif i == 3:
-        label7.setText(str((str(("%.1f" % ((sensor_pressure)))) + str('hPa'))))
+<!-- NEW: Office Lighting Page with 3 Rooms -->
+<div id="office-page" class="page">
+  <div class="wrap">
+    <h2 class="page-title">💡 Office Lighting Control</h2>
+    
+    <div class="sb">
+      <div class="sd ok" id="st2"></div>
+      <span id="lightStatus">Monitoring 3 rooms...</span>
+    </div>
 
-    counter = (counter if isinstance(counter, Number) else 0) + 1
-    wait_ms(2)
+    <div class="office-container">
+      <div class="office-map">
+        <!-- Room 1 - M5Stack -->
+        <div class="room1-outer" id="room1bg">
+          <div class="room-content">
+            <div class="room-label">1</div>
+            <div class="room-sublabel">M5Stack</div>
+            <div class="light-bulb" id="bulb1">💡</div>
+            <div class="room-status off" id="status1">OFF</div>
+          </div>
+        </div>
+        
+        <!-- Room 2 - RGB LED -->
+        <div class="room2-outer" id="room2bg">
+          <div class="room-content">
+            <div class="room-label">2</div>
+            <div class="room-sublabel">RGB LED</div>
+            <div class="light-bulb" id="bulb2">💡</div>
+            <div class="room-status off" id="status2">OFF</div>
+          </div>
+        </div>
+        
+        <!-- Room 3 - Arduino Mega -->
+        <div class="room3-outer" id="room3bg">
+          <div class="room-content">
+            <div class="room-label">3</div>
+            <div class="room-sublabel">Arduino</div>
+            <div class="light-bulb" id="bulb3">💡</div>
+            <div class="room-status off" id="status3">OFF</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="light-info-section">
+      <div style="font-size:1.1rem;opacity:0.8;margin-bottom:10px">Room Lighting Levels</div>
+      <div class="light-level" id="lightLevelText">Loading...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Keep entry and LED pages as is -->
+<div id="entry-page" class="page">
+  <!-- Your existing entry log content -->
+</div>
+
+<div id="led-page" class="page">
+  <!-- Your existing LED control content -->
+</div>
+
+<footer>
+  Smart Office Hub &copy; 2026 | NYP Engineering Project
+</footer>
+
+<script>
+var CHANNEL = '3260324';
+var READ_KEY = 'RSDE9TXRGDX5HIL0';
+var UPDATE_INTERVAL = 5000;
+
+var fc = 0;
+var currentPage = 'home';
+var minTemp = 999, maxTemp = -999;
+
+function $(id){return document.getElementById(id)}
+
+function showPage(page) {
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  
+  $(page + '-page').classList.add('active');
+  
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if(b.textContent.toLowerCase().includes(page) || 
+       (page === 'home' && b.textContent.includes('Home'))) {
+      b.classList.add('active');
+    }
+  });
+}
+
+function updateClock(){
+  var n = new Date();
+  var h = n.getHours(), m = n.getMinutes(), s = n.getSeconds();
+  $('clockHeader').textContent = 
+    (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// NEW: Update 3 individual rooms
+function updateOfficeLights(room1Level, room2Level, room3Level) {
+  var bulb1 = $('bulb1');
+  var bulb2 = $('bulb2');
+  var bulb3 = $('bulb3');
+  
+  var room1 = $('room1bg');
+  var room2 = $('room2bg');
+  var room3 = $('room3bg');
+  
+  var status1 = $('status1');
+  var status2 = $('status2');
+  var status3 = $('status3');
+  
+  var levelText = $('lightLevelText');
+  var statusText = $('lightStatus');
+  
+  // Reset all
+  [bulb1, bulb2, bulb3].forEach(b => {
+    b.classList.remove('on');
+    b.style.background = '#333';
+  });
+  
+  [room1, room2, room3].forEach(r => r.style.background = '#2a2a3e');
+  
+  [status1, status2, status3].forEach(s => {
+    s.textContent = 'OFF';
+    s.className = 'room-status off';
+  });
+  
+  var activeRooms = [];
+  
+  // Room 1 (M5Stack)
+  if(room1Level > 0) {
+    bulb1.classList.add('on');
+    var color = room1Level <= 25 ? '#ffff99' : room1Level <= 50 ? '#ffffaa' : 
+                room1Level <= 75 ? '#99ffff' : '#ffffff';
+    bulb1.style.background = 'radial-gradient(circle, ' + color + ', #888)';
+    room1.style.background = 'rgba(255, 255, 200, ' + (room1Level/400) + ')';
+    status1.textContent = room1Level + '%';
+    status1.className = 'room-status lit';
+    activeRooms.push('R1: ' + room1Level + '%');
+  }
+  
+  // Room 2 (RGB LED)
+  if(room2Level > 0) {
+    bulb2.classList.add('on');
+    var color = room2Level <= 25 ? '#ffff99' : room2Level <= 50 ? '#ffffaa' : 
+                room2Level <= 75 ? '#99ffff' : '#ffffff';
+    bulb2.style.background = 'radial-gradient(circle, ' + color + ', #888)';
+    room2.style.background = 'rgba(255, 255, 200, ' + (room2Level/400) + ')';
+    status2.textContent = room2Level + '%';
+    status2.className = 'room-status lit';
+    activeRooms.push('R2: ' + room2Level + '%');
+  }
+  
+  // Room 3 (Arduino Mega)
+  if(room3Level > 0) {
+    bulb3.classList.add('on');
+    var color = room3Level <= 25 ? '#ffff99' : room3Level <= 50 ? '#ffffaa' : 
+                room3Level <= 75 ? '#99ffff' : '#ffffff';
+    bulb3.style.background = 'radial-gradient(circle, ' + color + ', #888)';
+    room3.style.background = 'rgba(255, 255, 200, ' + (room3Level/400) + ')';
+    status3.textContent = room3Level + '%';
+    status3.className = 'room-status lit';
+    activeRooms.push('R3: ' + room3Level + '%');
+  }
+  
+  if(activeRooms.length === 0) {
+    levelText.textContent = 'All OFF';
+    levelText.style.color = '#888';
+    statusText.textContent = 'All lights are OFF';
+  } else {
+    levelText.innerHTML = activeRooms.join(' | ');
+    levelText.style.color = '#ffff99';
+    statusText.textContent = activeRooms.length + ' room(s) active';
+  }
+  
+  $('homeLights').textContent = activeRooms.length + ' Active';
+}
+
+function fetchData() {
+  var url = 'https://api.thingspeak.com/channels/' + CHANNEL + 
+            '/feeds.json?api_key=' + READ_KEY + '&results=30';
+  
+  fetch(url)
+    .then(res => {
+      if (!res.ok) throw new Error('HTTP error! status: ' + res.status);
+      return res.json();
+    })
+    .then(d => {
+      if(!d.feeds || d.feeds.length === 0) throw new Error('No data feeds available');
+      
+      fc++;
+      var f = d.feeds[d.feeds.length - 1];
+      
+      var temp = parseFloat(f.field1) || 0;
+      var hum = parseFloat(f.field2) || 0;
+      var pres = parseFloat(f.field3) || 0;
+      
+      // NEW: Read 3 individual room levels
+      var room1Level = parseInt(f.field4) || 0;  // M5Stack
+      var room2Level = parseInt(f.field5) || 0;  // RGB LED
+      var room3Level = parseInt(f.field6) || 0;  // Arduino Mega
+
+      $('homeTemp').innerHTML = temp.toFixed(1) + '&deg;C';
+      
+      // NEW: Update 3-room display
+      updateOfficeLights(room1Level, room2Level, room3Level);
+
+      $('homeStatus').textContent = 'LIVE';
+    })
+    .catch(err => {
+      console.error('Fetch Error:', err);
+      $('homeStatus').textContent = 'ERROR';
+    });
+}
+
+fetchData();
+setInterval(fetchData, UPDATE_INTERVAL);
+$('homeEntries').textContent = '12';
+</script>
+
+</body>
+</html>

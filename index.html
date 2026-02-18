@@ -29,6 +29,7 @@ selected_room = 1  # Which room (1, 2, or 3)
 room1_level = 0   # M5Stack LED
 room2_level = 0   # RGB LED
 room3_level = 0   # Arduino Mega
+manual_override = False  # NEW: Track if user manually set lights
 
 wifiCfg.reconnect()
 wifiCfg.doConnect('Linksys32906', 'Aa98722580')
@@ -172,13 +173,15 @@ btnA.wasPressed(buttonA_wasPressed)
 
 
 def buttonB_wasPressed():
-    global i, last_i, selected_room, control_mode
+    global i, last_i, selected_room, control_mode, manual_override
     
     if i == 4 and control_mode == 1:
         # Lighting page in individual mode - cycle rooms
         selected_room = (selected_room % 3) + 1
     else:
-        # Go home
+        # Go home - reset manual override when leaving lighting page
+        if i == 4:
+            manual_override = False
         i = 0
 
 
@@ -186,10 +189,12 @@ btnB.wasPressed(buttonB_wasPressed)
 
 
 def buttonC_wasPressed():
-    global i, last_i, room1_level, room2_level, room3_level, control_mode, selected_room
+    global i, last_i, room1_level, room2_level, room3_level, control_mode, selected_room, manual_override
     
     if i == 4:
         # Lighting page - adjust brightness
+        manual_override = True  # User is manually controlling lights
+        
         if control_mode == 0:
             # Total control - all rooms
             room1_level = (room1_level + 25) % 125
@@ -482,23 +487,30 @@ while True:
         cloud_label.setColor(cloud_color)
         cloud_label.setText(cloud_status)
 
-    # Sync angle sensor with Room 2 (for backward compatibility)
-    if sensor_angle < 200:
-        auto_level = 0
-    elif sensor_angle < 400:
-        auto_level = 25
-    elif sensor_angle < 600:
-        auto_level = 50
-    elif sensor_angle < 800:
-        auto_level = 75
+    # FIXED: Only auto-sync angle sensor if NOT manually controlled
+    if not manual_override:
+        if sensor_angle < 200:
+            auto_level = 0
+        elif sensor_angle < 400:
+            auto_level = 25
+        elif sensor_angle < 600:
+            auto_level = 50
+        elif sensor_angle < 800:
+            auto_level = 75
+        else:
+            auto_level = 100
+        
+        # Auto-update all rooms based on angle
+        if i == 0:
+            room1_level = auto_level
+            room2_level = auto_level
+            room3_level = auto_level
+            update_physical_lights()
+            label1.setText(str(auto_level) + '%')
     else:
-        auto_level = 100
-    
-    # Only auto-update if in page 0 and not manually controlled
-    if i == 0:
-        room2_level = auto_level
-        update_physical_lights()
-        label1.setText(str(auto_level) + '%')
+        # Manual mode - just show status
+        if i == 0:
+            label1.setText('M:' + str(room2_level) + '%')
 
     if counter == 30000:
         last_pressure = env3_1.pressure

@@ -74,7 +74,7 @@ border-color:rgba(255,255,255,.4)}
 .nav-card-title{font-size:1.3rem;font-weight:600;margin-bottom:10px;color:#fff}
 .nav-card-desc{font-size:0.9rem;opacity:.8;line-height:1.5}
 
-.wrap{max-width:1200px;margin:0 auto;padding:30px 20px}
+.wrap{max-width:1400px;margin:0 auto;padding:30px 20px}
 .page{display:none}
 .page.active{display:block}
 
@@ -134,17 +134,28 @@ border-radius:7px;position:relative;margin-top:15px;box-shadow:inset 0 2px 4px r
 position:absolute;top:-7px;transform:translateX(-50%);box-shadow:0 3px 10px rgba(0,0,0,.4);transition:left .3s}
 .hg-labels{display:flex;justify-content:space-between;font-size:.8rem;opacity:.6;margin-top:12px}
 
-/* Weather Guide Section */
+/* Weather Guide Section - EXPANDED */
 .weather-guide {
   background: var(--card);
   border-radius: var(--r);
-  padding: 30px;
-  margin-top: 30px;
+  padding: 40px 20px;
+  margin: 30px calc(-50vw + 50%) 30px; /* FULL WIDTH EXPANSION */
+  width: 100vw;
   border: 1px solid rgba(255,255,255,.08);
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+}
+
+.weather-guide-inner {
+  max-width: 1600px;
+  margin: 0 auto;
 }
 
 .weather-guide-title {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 600;
   margin-bottom: 25px;
   text-align: center;
@@ -338,6 +349,7 @@ border-top:1px solid rgba(255,255,255,.1)}
   .led-grid{grid-template-columns:1fr}
   .nav-cards{grid-template-columns:1fr}
   .conditions-grid{grid-template-columns:1fr}
+  .weather-guide{padding:30px 15px}
 }
 </style>
 </head>
@@ -371,7 +383,7 @@ border-top:1px solid rgba(255,255,255,.1)}
       <div class="home-stats">
         <div class="stat-card">
           <div class="stat-icon">🌡️</div>
-          <div class="stat-value" id="homeTemp">--&deg;C</div>
+          <div class="stat-value" id="homeTemp">--°C</div>
           <div class="stat-label">Current Temperature</div>
         </div>
         <div class="stat-card">
@@ -393,7 +405,7 @@ border-top:1px solid rgba(255,255,255,.1)}
       
       <div class="nav-cards">
         <div class="nav-card" onclick="showPage('weather')">
-          <div class="nav-card-icon">��️</div>
+          <div class="nav-card-icon">🌤️</div>
           <div class="nav-card-title">Weather Monitoring</div>
           <div class="nav-card-desc">Real-time environmental data including temperature, humidity, air pressure, and weather forecasting based on sensor readings.</div>
         </div>
@@ -435,11 +447,11 @@ border-top:1px solid rgba(255,255,255,.1)}
         <div class="weather-main">
           <div>
             <span class="weather-temp" id="weatherTemp">--</span>
-            <span class="weather-deg">&deg;C</span>
+            <span class="weather-deg">°C</span>
           </div>
           <div class="weather-desc" id="weatherDesc">Loading...</div>
           <div class="weather-hl">
-            H: <span id="weatherHi">--</span>&deg;C | L: <span id="weatherLo">--</span>&deg;C
+            H: <span id="weatherHi">--</span>°C | L: <span id="weatherLo">--</span>°C
           </div>
         </div>
       </div>
@@ -449,7 +461,7 @@ border-top:1px solid rgba(255,255,255,.1)}
       <div class="cd">
         <div class="ic">🌡️</div>
         <div class="lb">Temperature</div>
-        <div class="vl" id="tv">--<span class="un">&deg;C</span></div>
+        <div class="vl" id="tv">--<span class="un">°C</span></div>
         <div class="su">Current ambient temperature</div>
       </div>
       <div class="cd">
@@ -492,15 +504,15 @@ border-top:1px solid rgba(255,255,255,.1)}
       <div class="chart-info">
         <div class="chart-stat">
           <span class="chart-stat-label">Min:</span>
-          <span class="chart-stat-value" id="tempMin">--&deg;C</span>
+          <span class="chart-stat-value" id="tempMin">--°C</span>
         </div>
         <div class="chart-stat">
           <span class="chart-stat-label">Max:</span>
-          <span class="chart-stat-value" id="tempMax">--&deg;C</span>
+          <span class="chart-stat-value" id="tempMax">--°C</span>
         </div>
         <div class="chart-stat">
           <span class="chart-stat-label">Avg:</span>
-          <span class="chart-stat-value" id="tempAvg">--&deg;C</span>
+          <span class="chart-stat-value" id="tempAvg">--°C</span>
         </div>
         <div class="chart-stat">
           <span class="chart-stat-label">Data Points:</span>
@@ -558,194 +570,196 @@ border-top:1px solid rgba(255,255,255,.1)}
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Weather Conditions Reference Guide -->
+    <!-- Weather Conditions Reference Guide - FULL WIDTH -->
     <div class="weather-guide">
-      <h3 class="weather-guide-title">📚 Weather Conditions Reference Guide</h3>
-      <p style="text-align:center;opacity:0.7;margin-bottom:20px;font-size:0.95rem">
-        Understanding how Temperature, Humidity, and Air Pressure determine weather forecasts
-      </p>
-      
-      <div class="conditions-grid" id="conditionsGrid">
-        <!-- Condition 1 -->
-        <div class="condition-card" data-condition="heavy-rain">
-          <div class="condition-header">
-            <div class="condition-icon">🌧️</div>
-            <div class="condition-name">Heavy Rain Soon</div>
+      <div class="weather-guide-inner">
+        <h3 class="weather-guide-title">📚 Weather Conditions Reference Guide</h3>
+        <p style="text-align:center;opacity:0.7;margin-bottom:20px;font-size:0.95rem">
+          Understanding how Temperature, Humidity, and Air Pressure determine weather forecasts
+        </p>
+        
+        <div class="conditions-grid" id="conditionsGrid">
+          <!-- Condition 1 -->
+          <div class="condition-card" data-condition="heavy-rain">
+            <div class="condition-header">
+              <div class="condition-icon">🌧️</div>
+              <div class="condition-name">Heavy Rain Soon</div>
+            </div>
+            <div class="condition-indicators">
+              <span class="indicator pressure">📉 Pressure: Dropping Fast (&lt;-3 hPa/hr)</span>
+              <span class="indicator humidity">💧 Humidity: Rising (&gt;+5%)</span>
+              <span class="indicator temp">🌡️ Temperature: Variable</span>
+            </div>
+            <div class="condition-description">
+              Strong weather system approaching. Rapid pressure drop combined with increasing humidity indicates heavy precipitation within 1-3 hours.
+            </div>
           </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📉 Pressure: Dropping Fast (&lt;-3 hPa/hr)</span>
-            <span class="indicator humidity">💧 Humidity: Rising (&gt;+5%)</span>
-            <span class="indicator temp">🌡️ Temperature: Variable</span>
-          </div>
-          <div class="condition-description">
-            Strong weather system approaching. Rapid pressure drop combined with increasing humidity indicates heavy precipitation within 1-3 hours.
-          </div>
-        </div>
 
-        <!-- Condition 2 -->
-        <div class="condition-card" data-condition="rain-likely">
-          <div class="condition-header">
-            <div class="condition-icon">����️</div>
-            <div class="condition-name">Rain Likely</div>
+          <!-- Condition 2 -->
+          <div class="condition-card" data-condition="rain-likely">
+            <div class="condition-header">
+              <div class="condition-icon">🌦️</div>
+              <div class="condition-name">Rain Likely</div>
+            </div>
+            <div class="condition-indicators">
+              <span class="indicator pressure">📉 Pressure: Falling (&lt;-2 hPa/30min)</span>
+              <span class="indicator humidity">💧 Humidity: High (&gt;75%)</span>
+              <span class="indicator temp">🌡️ Temperature: Moderate</span>
+            </div>
+            <div class="condition-description">
+              Atmospheric conditions favor precipitation. Sustained pressure decline with high humidity levels indicate rain within 3-6 hours.
+            </div>
           </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📉 Pressure: Falling (&lt;-2 hPa/30min)</span>
-            <span class="indicator humidity">💧 Humidity: High (&gt;75%)</span>
-            <span class="indicator temp">🌡️ Temperature: Moderate</span>
-          </div>
-          <div class="condition-description">
-            Atmospheric conditions favor precipitation. Sustained pressure decline with high humidity levels indicate rain within 3-6 hours.
-          </div>
-        </div>
 
-        <!-- Condition 3 -->
-        <div class="condition-card" data-condition="cloudy">
-          <div class="condition-header">
-            <div class="condition-icon">☁️</div>
-            <div class="condition-name">Cloudy Weather</div>
+          <!-- Condition 3 -->
+          <div class="condition-card" data-condition="cloudy">
+            <div class="condition-header">
+              <div class="condition-icon">☁️</div>
+              <div class="condition-name">Cloudy Weather</div>
+            </div>
+            <div class="condition-indicators">
+              <span class="indicator pressure">📉 Pressure: Declining Steadily</span>
+              <span class="indicator humidity">💧 Humidity: Moderate</span>
+              <span class="indicator temp">🌡️ Temperature: Stable</span>
+            </div>
+            <div class="condition-description">
+              Gradual pressure decrease indicates cloud cover increasing. Overcast skies likely with no immediate precipitation expected.
+            </div>
           </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📉 Pressure: Declining Steadily</span>
-            <span class="indicator humidity">💧 Humidity: Moderate</span>
-            <span class="indicator temp">🌡️ Temperature: Stable</span>
-          </div>
-          <div class="condition-description">
-            Gradual pressure decrease indicates cloud cover increasing. Overcast skies likely with no immediate precipitation expected.
-          </div>
-        </div>
 
-        <!-- Condition 4 -->
-        <div class="condition-card" data-condition="clear-skies">
-          <div class="condition-header">
-            <div class="condition-icon">☀️</div>
-            <div class="condition-name">Clear Skies Ahead</div>
+          <!-- Condition 4 -->
+          <div class="condition-card" data-condition="clear-skies">
+            <div class="condition-header">
+              <div class="condition-icon">☀️</div>
+              <div class="condition-name">Clear Skies Ahead</div>
+            </div>
+            <div class="condition-indicators">
+              <span class="indicator pressure">📈 Pressure: Rising Rapidly (&gt;+3 hPa/hr)</span>
+              <span class="indicator humidity">💧 Humidity: Decreasing</span>
+              <span class="indicator temp">🌡️ Temperature: Variable</span>
+            </div>
+            <div class="condition-description">
+              Strong high-pressure system building. Rapid pressure increase clears clouds and brings sunny weather conditions.
+            </div>
           </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📈 Pressure: Rising Rapidly (&gt;+3 hPa/hr)</span>
-            <span class="indicator humidity">💧 Humidity: Decreasing</span>
-            <span class="indicator temp">🌡️ Temperature: Variable</span>
-          </div>
-          <div class="condition-description">
-            Strong high-pressure system building. Rapid pressure increase clears clouds and brings sunny weather conditions.
-          </div>
-        </div>
 
-        <!-- Condition 5 -->
-        <div class="condition-card" data-condition="improving">
-          <div class="condition-header">
-            <div class="condition-icon">🌤️</div>
-            <div class="condition-name">Weather Improving</div>
+          <!-- Condition 5 -->
+          <div class="condition-card" data-condition="improving">
+            <div class="condition-header">
+              <div class="condition-icon">🌤️</div>
+              <div class="condition-name">Weather Improving</div>
+            </div>
+            <div class="condition-indicators">
+              <span class="indicator pressure">📈 Pressure: Rising Steadily (&gt;+1.5 hPa)</span>
+              <span class="indicator humidity">💧 Humidity: Moderate</span>
+              <span class="indicator temp">🌡️ Temperature: Stable</span>
+            </div>
+            <div class="condition-description">
+              Conditions clearing as pressure rises. Clouds breaking up with improving visibility and reduced precipitation chance.
+            </div>
           </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📈 Pressure: Rising Steadily (&gt;+1.5 hPa)</span>
-            <span class="indicator humidity">💧 Humidity: Moderate</span>
-            <span class="indicator temp">🌡️ Temperature: Stable</span>
-          </div>
-          <div class="condition-description">
-            Conditions clearing as pressure rises. Clouds breaking up with improving visibility and reduced precipitation chance.
-          </div>
-        </div>
 
-        <!-- Condition 6 -->
-        <div class="condition-card" data-condition="fair-stable">
-          <div class="condition-header">
-            <div class="condition-icon">☀️</div>
-            <div class="condition-name">Fair & Stable</div>
+          <!-- Condition 6 -->
+          <div class="condition-card" data-condition="fair-stable">
+            <div class="condition-header">
+              <div class="condition-icon">☀️</div>
+              <div class="condition-name">Fair & Stable</div>
+            </div>
+            <div class="condition-indicators">
+              <span class="indicator pressure">➡️ Pressure: High & Stable (&gt;1013 hPa)</span>
+              <span class="indicator humidity">💧 Humidity: Low (&lt;60%)</span>
+              <span class="indicator temp">🌡️ Temperature: Comfortable</span>
+            </div>
+            <div class="condition-description">
+              Excellent weather conditions. High pressure system with low humidity creates stable, pleasant conditions with clear skies.
+            </div>
           </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">➡️ Pressure: High & Stable (&gt;1013 hPa)</span>
-            <span class="indicator humidity">💧 Humidity: Low (&lt;60%)</span>
-            <span class="indicator temp">🌡️ Temperature: Comfortable</span>
-          </div>
-          <div class="condition-description">
-            Excellent weather conditions. High pressure system with low humidity creates stable, pleasant conditions with clear skies.
-          </div>
-        </div>
 
-        <!-- Condition 7 -->
-        <div class="condition-card" data-condition="unsettled">
-          <div class="condition-header">
-            <div class="condition-icon">🌧️</div>
-            <div class="condition-name">Unsettled Weather</div>
+          <!-- Condition 7 -->
+          <div class="condition-card" data-condition="unsettled">
+            <div class="condition-header">
+              <div class="condition-icon">🌧️</div>
+              <div class="condition-name">Unsettled Weather</div>
+            </div>
+            <div class="condition-indicators">
+              <span class="indicator pressure">📉 Pressure: Low (&lt;1010 hPa)</span>
+              <span class="indicator humidity">💧 Humidity: High (&gt;70%)</span>
+              <span class="indicator temp">🌡️ Temperature: Variable</span>
+            </div>
+            <div class="condition-description">
+              Unstable atmospheric conditions. Low pressure combined with high humidity creates potential for cloudy skies and showers.
+            </div>
           </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📉 Pressure: Low (&lt;1010 hPa)</span>
-            <span class="indicator humidity">💧 Humidity: High (&gt;70%)</span>
-            <span class="indicator temp">🌡️ Temperature: Variable</span>
-          </div>
-          <div class="condition-description">
-            Unstable atmospheric conditions. Low pressure combined with high humidity creates potential for cloudy skies and showers.
-          </div>
-        </div>
 
-        <!-- Condition 8 -->
-        <div class="condition-card" data-condition="cold-front">
-          <div class="condition-header">
-            <div class="condition-icon">❄️</div>
-            <div class="condition-name">Cold Front Moving In</div>
+          <!-- Condition 8 -->
+          <div class="condition-card" data-condition="cold-front">
+            <div class="condition-header">
+              <div class="condition-icon">❄️</div>
+              <div class="condition-name">Cold Front Moving In</div>
+            </div>
+            <div class="condition-indicators">
+              <span class="indicator pressure">📈 Pressure: Rising</span>
+              <span class="indicator humidity">💧 Humidity: Variable</span>
+              <span class="indicator temp">🌡️ Temperature: Dropping (&lt;-1°C)</span>
+            </div>
+            <div class="condition-description">
+              Cold front passage detected. Temperature decrease with rising pressure brings cooler, clearer conditions ahead.
+            </div>
           </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📈 Pressure: Rising</span>
-            <span class="indicator humidity">💧 Humidity: Variable</span>
-            <span class="indicator temp">🌡️ Temperature: Dropping (&lt;-1°C)</span>
-          </div>
-          <div class="condition-description">
-            Cold front passage detected. Temperature decrease with rising pressure brings cooler, clearer conditions ahead.
-          </div>
-        </div>
 
-        <!-- Condition 9 -->
-        <div class="condition-card" data-condition="warm-front">
-          <div class="condition-header">
-            <div class="condition-icon">🌡️</div>
-            <div class="condition-name">Warm Front Approaching</div>
+          <!-- Condition 9 -->
+          <div class="condition-card" data-condition="warm-front">
+            <div class="condition-header">
+              <div class="condition-icon">🌡️</div>
+              <div class="condition-name">Warm Front Approaching</div>
+            </div>
+            <div class="condition-indicators">
+              <span class="indicator pressure">📉 Pressure: Falling</span>
+              <span class="indicator humidity">💧 Humidity: Rising</span>
+              <span class="indicator temp">🌡️ Temperature: Rising (&gt;+1°C)</span>
+            </div>
+            <div class="condition-description">
+              Warm front advancing. Temperature increase with falling pressure develops warmer, more humid conditions.
+            </div>
           </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📉 Pressure: Falling</span>
-            <span class="indicator humidity">💧 Humidity: Rising</span>
-            <span class="indicator temp">🌡️ Temperature: Rising (&gt;+1°C)</span>
-          </div>
-          <div class="condition-description">
-            Warm front advancing. Temperature increase with falling pressure develops warmer, more humid conditions.
-          </div>
-        </div>
 
-        <!-- Condition 10 -->
-        <div class="condition-card" data-condition="stable">
-          <div class="condition-header">
-            <div class="condition-icon">⛅</div>
-            <div class="condition-name">Stable Conditions</div>
+          <!-- Condition 10 -->
+          <div class="condition-card" data-condition="stable">
+            <div class="condition-header">
+              <div class="condition-icon">⛅</div>
+              <div class="condition-name">Stable Conditions</div>
+            </div>
+            <div class="condition-indicators">
+              <span class="indicator pressure">➡️ Pressure: Stable (±0.5 hPa)</span>
+              <span class="indicator humidity">💧 Humidity: Moderate</span>
+              <span class="indicator temp">🌡️ Temperature: Stable</span>
+            </div>
+            <div class="condition-description">
+              Atmospheric equilibrium. No significant changes in pressure, temperature, or humidity. Current weather pattern expected to persist.
+            </div>
           </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">➡️ Pressure: Stable (±0.5 hPa)</span>
-            <span class="indicator humidity">💧 Humidity: Moderate</span>
-            <span class="indicator temp">🌡️ Temperature: Stable</span>
-          </div>
-          <div class="condition-description">
-            Atmospheric equilibrium. No significant changes in pressure, temperature, or humidity. Current weather pattern expected to persist.
-          </div>
-        </div>
 
-        <!-- Condition 11 -->
-        <div class="condition-card" data-condition="partly-cloudy">
-          <div class="condition-header">
-            <div class="condition-icon">⛅</div>
-            <div class="condition-name">Partly Cloudy</div>
-          </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">➡️ Pressure: Variable</span>
-            <span class="indicator humidity">💧 Humidity: Moderate</span>
-            <span class="indicator temp">🌡️ Temperature: Moderate</span>
-          </div>
-          <div class="condition-description">
-            Variable conditions with no strong weather signals. Mix of sun and clouds with no significant atmospheric changes detected.
+          <!-- Condition 11 -->
+          <div class="condition-card" data-condition="partly-cloudy">
+            <div class="condition-header">
+              <div class="condition-icon">⛅</div>
+              <div class="condition-name">Partly Cloudy</div>
+            </div>
+            <div class="condition-indicators">
+              <span class="indicator pressure">➡️ Pressure: Variable</span>
+              <span class="indicator humidity">💧 Humidity: Moderate</span>
+              <span class="indicator temp">🌡️ Temperature: Moderate</span>
+            </div>
+            <div class="condition-description">
+              Variable conditions with no strong weather signals. Mix of sun and clouds with no significant atmospheric changes detected.
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-  </div>
 </div>
 
 <div id="office-page" class="page">
@@ -999,7 +1013,7 @@ border-top:1px solid rgba(255,255,255,.1)}
 </div>
 
 <footer>
-  Smart Office Hub &copy; 2026 | NYP Engineering Project | Powered by M5GO + ThingSpeak + Arduino Mega
+  Smart Office Hub © 2026 | NYP Engineering Project | Powered by M5GO + ThingSpeak + Arduino Mega
 </footer>
 
 <script>
@@ -1433,7 +1447,7 @@ function fetchData() {
         historicalData.timestamps.shift();
       }
 
-      $('tv').innerHTML = temp.toFixed(1) + '<span class="un">&deg;C</span>';
+      $('tv').innerHTML = temp.toFixed(1) + '<span class="un">°C</span>';
       $('hv').innerHTML = hum.toFixed(1) + '<span class="un">%</span>';
       $('pv').innerHTML = pres.toFixed(1) + '<span class="un">hPa</span>';
       
@@ -1467,7 +1481,7 @@ function fetchData() {
         }
       }
       
-      $('homeTemp').innerHTML = temp.toFixed(1) + '&deg;C';
+      $('homeTemp').innerHTML = temp.toFixed(1) + '°C';
       $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
       
       updateOfficeLights(lightLevel);
@@ -1480,7 +1494,7 @@ function fetchData() {
         lightData.push(parseInt(d.feeds[i].field4) || 0);
       }
 
-      drawChart($('c1'), tempData, '#ff6b6b', '&deg;C', 
+      drawChart($('c1'), tempData, '#ff6b6b', '°C', 
                 {min:'tempMin', max:'tempMax', avg:'tempAvg', count:'tempCount'});
       drawChart($('c2'), humData, '#4ecdc4', '%', 
                 {min:'humMin', max:'humMax', avg:'humAvg', count:'humCount'});

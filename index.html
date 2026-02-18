@@ -749,7 +749,7 @@ function updateClock(){
 setInterval(updateClock, 1000);
 updateClock();
 
-// UPDATED: All rooms now follow Field 4 (single light level)
+// UPDATED: 2 rooms - Room 1 (M5Stack in bottom left), Room 2 (RGB LED in bottom right)
 function updateOfficeLights(lightLevel) {
   var bulb2 = $('bulb2');
   var bulb3 = $('bulb3');
@@ -789,6 +789,10 @@ function updateOfficeLights(lightLevel) {
   status3.className = 'room-status off';
   status4.className = 'room-status off';
   
+  // Hide Room 3 and Room 4 (top rooms)
+  room3.style.display = 'none';
+  room4.style.display = 'none';
+  
   var activeRooms = [];
   
   // Determine color based on light level
@@ -803,80 +807,70 @@ function updateOfficeLights(lightLevel) {
     levelText.textContent = 'ECO MODE (25%)';
     levelText.style.color = '#ffff99';
     
-    // Only Room 2 turns on
+    // Only Room 1 (M5Stack - bottom left with bulb icon now)
+    bulb3.classList.add('on');
+    bulb3.style.background = 'radial-gradient(circle, #ffff99, #888800)';
+    room1.style.background = 'rgba(255, 255, 153, 0.12)';
+    status3.textContent = lightLevel + '%';
+    status3.className = 'room-status lit';
+    
+    activeRooms = ['Room 1 (M5Stack)'];
+  } else if(lightLevel <= 50) {
+    levelText.textContent = 'NORMAL MODE (50%)';
+    levelText.style.color = '#ffff99';
+    
+    // Room 1 (M5Stack)
+    bulb3.classList.add('on');
+    bulb3.style.background = 'radial-gradient(circle, #ffffaa, #aaaa00)';
+    room1.style.background = 'rgba(255, 255, 170, 0.18)';
+    status3.textContent = lightLevel + '%';
+    status3.className = 'room-status lit';
+    
+    // Room 2 (RGB LED)
     bulb2.classList.add('on');
     bulb2.style.background = 'radial-gradient(circle, #ffff99, #888800)';
     room2.style.background = 'rgba(255, 255, 153, 0.12)';
     status2.textContent = lightLevel + '%';
     status2.className = 'room-status lit';
     
-    activeRooms = ['Room 2'];
-  } else if(lightLevel <= 50) {
-    levelText.textContent = 'NORMAL MODE (50%)';
-    levelText.style.color = '#ffff99';
-    
-    // Room 2 and Room 3
-    bulb2.classList.add('on');
-    bulb2.style.background = 'radial-gradient(circle, #ffffaa, #aaaa00)';
-    room2.style.background = 'rgba(255, 255, 170, 0.18)';
-    status2.textContent = lightLevel + '%';
-    status2.className = 'room-status lit';
-    
-    bulb3.classList.add('on');
-    bulb3.style.background = 'radial-gradient(circle, #ffff99, #888800)';
-    room3.style.background = 'rgba(255, 255, 153, 0.12)';
-    status3.textContent = lightLevel + '%';
-    status3.className = 'room-status lit';
-    
-    activeRooms = ['Room 2', 'Room 3'];
+    activeRooms = ['Room 1 (M5Stack)', 'Room 2 (RGB LED)'];
   } else if(lightLevel <= 75) {
     levelText.textContent = 'BRIGHT MODE (75%)';
     levelText.style.color = '#ccffff';
     
-    // Room 2, 3, and 4
+    // Room 1 (M5Stack)
+    bulb3.classList.add('on');
+    bulb3.style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
+    room1.style.background = 'rgba(153, 255, 255, 0.18)';
+    status3.textContent = lightLevel + '%';
+    status3.className = 'room-status lit';
+    
+    // Room 2 (RGB LED)
     bulb2.classList.add('on');
     bulb2.style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
     room2.style.background = 'rgba(153, 255, 255, 0.18)';
     status2.textContent = lightLevel + '%';
     status2.className = 'room-status lit';
     
-    bulb3.classList.add('on');
-    bulb3.style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
-    room3.style.background = 'rgba(153, 255, 255, 0.18)';
-    status3.textContent = lightLevel + '%';
-    status3.className = 'room-status lit';
-    
-    bulb4.classList.add('on');
-    bulb4.style.background = 'radial-gradient(circle, #99ffff, #0088aa)';
-    room4.style.background = 'rgba(153, 255, 255, 0.18)';
-    status4.textContent = lightLevel + '%';
-    status4.className = 'room-status lit';
-    
-    activeRooms = ['Room 2', 'Room 3', 'Room 4'];
+    activeRooms = ['Room 1 (M5Stack)', 'Room 2 (RGB LED)'];
   } else {
     levelText.textContent = 'MAXIMUM (100%)';
     levelText.style.color = '#ffffff';
     
-    // All rooms
+    // Both rooms
+    bulb3.classList.add('on');
+    bulb3.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
+    room1.style.background = 'rgba(255, 255, 255, 0.28)';
+    status3.textContent = lightLevel + '%';
+    status3.className = 'room-status lit';
+    
     bulb2.classList.add('on');
     bulb2.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
     room2.style.background = 'rgba(255, 255, 255, 0.28)';
     status2.textContent = lightLevel + '%';
     status2.className = 'room-status lit';
     
-    bulb3.classList.add('on');
-    bulb3.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
-    room3.style.background = 'rgba(255, 255, 255, 0.28)';
-    status3.textContent = lightLevel + '%';
-    status3.className = 'room-status lit';
-    
-    bulb4.classList.add('on');
-    bulb4.style.background = 'radial-gradient(circle, #ffffff, #cccccc)';
-    room4.style.background = 'rgba(255, 255, 255, 0.28)';
-    status4.textContent = lightLevel + '%';
-    status4.className = 'room-status lit';
-    
-    activeRooms = ['Room 2', 'Room 3', 'Room 4'];
+    activeRooms = ['Room 1 (M5Stack)', 'Room 2 (RGB LED)'];
   }
   
   if(activeRooms.length === 0) {
@@ -1082,8 +1076,6 @@ function fetchData() {
       var temp = parseFloat(f.field1) || 0;
       var hum = parseFloat(f.field2) || 0;
       var pres = parseFloat(f.field3) || 0;
-      
-      // UPDATED: Only read Field 4 for all rooms
       var lightLevel = parseInt(f.field4) || 0;
 
       historicalData.pressure.push(pres);
@@ -1132,7 +1124,6 @@ function fetchData() {
       $('homeTemp').innerHTML = temp.toFixed(1) + '&deg;C';
       $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
       
-      // UPDATED: All rooms follow Field 4
       updateOfficeLights(lightLevel);
 
       var tempData = [], humData = [], presData = [], lightData = [];

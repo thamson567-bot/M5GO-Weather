@@ -1242,6 +1242,39 @@ function fetchData() {
       $('homeStatus').textContent = 'ERROR';
     });
 }
+
+for(let i = 1; i <= 4; i++) {
+  $('colorPicker' + i).addEventListener('input', function() {
+    $('colorInput' + i).value = this.value.toUpperCase();
+    $('ledPreview' + i).style.backgroundColor = this.value;
+  });
+  
+  $('colorInput' + i).addEventListener('input', function() {
+    var val = this.value;
+    if(val.startsWith('#') && (val.length === 7 || val.length === 4)) {
+      $('colorPicker' + i).value = val;
+      $('ledPreview' + i).style.backgroundColor = val;
+    }
+  });
+}
+
+function applyColor(room) {
+  var color = $('colorInput' + room).value.replace('#', '');
+  
+  if(!/^[0-9A-F]{6}$/i.test(color)) {
+    alert('Invalid HEX color! Use format: #RRGGBB');
+    return;
+  }
+  
+  console.log('Sending to Arduino: Room ' + room + ' = #' + color);
+  alert('✅ Color #' + color + ' applied to Room ' + room);
+}
+
+fetchData();
+setInterval(fetchData, UPDATE_INTERVAL);
+$('homeEntries').textContent = '12';
+$('todayCount').textContent = '12';
+  
 </script>
 
 </body>

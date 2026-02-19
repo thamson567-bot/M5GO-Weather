@@ -5,16 +5,10 @@ var UPDATE_INTERVAL = 5000;
 var fc = 0;
 var currentPage = 'home';
 var minTemp = 999, maxTemp = -999;
-
-// GLOBAL VARIABLE: This remembers the light level even when M5GO skips sending it
 var globalLastLight = 0; 
 
 var historicalData = {
-  pressure: [],
-  temperature: [],
-  humidity: [],
-  timestamps: [],
-  maxHistory: 720
+  pressure: [], temperature: [], humidity: [], timestamps: [], maxHistory: 720
 };
 
 var currentForecastCode = -1;
@@ -33,6 +27,8 @@ const weatherConditions = [
   { id: 'stable', icon: '⛅', name: 'Stable Conditions', p: '➡️ Pressure: Stable (±0.5 hPa)', h: '💧 Humidity: Moderate', t: '🌡️ Temperature: Stable', desc: 'Atmospheric equilibrium. No significant changes in pressure, temperature, or humidity. Current weather pattern expected to persist.' },
   { id: 'partly-cloudy', icon: '⛅', name: 'Partly Cloudy', p: '➡️ Pressure: Variable', h: '💧 Humidity: Moderate', t: '🌡️ Temperature: Moderate', desc: 'Variable conditions with no strong weather signals. Mix of sun and clouds with no significant atmospheric changes detected.' }
 ];
+
+function $(id){return document.getElementById(id)}
 
 function renderWeatherCards() {
   const grid = $('conditionsGrid');
@@ -60,13 +56,12 @@ function sendForecastToThingSpeak(forecastCode) {
   fetch(url).catch(err => console.error(err));
 }
 
-function $(id){return document.getElementById(id)}
-
 function showPage(page) {
   currentPage = page;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  $(page + '-page').classList.add('active');
+  var targetPage = $(page + '-page');
+  if(targetPage) targetPage.classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(b => {
     if(b.textContent.toLowerCase().includes(page) || (page === 'home' && b.textContent.includes('Home'))) {
       b.classList.add('active');
@@ -77,7 +72,8 @@ function showPage(page) {
 function updateClock(){
   var n = new Date();
   var h = n.getHours(), m = n.getMinutes(), s = n.getSeconds();
-  $('clockHeader').textContent = (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  var clockEl = $('clockHeader');
+  if(clockEl) clockEl.textContent = (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
 }
 setInterval(updateClock, 1000);
 updateClock();
@@ -92,13 +88,12 @@ function updateOfficeLights(lightValue) {
   var levelText = $('lightLevelText');
   var statusText = $('lightStatus');
   
-  // Reset
   if(icon1) { icon1.classList.remove('on'); icon1.style.boxShadow = 'none'; icon1.style.borderColor = '#555'; }
   if(icon2) { icon2.classList.remove('on'); icon2.style.boxShadow = 'none'; icon2.style.borderColor = '#555'; }
-  room1bg.style.background = '#2a2a3e';
-  room2bg.style.background = '#2a2a3e';
-  status1.textContent = 'OFF'; status1.className = 'room-status off';
-  status2.textContent = 'OFF'; status2.className = 'room-status off';
+  if(room1bg) room1bg.style.background = '#2a2a3e';
+  if(room2bg) room2bg.style.background = '#2a2a3e';
+  if(status1) { status1.textContent = 'OFF'; status1.className = 'room-status off'; }
+  if(status2) { status2.textContent = 'OFF'; status2.className = 'room-status off'; }
   
   var activeRooms = [];
   
@@ -109,36 +104,31 @@ function updateOfficeLights(lightValue) {
     var glowStyle = '0 0 ' + (intensity) + 'px rgba(255, 255, 153, ' + opacity + ')';
     var roomBgStyle = 'rgba(255, 255, 153, ' + (opacity * 0.25) + ')';
     
-    if(icon1) {
-      icon1.classList.add('on');
-      icon1.style.boxShadow = glowStyle;
-      icon1.style.borderColor = color;
+    if(icon1 && room1bg && status1) {
+      icon1.classList.add('on'); icon1.style.boxShadow = glowStyle; icon1.style.borderColor = color;
+      room1bg.style.background = roomBgStyle;
+      status1.textContent = intensity + '%'; status1.className = 'room-status lit';
+      activeRooms.push('Room 1 (M5)');
     }
-    room1bg.style.background = roomBgStyle;
-    status1.textContent = intensity + '%';
-    status1.className = 'room-status lit';
-    activeRooms.push('Room 1 (M5)');
     
-    if(icon2) {
-      icon2.classList.add('on');
-      icon2.style.boxShadow = glowStyle;
-      icon2.style.borderColor = color;
+    if(icon2 && room2bg && status2) {
+      icon2.classList.add('on'); icon2.style.boxShadow = glowStyle; icon2.style.borderColor = color;
+      room2bg.style.background = roomBgStyle;
+      status2.textContent = intensity + '%'; status2.className = 'room-status lit';
+      activeRooms.push('Room 2 (Arduino)');
     }
-    room2bg.style.background = roomBgStyle;
-    status2.textContent = intensity + '%';
-    status2.className = 'room-status lit';
-    activeRooms.push('Room 2 (Arduino)');
   }
   
-  if(lightValue === 0) {
-    levelText.textContent = 'OFF (0%)';
-    levelText.style.color = '#888';
-    statusText.textContent = 'All lights are OFF';
-  } else {
-    var lMode = lightValue <= 25 ? 'ECO' : lightValue <= 50 ? 'NORMAL' : lightValue <= 75 ? 'BRIGHT' : 'MAX';
-    levelText.textContent = lMode + ' (' + lightValue + '%)';
-    levelText.style.color = lightValue <= 25 ? '#ffd93d' : lightValue <= 50 ? '#4ecdc4' : '#ff6b6b';
-    statusText.textContent = activeRooms.join(' & ') + ' active';
+  if(levelText && statusText) {
+    if(lightValue === 0) {
+      levelText.textContent = 'OFF (0%)'; levelText.style.color = '#888';
+      statusText.textContent = 'All lights are OFF';
+    } else {
+      var lMode = lightValue <= 25 ? 'ECO' : lightValue <= 50 ? 'NORMAL' : lightValue <= 75 ? 'BRIGHT' : 'MAX';
+      levelText.textContent = lMode + ' (' + lightValue + '%)';
+      levelText.style.color = lightValue <= 25 ? '#ffd93d' : lightValue <= 50 ? '#4ecdc4' : '#ff6b6b';
+      statusText.textContent = activeRooms.join(' & ') + ' active';
+    }
   }
 }
 
@@ -176,9 +166,12 @@ function drawChart(canvas, data, color, unit, statsIds) {
   c.textAlign = 'left'; c.fillText(mn.toFixed(1) + unit, 8, H - 8);
   c.textAlign = 'right'; c.fillText(mx.toFixed(1) + unit, W - 8, 20*dpr);
   
+  // SAFE UI UPDATE: Only updates if the HTML element exists
   if(statsIds) {
-    $(statsIds.min).innerHTML = mn.toFixed(1) + unit; $(statsIds.max).innerHTML = mx.toFixed(1) + unit;
-    $(statsIds.avg).innerHTML = avg.toFixed(1) + unit; if(statsIds.count) $(statsIds.count).textContent = data.length;
+    if($(statsIds.min)) $(statsIds.min).innerHTML = mn.toFixed(1) + unit;
+    if($(statsIds.max)) $(statsIds.max).innerHTML = mx.toFixed(1) + unit;
+    if(statsIds.avg && $(statsIds.avg)) $(statsIds.avg).innerHTML = avg.toFixed(1) + unit; 
+    if(statsIds.count && $(statsIds.count)) $(statsIds.count).textContent = data.length;
   }
 }
 
@@ -233,20 +226,22 @@ function fetchData() {
         historicalData.pressure.shift(); historicalData.temperature.shift(); historicalData.humidity.shift();
       }
 
-      $('tv').innerHTML = temp.toFixed(1) + '<span class="un">°C</span>';
-      $('hv').innerHTML = hum.toFixed(1) + '<span class="un">%</span>';
-      $('pv').innerHTML = pres.toFixed(1) + '<span class="un">hPa</span>';
+      // SAFE UI UPDATES
+      if($('tv')) $('tv').innerHTML = temp.toFixed(1) + '<span class="un">°C</span>';
+      if($('hv')) $('hv').innerHTML = hum.toFixed(1) + '<span class="un">%</span>';
+      if($('pv')) $('pv').innerHTML = pres.toFixed(1) + '<span class="un">hPa</span>';
       
-      $('weatherTemp').textContent = temp.toFixed(1);
+      if($('weatherTemp')) $('weatherTemp').textContent = temp.toFixed(1);
       if(temp < minTemp) minTemp = temp; if(temp > maxTemp) maxTemp = temp;
-      $('weatherHi').textContent = maxTemp.toFixed(1); $('weatherLo').textContent = minTemp.toFixed(1);
+      if($('weatherHi')) $('weatherHi').textContent = maxTemp.toFixed(1); 
+      if($('weatherLo')) $('weatherLo').textContent = minTemp.toFixed(1);
       
       var advancedForecast = getAdvancedForecast(temp, hum, pres);
-      $('forecast').innerHTML = advancedForecast.icon + ' ' + advancedForecast.text;
+      if($('forecast')) $('forecast').innerHTML = advancedForecast.icon + ' ' + advancedForecast.text;
       if(advancedForecast.code !== currentForecastCode) currentForecastCode = advancedForecast.code;
       highlightCurrentCondition(advancedForecast.text);
-      $('homeTemp').innerHTML = temp.toFixed(1) + '°C';
-      $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
+      if($('homeTemp')) $('homeTemp').innerHTML = temp.toFixed(1) + '°C';
+      if($('hp')) $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
 
       var tempData = [], humData = [], presData = [], lightData = [];
       
@@ -271,19 +266,24 @@ function fetchData() {
       ];
       chartConfigs.forEach(cfg => drawChart($(cfg.canvas), cfg.data, cfg.color, cfg.unit, cfg.stats));
       
-      $('lightMode').textContent = globalLastLight === 0 ? 'OFF' : globalLastLight <= 50 ? 'ECO' : 'MAX';
-      $('st').className = $('st2').className = $('st3').className = $('st4').className = 'sd ok';
-      $('su').textContent = 'Live · Updated ' + fc + ' times';
-      $('homeStatus').textContent = 'LIVE';
+      if($('lightMode')) $('lightMode').textContent = globalLastLight === 0 ? 'OFF' : globalLastLight <= 50 ? 'ECO' : 'MAX';
+      if($('st')) $('st').className = 'sd ok';
+      if($('st2')) $('st2').className = 'sd ok';
+      if($('st3')) $('st3').className = 'sd ok';
+      if($('st4')) $('st4').className = 'sd ok';
+      if($('su')) $('su').textContent = 'Live · Updated ' + fc + ' times';
+      if($('homeStatus')) $('homeStatus').textContent = 'LIVE';
     })
     .catch(err => {
       console.error(err);
-      $('st').className = $('st2').className = $('st3').className = $('st4').className = 'sd er';
-      $('su').textContent = 'Error: ' + err.message;
+      if($('st')) $('st').className = 'sd er';
+      if($('st2')) $('st2').className = 'sd er';
+      if($('st3')) $('st3').className = 'sd er';
+      if($('st4')) $('st4').className = 'sd er';
+      if($('su')) $('su').textContent = 'Error: ' + err.message;
     });
 }
 
-// BUG FIXED HERE: Only look for elements that actually exist in the updated HTML
 for(let i = 1; i <= 2; i++) {
   let picker = $('colorPicker' + i);
   let preview = $('ledPreview' + i);
@@ -297,9 +297,7 @@ for(let i = 1; i <= 2; i++) {
 function applyColor(room) {
   var picker = $('colorPicker' + room);
   if(picker) {
-    var color = picker.value;
-    console.log('Sending to Arduino: Room ' + room + ' = ' + color);
-    alert('✅ Color ' + color + ' applied to Room ' + room);
+    alert('✅ Color ' + picker.value + ' applied to Room ' + room);
   }
 }
 

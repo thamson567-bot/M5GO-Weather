@@ -50,12 +50,6 @@ function renderWeatherCards() {
 }
 renderWeatherCards();
 
-function sendForecastToThingSpeak(forecastCode) {
-  var WRITE_KEY = 'W0R5AL9YS3DDDJHL';
-  var url = 'https://api.thingspeak.com/update?api_key=' + WRITE_KEY + '&field7=' + forecastCode;
-  fetch(url).catch(err => console.error(err));
-}
-
 function showPage(page) {
   currentPage = page;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -79,8 +73,8 @@ setInterval(updateClock, 1000);
 updateClock();
 
 function updateOfficeLights(lightValue) {
-  var icon1 = $('bulb2'); // M5Stack Room
-  var icon2 = $('bulb4'); // Arduino Room
+  var icon1 = $('bulb2'); 
+  var icon2 = $('bulb4'); 
   var room1bg = $('room2bg');
   var room2bg = $('room4bg');
   var status1 = $('status2');
@@ -108,16 +102,19 @@ function updateOfficeLights(lightValue) {
       icon1.classList.add('on'); icon1.style.boxShadow = glowStyle; icon1.style.borderColor = color;
       room1bg.style.background = roomBgStyle;
       status1.textContent = intensity + '%'; status1.className = 'room-status lit';
-      activeRooms.push('Room 1 (M5)');
+      activeRooms.push('Room 1');
     }
     
     if(icon2 && room2bg && status2) {
       icon2.classList.add('on'); icon2.style.boxShadow = glowStyle; icon2.style.borderColor = color;
       room2bg.style.background = roomBgStyle;
       status2.textContent = intensity + '%'; status2.className = 'room-status lit';
-      activeRooms.push('Room 2 (Arduino)');
+      activeRooms.push('Room 2');
     }
   }
+  
+  // FIX: Update Home Page Active Lights Tracker
+  if($('homeLights')) $('homeLights').textContent = activeRooms.length;
   
   if(levelText && statusText) {
     if(lightValue === 0) {
@@ -166,7 +163,6 @@ function drawChart(canvas, data, color, unit, statsIds) {
   c.textAlign = 'left'; c.fillText(mn.toFixed(1) + unit, 8, H - 8);
   c.textAlign = 'right'; c.fillText(mx.toFixed(1) + unit, W - 8, 20*dpr);
   
-  // SAFE UI UPDATE: Only updates if the HTML element exists
   if(statsIds) {
     if($(statsIds.min)) $(statsIds.min).innerHTML = mn.toFixed(1) + unit;
     if($(statsIds.max)) $(statsIds.max).innerHTML = mx.toFixed(1) + unit;
@@ -192,7 +188,7 @@ function getAdvancedForecast(currentTemp, currentHum, currentPres) {
 
 function highlightCurrentCondition(forecastText) {
   document.querySelectorAll('.condition-card').forEach(card => card.classList.remove('active'));
-  document.querySelectorAll('.current-badge').forEach(badge => badge.remove());
+  // Removed the line that adds the "CURRENT" text badge here.
   
   var conditionMap = { 'Heavy Rain Soon': 'heavy-rain', 'Clear Skies Ahead': 'clear-skies', 'Fair & Stable': 'fair-stable', 'Partly Cloudy': 'partly-cloudy' };
   var conditionKey = conditionMap[forecastText];
@@ -201,8 +197,6 @@ function highlightCurrentCondition(forecastText) {
     var activeCard = document.querySelector('.condition-card[data-condition="' + conditionKey + '"]');
     if(activeCard) {
       activeCard.classList.add('active');
-      var badge = document.createElement('span'); badge.className = 'current-badge'; badge.textContent = 'CURRENT';
-      activeCard.querySelector('.condition-name').appendChild(badge);
     }
   }
 }
@@ -226,7 +220,6 @@ function fetchData() {
         historicalData.pressure.shift(); historicalData.temperature.shift(); historicalData.humidity.shift();
       }
 
-      // SAFE UI UPDATES
       if($('tv')) $('tv').innerHTML = temp.toFixed(1) + '<span class="un">°C</span>';
       if($('hv')) $('hv').innerHTML = hum.toFixed(1) + '<span class="un">%</span>';
       if($('pv')) $('pv').innerHTML = pres.toFixed(1) + '<span class="un">hPa</span>';
@@ -236,6 +229,17 @@ function fetchData() {
       if($('weatherHi')) $('weatherHi').textContent = maxTemp.toFixed(1); 
       if($('weatherLo')) $('weatherLo').textContent = minTemp.toFixed(1);
       
+      // FIX: Restored the weather icon logic that was causing infinite loading
+      var icon = '🌤️', desc = 'Pleasant';
+      if(temp < 10) { icon = '❄️'; desc = 'Very Cold'; }
+      else if(temp < 18) { icon = '🌥️'; desc = 'Cold'; }
+      else if(temp < 25) { icon = '🌤️'; desc = 'Comfortable'; }
+      else if(temp < 30) { icon = '🌞'; desc = 'Warm'; }
+      else { icon = '🔥'; desc = 'Hot'; }
+      
+      if($('weatherIcon')) $('weatherIcon').textContent = icon;
+      if($('weatherDesc')) $('weatherDesc').textContent = desc;
+
       var advancedForecast = getAdvancedForecast(temp, hum, pres);
       if($('forecast')) $('forecast').innerHTML = advancedForecast.icon + ' ' + advancedForecast.text;
       if(advancedForecast.code !== currentForecastCode) currentForecastCode = advancedForecast.code;
@@ -245,10 +249,27 @@ function fetchData() {
 
       var tempData = [], humData = [], presData = [], lightData = [];
       
+      // FIX: Setup trackers so charts do not drop to zero when M5GO skips sending data
+      var lastT = null, lastH = null, lastP = null;
+      
+      // Find the first valid number in the historical array to avoid starting at zero
       for(var i = 0; i < d.feeds.length; i++) {
-        tempData.push(parseFloat(d.feeds[i].field1) || 0);
-        humData.push(parseFloat(d.feeds[i].field2) || 0);
-        presData.push(parseFloat(d.feeds[i].field3) || 0);
+        if(lastT === null && d.feeds[i].field1 != null) lastT = parseFloat(d.feeds[i].field1);
+        if(lastH === null && d.feeds[i].field2 != null) lastH = parseFloat(d.feeds[i].field2);
+        if(lastP === null && d.feeds[i].field3 != null) lastP = parseFloat(d.feeds[i].field3);
+      }
+      
+      if(lastT === null) lastT = 0; if(lastH === null) lastH = 0; if(lastP === null) lastP = 0;
+
+      // Populate charts with values that carry forward if empty
+      for(var i = 0; i < d.feeds.length; i++) {
+        if (d.feeds[i].field1 != null) lastT = parseFloat(d.feeds[i].field1);
+        if (d.feeds[i].field2 != null) lastH = parseFloat(d.feeds[i].field2);
+        if (d.feeds[i].field3 != null) lastP = parseFloat(d.feeds[i].field3);
+        
+        tempData.push(lastT);
+        humData.push(lastH);
+        presData.push(lastP);
         
         if (d.feeds[i].field4 !== null && d.feeds[i].field4 !== "") {
           globalLastLight = parseInt(d.feeds[i].field4) || 0;
@@ -266,7 +287,6 @@ function fetchData() {
       ];
       chartConfigs.forEach(cfg => drawChart($(cfg.canvas), cfg.data, cfg.color, cfg.unit, cfg.stats));
       
-      if($('lightMode')) $('lightMode').textContent = globalLastLight === 0 ? 'OFF' : globalLastLight <= 50 ? 'ECO' : 'MAX';
       if($('st')) $('st').className = 'sd ok';
       if($('st2')) $('st2').className = 'sd ok';
       if($('st3')) $('st3').className = 'sd ok';
@@ -286,10 +306,21 @@ function fetchData() {
 
 for(let i = 1; i <= 2; i++) {
   let picker = $('colorPicker' + i);
+  let input = $('colorInput' + i);
   let preview = $('ledPreview' + i);
-  if(picker && preview) {
+  
+  if(picker && preview && input) {
     picker.addEventListener('input', function() {
+      input.value = this.value.toUpperCase();
       preview.style.backgroundColor = this.value;
+    });
+    
+    input.addEventListener('input', function() {
+      var val = this.value;
+      if(val.startsWith('#') && (val.length === 7 || val.length === 4)) {
+        picker.value = val;
+        preview.style.backgroundColor = val;
+      }
     });
   }
 }

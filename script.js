@@ -136,77 +136,16 @@ function updateOfficeLights(lightValue) {
   }
 }
 
-function drawChart(canvas, data, color, unit, statsIds) {
-  if(!canvas || data.length === 0) return;
-  
-  var c = canvas.getContext('2d');
-  var dpr = window.devicePixelRatio || 1;
-  var W = canvas.clientWidth;
-  var H = canvas.clientHeight;
-  
-  canvas.width = W * dpr;
-  canvas.height = H * dpr;
-  c.scale(dpr, dpr);
-  
-  c.clearRect(0, 0, W, H);
-  
-  var mn = Math.min(...data);
-  var mx = Math.max(...data);
-  var range = mx - mn || 1;
-  var sum = data.reduce((a,b) => a+b, 0);
-  var avg = sum / data.length;
-  
-  var pts = [];
-  for(var i = 0; i < data.length; i++) {
-    var x = (i / (data.length - 1)) * W;
-    var y = H - ((data[i] - mn) / range) * (H - 40);
-    pts.push([x, y]);
-  }
-  
-  var gradient = c.createLinearGradient(0, 0, 0, H);
-  gradient.addColorStop(0, color + '40');
-  gradient.addColorStop(1, color + '00');
-  c.fillStyle = gradient;
-  c.beginPath();
-  c.moveTo(pts[0][0], H);
-  for(var i = 0; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]);
-  c.lineTo(pts[pts.length-1][0], H);
-  c.closePath();
-  c.fill();
+const chartConfigs = [
+  { canvas: 'c1', data: tempData, color: '#ff6b6b', unit: '°C', stats: {min:'tempMin', max:'tempMax', avg:'tempAvg', count:'tempCount'} },
+  { canvas: 'c2', data: humData, color: '#4ecdc4', unit: '%', stats: {min:'humMin', max:'humMax', avg:'humAvg', count:'humCount'} },
+  { canvas: 'c3', data: presData, color: '#ffd93d', unit: 'hPa', stats: {min:'presMin', max:'presMax', avg:'presAvg', count:null} },
+  { canvas: 'c4', data: lightData, color: '#ffd93d', unit: '%', stats: {min:'lightMin', max:'lightMax', avg:'lightAvg', count:null} }
+];
 
-  c.strokeStyle = color;
-  c.lineWidth = 3 * dpr;
-  c.lineJoin = 'round';
-  c.lineCap = 'round';
-  c.beginPath();
-  c.moveTo(pts[0][0], pts[0][1]);
-  for(var i = 1; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]);
-  c.stroke();
-
-  for(var i = 0; i < pts.length; i++) {
-    c.fillStyle = color;
-    c.beginPath();
-    c.arc(pts[i][0], pts[i][1], 4*dpr, 0, Math.PI*2);
-    c.fill();
-    c.strokeStyle = '#1a1a2e';
-    c.lineWidth = 2*dpr;
-    c.stroke();
-  }
-
-  c.fillStyle = 'rgba(255,255,255,.7)';
-  c.font = (12*dpr) + 'px sans-serif';
-  c.textAlign = 'left';
-  c.fillText(mn.toFixed(1) + unit, 8, H - 8);
-  c.textAlign = 'right';
-  c.fillText(mx.toFixed(1) + unit, W - 8, 20*dpr);
-  
-  if(statsIds) {
-    $(statsIds.min).innerHTML = mn.toFixed(1) + unit;
-    $(statsIds.max).innerHTML = mx.toFixed(1) + unit;
-    $(statsIds.avg).innerHTML = avg.toFixed(1) + unit;
-    if(statsIds.count) $(statsIds.count).textContent = data.length;
-  }
-}
+chartConfigs.forEach(cfg => {
+  drawChart($(cfg.canvas), cfg.data, cfg.color, cfg.unit, cfg.stats);
+});
 
 function getAdvancedForecast(currentTemp, currentHum, currentPres) {
   var forecast = {

@@ -1137,9 +1137,9 @@ function updateOfficeLights(room1Light, room2Light, room3Light) {
     code: 0  // NEW: Weather forecast code (0-11)
   };
   
-  if(historicalData.pressure.length < 120) {
+  if(historicalData.pressure.length < 12) {
     forecast.text = 'Collecting Data...';
-    forecast.details = 'Need ' + Math.floor((120 - historicalData.pressure.length) * 5 / 60) + ' more minutes';
+    forecast.details = 'Need ' + Math.floor((12 - historicalData.pressure.length) * 5 / 60) + ' more minutes';
     forecast.code = 0;
     return forecast;
   }

@@ -1566,6 +1566,36 @@ $('homeEntries').textContent = '12';
 $('todayCount').textContent = '12';
 
 console.log('✅ Weather forecast system initialized. Codes will be sent to Field 7.');
+
+// Test function to continuously send 0 to Field 7
+function testSendZero() {
+  var WRITE_KEY = 'W0R5AL9YS3DDDJHL';
+  var url = 'https://api.thingspeak.com/update?api_key=' + WRITE_KEY + '&field7=0';
+  
+  console.log('🧪 [TEST] Sending 0 to Field 7...');
+  
+  fetch(url)
+    .then(res => res.text())
+    .then(data => {
+      if(data.trim() !== '0') {
+        console.log('✅ [TEST] Success! Entry ID: ' + data);
+      } else {
+        console.error('❌ [TEST] Failed - ThingSpeak returned 0');
+      }
+    })
+    .catch(err => {
+      console.error('❌ [TEST] Error:', err);
+    });
+}
+
+// Send 0 every 20 seconds (ThingSpeak free limit is 15 seconds)
+setInterval(testSendZero, 20000);
+
+// Also send immediately on page load
+testSendZero();
+
+console.log('🧪 Test mode: Sending 0 to Field 7 every 20 seconds');
+  
 </script>
 
 </body>

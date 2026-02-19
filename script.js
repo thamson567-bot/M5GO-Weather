@@ -409,7 +409,14 @@ function fetchData() {
       var hum = parseFloat(f.field2) || 0;
       var pres = parseFloat(f.field3) || 0;
       
-      var lightIntensity = parseInt(f.field4) || 0;
+      // Scan backwards through the last 30 feeds to find the most recent light reading
+      var lightIntensity = 0;
+      for (var j = d.feeds.length - 1; j >= 0; j--) {
+        if (d.feeds[j].field4 != null) {
+          lightIntensity = parseInt(d.feeds[j].field4) || 0;
+          break;
+        }
+      }
 
       historicalData.pressure.push(pres);
       historicalData.temperature.push(temp);
@@ -472,12 +479,18 @@ function fetchData() {
       updateOfficeLights(lightIntensity);
 
       var tempData = [], humData = [], presData = [], lightData = [];
+      var lastKnownLight = 0; // Tracks the light level even when null
+    
       for(var i = 0; i < d.feeds.length; i++) {
         tempData.push(parseFloat(d.feeds[i].field1) || 0);
         humData.push(parseFloat(d.feeds[i].field2) || 0);
         presData.push(parseFloat(d.feeds[i].field3) || 0);
-        var currentLight = parseInt(d.feeds[i].field4) || 0;
-        lightData.push(currentLight);
+        
+      // If field4 has data, update our tracker. If null, keep the previous value.
+        if (d.feeds[i].field4 != null) {
+          lastKnownLight = parseInt(d.feeds[i].field4) || 0;
+        }
+        lightData.push(lastKnownLight);
       }
 
       // 2. DRY Chart Generator

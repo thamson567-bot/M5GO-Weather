@@ -1449,16 +1449,26 @@ function fetchData() {
   var url = 'https://api.thingspeak.com/channels/' + CHANNEL + 
             '/feeds.json?api_key=' + READ_KEY + '&results=30';
   
+  console.log('Fetching from:', url); // DEBUG
+  
   fetch(url)
     .then(res => {
+      console.log('Response status:', res.status); // DEBUG
       if (!res.ok) throw new Error('HTTP error! status: ' + res.status);
       return res.json();
     })
     .then(d => {
-      if(!d.feeds || d.feeds.length === 0) throw new Error('No data feeds available');
+      console.log('Received data:', d); // DEBUG
+      
+      if(!d.feeds || d.feeds.length === 0) {
+        console.error('No feeds in data!'); // DEBUG
+        throw new Error('No data feeds available');
+      }
       
       fc++;
       var f = d.feeds[d.feeds.length - 1];
+      
+      console.log('Latest feed:', f); // DEBUG
       
       var temp = parseFloat(f.field1) || 0;
       var hum = parseFloat(f.field2) || 0;
@@ -1466,6 +1476,8 @@ function fetchData() {
       var room3Light = parseInt(f.field4) || 0;
       var room1Light = parseInt(f.field5) || 0;
       var room2Light = parseInt(f.field6) || 0;
+
+      console.log('Parsed values - Temp:', temp, 'Hum:', hum, 'Pres:', pres, 'Lights:', room1Light, room2Light, room3Light); // DEBUG
 
       historicalData.pressure.push(pres);
       historicalData.temperature.push(temp);
@@ -1553,7 +1565,7 @@ function fetchData() {
       $('homeStatus').textContent = 'LIVE';
     })
     .catch(err => {
-      console.error('Fetch Error:', err);
+      console.error('Fetch Error:', err); // DEBUG
       $('st').className = 'sd er';
       $('st2').className = 'sd er';
       $('st3').className = 'sd er';
@@ -1590,6 +1602,8 @@ function applyColor(room) {
   alert('✅ Color #' + color + ' applied to Room ' + room);
 }
 
+// Start fetching immediately
+console.log('Starting data fetch...'); // DEBUG
 fetchData();
 setInterval(fetchData, UPDATE_INTERVAL);
 $('homeEntries').textContent = '12';

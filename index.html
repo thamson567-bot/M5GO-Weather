@@ -110,6 +110,42 @@
       </div>
     </div>
 
+const weatherConditions = [
+  { id: 'heavy-rain', icon: '🌧️', name: 'Heavy Rain Soon', p: '📉 Pressure: Dropping Fast (<-3 hPa/hr)', h: '💧 Humidity: Rising (>+5%)', t: '🌡️ Temperature: Variable', desc: 'Strong weather system approaching. Rapid pressure drop combined with increasing humidity indicates heavy precipitation within 1-3 hours.' },
+  { id: 'rain-likely', icon: '🌦️', name: 'Rain Likely', p: '📉 Pressure: Falling (<-2 hPa/30min)', h: '💧 Humidity: High (>75%)', t: '🌡️ Temperature: Moderate', desc: 'Atmospheric conditions favor precipitation. Sustained pressure decline with high humidity levels indicate rain within 3-6 hours.' },
+  { id: 'cloudy', icon: '☁️', name: 'Cloudy Weather', p: '📉 Pressure: Declining Steadily', h: '💧 Humidity: Moderate', t: '🌡️ Temperature: Stable', desc: 'Gradual pressure decrease indicates cloud cover increasing. Overcast skies likely with no immediate precipitation expected.' },
+  { id: 'clear-skies', icon: '☀️', name: 'Clear Skies Ahead', p: '📈 Pressure: Rising Rapidly (>+3 hPa/hr)', h: '💧 Humidity: Decreasing', t: '🌡️ Temperature: Variable', desc: 'Strong high-pressure system building. Rapid pressure increase clears clouds and brings sunny weather conditions.' },
+  { id: 'improving', icon: '🌤️', name: 'Weather Improving', p: '📈 Pressure: Rising Steadily (>+1.5 hPa)', h: '💧 Humidity: Moderate', t: '🌡️ Temperature: Stable', desc: 'Conditions clearing as pressure rises. Clouds breaking up with improving visibility and reduced precipitation chance.' },
+  { id: 'fair-stable', icon: '☀️', name: 'Fair & Stable', p: '➡️ Pressure: High & Stable (>1013 hPa)', h: '💧 Humidity: Low (<60%)', t: '🌡️ Temperature: Comfortable', desc: 'Excellent weather conditions. High pressure system with low humidity creates stable, pleasant conditions with clear skies.' },
+  { id: 'unsettled', icon: '🌧️', name: 'Unsettled Weather', p: '📉 Pressure: Low (<1010 hPa)', h: '💧 Humidity: High (>70%)', t: '🌡️ Temperature: Variable', desc: 'Unstable atmospheric conditions. Low pressure combined with high humidity creates potential for cloudy skies and showers.' },
+  { id: 'cold-front', icon: '❄️', name: 'Cold Front Moving In', p: '📈 Pressure: Rising', h: '💧 Humidity: Variable', t: '🌡️ Temperature: Dropping (<-1°C)', desc: 'Cold front passage detected. Temperature decrease with rising pressure brings cooler, clearer conditions ahead.' },
+  { id: 'warm-front', icon: '🌡️', name: 'Warm Front Approaching', p: '📉 Pressure: Falling', h: '💧 Humidity: Rising', t: '🌡️ Temperature: Rising (>+1°C)', desc: 'Warm front advancing. Temperature increase with falling pressure develops warmer, more humid conditions.' },
+  { id: 'stable', icon: '⛅', name: 'Stable Conditions', p: '➡️ Pressure: Stable (±0.5 hPa)', h: '💧 Humidity: Moderate', t: '🌡️ Temperature: Stable', desc: 'Atmospheric equilibrium. No significant changes in pressure, temperature, or humidity. Current weather pattern expected to persist.' },
+  { id: 'partly-cloudy', icon: '⛅', name: 'Partly Cloudy', p: '➡️ Pressure: Variable', h: '💧 Humidity: Moderate', t: '🌡️ Temperature: Moderate', desc: 'Variable conditions with no strong weather signals. Mix of sun and clouds with no significant atmospheric changes detected.' }
+];
+
+function renderWeatherCards() {
+  const grid = $('conditionsGrid');
+  if(!grid) return;
+  grid.innerHTML = weatherConditions.map(c => `
+    <div class="condition-card" data-condition="${c.id}">
+      <div class="condition-header">
+        <div class="condition-icon">${c.icon}</div>
+        <div class="condition-name">${c.name}</div>
+      </div>
+      <div class="condition-indicators">
+        <span class="indicator pressure">${c.p}</span>
+        <span class="indicator humidity">${c.h}</span>
+        <span class="indicator temp">${c.t}</span>
+      </div>
+      <div class="condition-description">${c.desc}</div>
+    </div>
+  `).join('');
+}
+
+// Run this once when the script loads
+renderWeatherCards();
+    
     <div class="gr">
       <div class="cd">
         <div class="ic">🌡️</div>
@@ -233,166 +269,8 @@
       </p>
       
       <div class="conditions-grid" id="conditionsGrid">
-        <div class="condition-card" data-condition="heavy-rain">
-          <div class="condition-header">
-            <div class="condition-icon">🌧️</div>
-            <div class="condition-name">Heavy Rain Soon</div>
           </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📉 Pressure: Dropping Fast (&lt;-3 hPa/hr)</span>
-            <span class="indicator humidity">💧 Humidity: Rising (&gt;+5%)</span>
-            <span class="indicator temp">🌡️ Temperature: Variable</span>
-          </div>
-          <div class="condition-description">
-            Strong weather system approaching. Rapid pressure drop combined with increasing humidity indicates heavy precipitation within 1-3 hours.
-          </div>
-        </div>
-
-        <div class="condition-card" data-condition="rain-likely">
-          <div class="condition-header">
-            <div class="condition-icon">🌦️</div>
-            <div class="condition-name">Rain Likely</div>
-          </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📉 Pressure: Falling (&lt;-2 hPa/30min)</span>
-            <span class="indicator humidity">💧 Humidity: High (&gt;75%)</span>
-            <span class="indicator temp">🌡️ Temperature: Moderate</span>
-          </div>
-          <div class="condition-description">
-            Atmospheric conditions favor precipitation. Sustained pressure decline with high humidity levels indicate rain within 3-6 hours.
-          </div>
-        </div>
-
-        <div class="condition-card" data-condition="cloudy">
-          <div class="condition-header">
-            <div class="condition-icon">☁️</div>
-            <div class="condition-name">Cloudy Weather</div>
-          </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📉 Pressure: Declining Steadily</span>
-            <span class="indicator humidity">💧 Humidity: Moderate</span>
-            <span class="indicator temp">🌡️ Temperature: Stable</span>
-          </div>
-          <div class="condition-description">
-            Gradual pressure decrease indicates cloud cover increasing. Overcast skies likely with no immediate precipitation expected.
-          </div>
-        </div>
-
-        <div class="condition-card" data-condition="clear-skies">
-          <div class="condition-header">
-            <div class="condition-icon">☀️</div>
-            <div class="condition-name">Clear Skies Ahead</div>
-          </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📈 Pressure: Rising Rapidly (&gt;+3 hPa/hr)</span>
-            <span class="indicator humidity">💧 Humidity: Decreasing</span>
-            <span class="indicator temp">🌡️ Temperature: Variable</span>
-          </div>
-          <div class="condition-description">
-            Strong high-pressure system building. Rapid pressure increase clears clouds and brings sunny weather conditions.
-          </div>
-        </div>
-
-        <div class="condition-card" data-condition="improving">
-          <div class="condition-header">
-            <div class="condition-icon">🌤️</div>
-            <div class="condition-name">Weather Improving</div>
-          </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📈 Pressure: Rising Steadily (&gt;+1.5 hPa)</span>
-            <span class="indicator humidity">💧 Humidity: Moderate</span>
-            <span class="indicator temp">🌡️ Temperature: Stable</span>
-          </div>
-          <div class="condition-description">
-            Conditions clearing as pressure rises. Clouds breaking up with improving visibility and reduced precipitation chance.
-          </div>
-        </div>
-
-        <div class="condition-card" data-condition="fair-stable">
-          <div class="condition-header">
-            <div class="condition-icon">☀️</div>
-            <div class="condition-name">Fair &amp; Stable</div>
-          </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">➡️ Pressure: High &amp; Stable (&gt;1013 hPa)</span>
-            <span class="indicator humidity">💧 Humidity: Low (&lt;60%)</span>
-            <span class="indicator temp">🌡️ Temperature: Comfortable</span>
-          </div>
-          <div class="condition-description">
-            Excellent weather conditions. High pressure system with low humidity creates stable, pleasant conditions with clear skies.
-          </div>
-        </div>
-
-        <div class="condition-card" data-condition="unsettled">
-          <div class="condition-header">
-            <div class="condition-icon">🌧️</div>
-            <div class="condition-name">Unsettled Weather</div>
-          </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📉 Pressure: Low (&lt;1010 hPa)</span>
-            <span class="indicator humidity">💧 Humidity: High (&gt;70%)</span>
-            <span class="indicator temp">🌡️ Temperature: Variable</span>
-          </div>
-          <div class="condition-description">
-            Unstable atmospheric conditions. Low pressure combined with high humidity creates potential for cloudy skies and showers.
-          </div>
-        </div>
-
-        <div class="condition-card" data-condition="cold-front">
-          <div class="condition-header">
-            <div class="condition-icon">❄️</div>
-            <div class="condition-name">Cold Front Moving In</div>
-          </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📈 Pressure: Rising</span>
-            <span class="indicator humidity">💧 Humidity: Variable</span>
-            <span class="indicator temp">🌡️ Temperature: Dropping (&lt;-1°C)</span>
-          </div>
-          <div class="condition-description">
-            Cold front passage detected. Temperature decrease with rising pressure brings cooler, clearer conditions ahead.
-          </div>
-        </div>
-
-        <div class="condition-card" data-condition="warm-front">
-          <div class="condition-header">
-            <div class="condition-icon">🌡️</div>
-            <div class="condition-name">Warm Front Approaching</div>
-          </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">📉 Pressure: Falling</span>
-            <span class="indicator humidity">💧 Humidity: Rising</span>
-            <span class="indicator temp">🌡️ Temperature: Rising (&gt;+1°C)</span>
-          </div>
-          <div class="condition-description">
-            Warm front advancing. Temperature increase with falling pressure develops warmer, more humid conditions.
-          </div>
-        </div>
-
-        <div class="condition-card" data-condition="stable">
-          <div class="condition-header">
-            <div class="condition-icon">⛅</div>
-            <div class="condition-name">Stable Conditions</div>
-          </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">➡️ Pressure: Stable (±0.5 hPa)</span>
-            <span class="indicator humidity">💧 Humidity: Moderate</span>
-            <span class="indicator temp">🌡️ Temperature: Stable</span>
-          </div>
-          <div class="condition-description">
-            Atmospheric equilibrium. No significant changes in pressure, temperature, or humidity. Current weather pattern expected to persist.
-          </div>
-        </div>
-
-        <div class="condition-card" data-condition="partly-cloudy">
-          <div class="condition-header">
-            <div class="condition-icon">⛅</div>
-            <div class="condition-name">Partly Cloudy</div>
-          </div>
-          <div class="condition-indicators">
-            <span class="indicator pressure">➡️ Pressure: Variable</span>
-            <span class="indicator humidity">💧 Humidity: Moderate</span>
-            <span class="indicator temp">🌡️ Temperature: Moderate</span>
-          </div>
+      
           <div class="condition-description">
             Variable conditions with no strong weather signals. Mix of sun and clouds with no significant atmospheric changes detected.
           </div>

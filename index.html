@@ -1375,20 +1375,24 @@ function getAdvancedForecast(currentTemp, currentHum, currentPres) {
     icon: '⛅',
     text: 'Loading...',
     confidence: 'low',
-    details: ''
+    details: '',
+    code: 0  // ADDED: Weather forecast code
   };
   
-  if(historicalData.pressure.length < 120) {
+  if(historicalData.pressure.length < 12) {  // CHANGED: from 120 to 12
     forecast.text = 'Collecting Data...';
-    forecast.details = 'Need ' + Math.floor((120 - historicalData.pressure.length) * 5 / 60) + ' more minutes';
+    var remainingSeconds = (12 - historicalData.pressure.length) * 5;  // CHANGED: show seconds
+    forecast.details = 'Need ' + remainingSeconds + ' more seconds';
+    forecast.code = 0;
     return forecast;
   }
   
   var len = historicalData.pressure.length;
-  var pressure15min = len > 180 ? historicalData.pressure[len - 180] : historicalData.pressure[0];
-  var pressure30min = len > 360 ? historicalData.pressure[len - 360] : historicalData.pressure[0];
-  var temp15min = len > 180 ? historicalData.temperature[len - 180] : historicalData.temperature[0];
-  var hum15min = len > 180 ? historicalData.humidity[len - 180] : historicalData.humidity[0];
+  // CHANGED: Adjusted for shorter timeframes
+  var pressure15min = len > 36 ? historicalData.pressure[len - 36] : historicalData.pressure[0];
+  var pressure30min = len > 72 ? historicalData.pressure[len - 72] : historicalData.pressure[0];
+  var temp15min = len > 36 ? historicalData.temperature[len - 36] : historicalData.temperature[0];
+  var hum15min = len > 36 ? historicalData.humidity[len - 36] : historicalData.humidity[0];
   
   var trend15 = currentPres - pressure15min;
   var trend30 = currentPres - pressure30min;
@@ -1401,66 +1405,77 @@ function getAdvancedForecast(currentTemp, currentHum, currentPres) {
     forecast.text = 'Heavy Rain Soon';
     forecast.confidence = 'high';
     forecast.details = 'Pressure dropping fast (' + pressureRate.toFixed(1) + ' hPa/hr), humidity rising';
+    forecast.code = 1;  // ADDED
   }
   else if(trend30 < -2 && currentHum > 75) {
     forecast.icon = '🌦️';
     forecast.text = 'Rain Likely';
-    forecast.confidence = 'medium';
-    forecast.details = 'Pressure falling, high humidity (' + currentHum.toFixed(0) + '%)';
+    forecast.confidence = 'high';
+    forecast.details = 'Pressure falling (' + trend30.toFixed(1) + ' hPa/30min), high humidity';
+    forecast.code = 2;  // ADDED
   }
-  else if(trend15 < -0.5 && trend30 < -1) {
+  else if(trend15 < -0.5 && currentPres < 1010) {
     forecast.icon = '☁️';
     forecast.text = 'Cloudy Weather';
     forecast.confidence = 'medium';
-    forecast.details = 'Pressure declining steadily';
+    forecast.details = 'Low pressure (' + currentPres.toFixed(0) + ' hPa), pressure declining';
+    forecast.code = 3;  // ADDED
   }
   else if(trend15 > 1 && pressureRate > 3) {
     forecast.icon = '☀️';
     forecast.text = 'Clear Skies Ahead';
     forecast.confidence = 'high';
     forecast.details = 'Pressure rising rapidly (' + pressureRate.toFixed(1) + ' hPa/hr)';
+    forecast.code = 4;  // ADDED
   }
   else if(trend30 > 1.5) {
     forecast.icon = '🌤️';
     forecast.text = 'Weather Improving';
     forecast.confidence = 'medium';
     forecast.details = 'Pressure steadily rising';
+    forecast.code = 5;  // ADDED
   }
   else if(currentPres > 1013 && currentHum < 60 && Math.abs(trend15) < 0.3) {
     forecast.icon = '☀️';
     forecast.text = 'Fair & Stable';
     forecast.confidence = 'high';
     forecast.details = 'High pressure (' + currentPres.toFixed(0) + ' hPa), low humidity';
+    forecast.code = 6;  // ADDED
   }
   else if(currentPres < 1010 && currentHum > 70) {
     forecast.icon = '🌧️';
     forecast.text = 'Unsettled Weather';
     forecast.confidence = 'medium';
-    forecast.details = 'Low pressure (' + currentPres.toFixed(0) + ' hPa), high humidity';
+    forecast.details = 'Low pressure, high humidity (' + currentHum.toFixed(0) + '%)';
+    forecast.code = 7;  // ADDED
   }
-  else if(trend15 > 0.5 && tempChange < -1) {
+  else if(tempChange < -3 && trend15 < -0.5) {
     forecast.icon = '❄️';
     forecast.text = 'Cold Front Moving In';
-    forecast.confidence = 'medium';
-    forecast.details = 'Temperature dropping, pressure rising';
+    forecast.confidence = 'high';
+    forecast.details = 'Temperature dropped ' + Math.abs(tempChange).toFixed(1) + '°C in 3 min';
+    forecast.code = 8;  // ADDED
   }
-  else if(trend15 < -0.5 && tempChange > 1) {
+  else if(tempChange > 3 && trend15 > 0.5) {
     forecast.icon = '🌡️';
     forecast.text = 'Warm Front Approaching';
-    forecast.confidence = 'medium';
-    forecast.details = 'Temperature rising, pressure falling';
+    forecast.confidence = 'high';
+    forecast.details = 'Temperature rose ' + tempChange.toFixed(1) + '°C, pressure rising';
+    forecast.code = 9;  // ADDED
   }
-  else if(Math.abs(trend15) < 0.3 && Math.abs(trend30) < 0.5) {
-    forecast.icon = '⛅';
+  else if(Math.abs(trend30) < 0.5 && Math.abs(humChange) < 3) {
+    forecast.icon = '🌤️';
     forecast.text = 'Stable Conditions';
     forecast.confidence = 'high';
-    forecast.details = 'No significant pressure changes';
+    forecast.details = 'No significant changes in last 6 minutes';
+    forecast.code = 10;  // ADDED
   }
   else {
     forecast.icon = '⛅';
     forecast.text = 'Partly Cloudy';
     forecast.confidence = 'low';
     forecast.details = 'Conditions unclear, monitoring trends';
+    forecast.code = 11;  // ADDED
   }
   
   return forecast;

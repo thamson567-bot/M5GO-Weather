@@ -1033,6 +1033,26 @@ var historicalData = {
   maxHistory: 720
 };
 
+// Add this near the top of the script section (after the existing global variables)
+var currentForecastCode = 0;  // NEW: Store current forecast code for ThingSpeak
+
+// Add this new function to send forecast code to ThingSpeak
+function sendForecastToThingSpeak(forecastCode) {
+  var WRITE_KEY = 'W0R5AL9YS3DDDJHL';  // Your ThingSpeak Write API Key
+  
+  // Send to Field 5
+  var url = 'https://api.thingspeak.com/update?api_key=' + WRITE_KEY + '&field5=' + forecastCode;
+  
+  fetch(url)
+    .then(res => res.text())
+    .then(data => {
+      console.log('Forecast code ' + forecastCode + ' sent to ThingSpeak (Field 5)');
+    })
+    .catch(err => {
+      console.error('Failed to send forecast code:', err);
+    });
+}
+
 function $(id){return document.getElementById(id)}
 
 function showPage(page) {
@@ -1107,6 +1127,116 @@ function updateOfficeLights(room1Light, room2Light, room3Light) {
   room3.style.display = 'none';
   
   var activeRooms = [];
+
+  function getAdvancedForecast(currentTemp, currentHum, currentPres) {
+  var forecast = {
+    icon: '⛅',
+    text: 'Loading...',
+    confidence: 'low',
+    details: '',
+    code: 0  // NEW: Weather forecast code (0-11)
+  };
+  
+  if(historicalData.pressure.length < 120) {
+    forecast.text = 'Collecting Data...';
+    forecast.details = 'Need ' + Math.floor((120 - historicalData.pressure.length) * 5 / 60) + ' more minutes';
+    forecast.code = 0;
+    return forecast;
+  }
+  
+  var len = historicalData.pressure.length;
+  var pressure15min = len > 180 ? historicalData.pressure[len - 180] : historicalData.pressure[0];
+  var pressure30min = len > 360 ? historicalData.pressure[len - 360] : historicalData.pressure[0];
+  var temp15min = len > 180 ? historicalData.temperature[len - 180] : historicalData.temperature[0];
+  var hum15min = len > 180 ? historicalData.humidity[len - 180] : historicalData.humidity[0];
+  
+  var trend15 = currentPres - pressure15min;
+  var trend30 = currentPres - pressure30min;
+  var tempChange = currentTemp - temp15min;
+  var humChange = currentHum - hum15min;
+  var pressureRate = trend15 * 4;
+  
+  // NEW: Each forecast now has a unique code (1-11)
+  if(trend15 < -1 && pressureRate < -3 && humChange > 5) {
+    forecast.icon = '🌧️';
+    forecast.text = 'Heavy Rain Soon';
+    forecast.confidence = 'high';
+    forecast.details = 'Pressure dropping fast (' + pressureRate.toFixed(1) + ' hPa/hr), humidity rising';
+    forecast.code = 1;  // Heavy Rain Soon
+  }
+  else if(trend30 < -2 && currentHum > 75) {
+    forecast.icon = '🌦️';
+    forecast.text = 'Rain Likely';
+    forecast.confidence = 'high';
+    forecast.details = 'Pressure falling (' + trend30.toFixed(1) + ' hPa/30min), high humidity';
+    forecast.code = 2;  // Rain Likely
+  }
+  else if(trend15 < -0.5 && currentPres < 1010) {
+    forecast.icon = '☁️';
+    forecast.text = 'Cloudy Weather';
+    forecast.confidence = 'medium';
+    forecast.details = 'Low pressure (' + currentPres.toFixed(0) + ' hPa), pressure declining';
+    forecast.code = 3;  // Cloudy Weather
+  }
+  else if(trend15 > 1 && pressureRate > 3) {
+    forecast.icon = '☀️';
+    forecast.text = 'Clear Skies Ahead';
+    forecast.confidence = 'high';
+    forecast.details = 'Pressure rising rapidly (' + pressureRate.toFixed(1) + ' hPa/hr)';
+    forecast.code = 4;  // Clear Skies Ahead
+  }
+  else if(trend30 > 1.5) {
+    forecast.icon = '🌤️';
+    forecast.text = 'Weather Improving';
+    forecast.confidence = 'medium';
+    forecast.details = 'Pressure steadily rising';
+    forecast.code = 5;  // Weather Improving
+  }
+  else if(currentPres > 1013 && currentHum < 60 && Math.abs(trend15) < 0.3) {
+    forecast.icon = '☀️';
+    forecast.text = 'Fair & Stable';
+    forecast.confidence = 'high';
+    forecast.details = 'High pressure (' + currentPres.toFixed(0) + ' hPa), low humidity';
+    forecast.code = 6;  // Fair & Stable
+  }
+  else if(currentPres < 1010 && currentHum > 70) {
+    forecast.icon = '🌧️';
+    forecast.text = 'Unsettled Weather';
+    forecast.confidence = 'medium';
+    forecast.details = 'Low pressure, high humidity (' + currentHum.toFixed(0) + '%)';
+    forecast.code = 7;  // Unsettled Weather
+  }
+  else if(tempChange < -3 && trend15 < -0.5) {
+    forecast.icon = '❄️';
+    forecast.text = 'Cold Front Moving In';
+    forecast.confidence = 'high';
+    forecast.details = 'Temperature dropped ' + Math.abs(tempChange).toFixed(1) + '°C in 15 min';
+    forecast.code = 8;  // Cold Front Moving In
+  }
+  else if(tempChange > 3 && trend15 > 0.5) {
+    forecast.icon = '🌡️';
+    forecast.text = 'Warm Front Approaching';
+    forecast.confidence = 'high';
+    forecast.details = 'Temperature rose ' + tempChange.toFixed(1) + '°C, pressure rising';
+    forecast.code = 9;  // Warm Front Approaching
+  }
+  else if(Math.abs(trend30) < 0.5 && Math.abs(humChange) < 3) {
+    forecast.icon = '🌤️';
+    forecast.text = 'Stable Conditions';
+    forecast.confidence = 'high';
+    forecast.details = 'No significant changes in last 30 minutes';
+    forecast.code = 10;  // Stable Conditions
+  }
+  else {
+    forecast.icon = '⛅';
+    forecast.text = 'Partly Cloudy';
+    forecast.confidence = 'low';
+    forecast.details = 'Conditions unclear, monitoring trends';
+    forecast.code = 11;  // Partly Cloudy
+  }
+  
+  return forecast;
+}
   
   // Room 1 (Bottom Left) - M5GO LED (bulb3 in room1bg)
   if(room1Light > 0) {
@@ -1434,6 +1564,12 @@ function fetchData() {
       
       var advancedForecast = getAdvancedForecast(temp, hum, pres);
       $('forecast').innerHTML = advancedForecast.icon + ' ' + advancedForecast.text;
+      
+      // NEW: Send forecast code to ThingSpeak if it changed
+      if(advancedForecast.code !== currentForecastCode) {
+        currentForecastCode = advancedForecast.code;
+        sendForecastToThingSpeak(currentForecastCode);
+      }
       
       highlightCurrentCondition(advancedForecast.text);
       

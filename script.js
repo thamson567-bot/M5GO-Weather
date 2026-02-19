@@ -1,18 +1,19 @@
 var CHANNEL = '3260324';
 var READ_KEY = 'RSDE9TXRGDX5HIL0';
+var WRITE_KEY = 'W0R5AL9YS3DDDJHL';
 var UPDATE_INTERVAL = 5000;
 
 var fc = 0;
 var currentPage = 'home';
 var minTemp = 999, maxTemp = -999;
 var globalLastLight = 0; 
+var lastSentForecast = -1; // Prevents spamming ThingSpeak
 
 var historicalData = {
   pressure: [], temperature: [], humidity: [], timestamps: [], maxHistory: 720
 };
 
 var currentForecastCode = -1;
-var firstForecastSent = false;
 
 const weatherConditions = [
   { id: 'heavy-rain', icon: '🌧️', name: 'Heavy Rain Soon', p: '📉 Pressure: Dropping Fast (<-3 hPa/hr)', h: '💧 Humidity: Rising (>+5%)', t: '🌡️ Temperature: Variable', desc: 'Strong weather system approaching. Rapid pressure drop combined with increasing humidity indicates heavy precipitation within 1-3 hours.' },
@@ -72,6 +73,130 @@ function updateClock(){
 setInterval(updateClock, 1000);
 updateClock();
 
+// ==========================================
+// 1. WEATHER FORECAST TO THINGSPEAK (FIELD 7)
+// ==========================================
+function sendForecastToThingSpeak(forecastCode) {
+  if (forecastCode === lastSentForecast || forecastCode <= 0) return; // Prevent rate-limit spam
+  
+  var url = `https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field7=${forecastCode}&t=${new Date().getTime()}`;
+  fetch(url)
+    .then(res => res.text())
+    .then(data => {
+      if(data !== "0") {
+        console.log('✅ Forecast sent to Field 7: Code ' + forecastCode);
+        lastSentForecast = forecastCode;
+      }
+    })
+    .catch(err => console.error("Forecast failed:", err));
+}
+
+// ==========================================
+// 2. ENTRY LOG PARSER (FIELD 5)
+// ==========================================
+function processEntryLogs(feeds) {
+  const allowedUsers = {
+    "21 4D 5D 5D": "Pang Sheng Yuan",
+    "F1 96 EA 01": "THIRSHEN S/O SIVA BALAN",
+    "51 FC BA 5D": "Chew Qibin Bryant"
+    // "F1 AB 09 5C" -> No access, intentionally left out
+  };
+
+  let html = '';
+  let todayCount = 0;
+  let todayStr = new Date().toDateString();
+
+  // Loop backward to show newest entries at the top
+  for(let i = feeds.length - 1; i >= 0; i--) {
+    let uid = feeds[i].field5;
+    
+    if(uid && typeof uid === 'string') {
+      uid = uid.trim().toUpperCase();
+      
+      // If UID is recognized in our secure list
+      if(allowedUsers[uid]) {
+        let dateObj = new Date(feeds[i].created_at);
+        let timeStr = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString();
+
+        // Increment today's counter if dates match
+        if(dateObj.toDateString() === todayStr) {
+          todayCount++;
+        }
+
+        html += `
+          <tr>
+            <td class="log-time">${timeStr}</td>
+            <td class="log-name" style="color: var(--accent); font-weight: 600;">${allowedUsers[uid]}</td>
+            <td style="font-family: monospace; opacity: 0.8;">${uid}</td>
+            <td><span class="log-status entry">ENTRY</span></td>
+          </tr>
+        `;
+      }
+    }
+  }
+
+  if(html === '') {
+    html = '<tr><td colspan="4" style="text-align:center; opacity:0.5; padding: 20px;">Waiting for authorized RFID taps...</td></tr>';
+  }
+
+  if($('logTableBody')) $('logTableBody').innerHTML = html;
+  if($('todayCount')) $('todayCount').textContent = todayCount;
+  if($('homeEntries')) $('homeEntries').textContent = todayCount;
+}
+
+// ==========================================
+// 3. LED CONTROL & RGB CONVERTER (FIELD 8 / 9)
+// ==========================================
+function applyColor(room) {
+  var picker = $('colorPicker' + room);
+  if(picker) {
+    // Convert #RRGGBB to R,G,B format
+    var hex = picker.value.replace('#', '');
+    var r = parseInt(hex.substring(0, 2), 16);
+    var g = parseInt(hex.substring(2, 4), 16);
+    var b = parseInt(hex.substring(4, 6), 16);
+    var rgbStr = r + ',' + g + ',' + b;
+
+    // Room 2 (Arduino) uses field 8. Room 1 (M5Stack) uses field 9.
+    var targetField = (room === 2) ? 'field8' : 'field9';
+    var url = `https://api.thingspeak.com/update?api_key=${WRITE_KEY}&${targetField}=${rgbStr}&t=${new Date().getTime()}`;
+
+    console.log(`Sending to Room ${room} (${targetField}): RGB ${rgbStr}`);
+    
+    fetch(url)
+      .then(res => res.text())
+      .then(data => {
+        if(data !== "0") {
+          alert(`✅ Applied RGB(${rgbStr}) to Room ${room}`);
+        } else {
+          alert('⚠️ ThingSpeak is busy. Please wait 15 seconds before changing colors again.');
+        }
+      })
+      .catch(err => alert('❌ Network error while sending color.'));
+  }
+}
+
+for(let i = 1; i <= 2; i++) {
+  let picker = $('colorPicker' + i);
+  let input = $('colorInput' + i);
+  let preview = $('ledPreview' + i);
+  
+  if(picker && preview && input) {
+    picker.addEventListener('input', function() {
+      input.value = this.value.toUpperCase();
+      preview.style.backgroundColor = this.value;
+    });
+    
+    input.addEventListener('input', function() {
+      var val = this.value;
+      if(val.startsWith('#') && (val.length === 7 || val.length === 4)) {
+        picker.value = val;
+        preview.style.backgroundColor = val;
+      }
+    });
+  }
+}
+
 function updateOfficeLights(lightValue) {
   var icon1 = $('bulb2'); 
   var icon2 = $('bulb4'); 
@@ -113,7 +238,6 @@ function updateOfficeLights(lightValue) {
     }
   }
   
-  // FIX: Update Home Page Active Lights Tracker
   if($('homeLights')) $('homeLights').textContent = activeRooms.length;
   
   if(levelText && statusText) {
@@ -188,7 +312,6 @@ function getAdvancedForecast(currentTemp, currentHum, currentPres) {
 
 function highlightCurrentCondition(forecastText) {
   document.querySelectorAll('.condition-card').forEach(card => card.classList.remove('active'));
-  // Removed the line that adds the "CURRENT" text badge here.
   
   var conditionMap = { 'Heavy Rain Soon': 'heavy-rain', 'Clear Skies Ahead': 'clear-skies', 'Fair & Stable': 'fair-stable', 'Partly Cloudy': 'partly-cloudy' };
   var conditionKey = conditionMap[forecastText];
@@ -201,6 +324,7 @@ function highlightCurrentCondition(forecastText) {
   }
 }
 
+// MAIN FETCH FUNCTION
 function fetchData() {
   var url = 'https://api.thingspeak.com/channels/' + CHANNEL + '/feeds.json?api_key=' + READ_KEY + '&results=100';
   
@@ -214,6 +338,9 @@ function fetchData() {
       var temp = parseFloat(f.field1) || 0;
       var hum = parseFloat(f.field2) || 0;
       var pres = parseFloat(f.field3) || 0;
+
+      // PROCESS RFID LOGS
+      processEntryLogs(d.feeds);
 
       historicalData.pressure.push(pres); historicalData.temperature.push(temp); historicalData.humidity.push(hum);
       if(historicalData.pressure.length > historicalData.maxHistory) {
@@ -229,7 +356,6 @@ function fetchData() {
       if($('weatherHi')) $('weatherHi').textContent = maxTemp.toFixed(1); 
       if($('weatherLo')) $('weatherLo').textContent = minTemp.toFixed(1);
       
-      // FIX: Restored the weather icon logic that was causing infinite loading
       var icon = '🌤️', desc = 'Pleasant';
       if(temp < 10) { icon = '❄️'; desc = 'Very Cold'; }
       else if(temp < 18) { icon = '🌥️'; desc = 'Cold'; }
@@ -242,17 +368,19 @@ function fetchData() {
 
       var advancedForecast = getAdvancedForecast(temp, hum, pres);
       if($('forecast')) $('forecast').innerHTML = advancedForecast.icon + ' ' + advancedForecast.text;
-      if(advancedForecast.code !== currentForecastCode) currentForecastCode = advancedForecast.code;
+      
+      // TRIGGER FORECAST SEND
+      if(advancedForecast.code > 0) {
+        sendForecastToThingSpeak(advancedForecast.code);
+      }
+      
       highlightCurrentCondition(advancedForecast.text);
       if($('homeTemp')) $('homeTemp').innerHTML = temp.toFixed(1) + '°C';
       if($('hp')) $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
 
       var tempData = [], humData = [], presData = [], lightData = [];
-      
-      // FIX: Setup trackers so charts do not drop to zero when M5GO skips sending data
       var lastT = null, lastH = null, lastP = null;
       
-      // Find the first valid number in the historical array to avoid starting at zero
       for(var i = 0; i < d.feeds.length; i++) {
         if(lastT === null && d.feeds[i].field1 != null) lastT = parseFloat(d.feeds[i].field1);
         if(lastH === null && d.feeds[i].field2 != null) lastH = parseFloat(d.feeds[i].field2);
@@ -261,7 +389,6 @@ function fetchData() {
       
       if(lastT === null) lastT = 0; if(lastH === null) lastH = 0; if(lastP === null) lastP = 0;
 
-      // Populate charts with values that carry forward if empty
       for(var i = 0; i < d.feeds.length; i++) {
         if (d.feeds[i].field1 != null) lastT = parseFloat(d.feeds[i].field1);
         if (d.feeds[i].field2 != null) lastH = parseFloat(d.feeds[i].field2);
@@ -302,34 +429,6 @@ function fetchData() {
       if($('st4')) $('st4').className = 'sd er';
       if($('su')) $('su').textContent = 'Error: ' + err.message;
     });
-}
-
-for(let i = 1; i <= 2; i++) {
-  let picker = $('colorPicker' + i);
-  let input = $('colorInput' + i);
-  let preview = $('ledPreview' + i);
-  
-  if(picker && preview && input) {
-    picker.addEventListener('input', function() {
-      input.value = this.value.toUpperCase();
-      preview.style.backgroundColor = this.value;
-    });
-    
-    input.addEventListener('input', function() {
-      var val = this.value;
-      if(val.startsWith('#') && (val.length === 7 || val.length === 4)) {
-        picker.value = val;
-        preview.style.backgroundColor = val;
-      }
-    });
-  }
-}
-
-function applyColor(room) {
-  var picker = $('colorPicker' + room);
-  if(picker) {
-    alert('✅ Color ' + picker.value + ' applied to Room ' + room);
-  }
 }
 
 fetchData(); 

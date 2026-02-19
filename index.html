@@ -139,7 +139,7 @@ position:absolute;top:-7px;transform:translateX(-50%);box-shadow:0 3px 10px rgba
   background: var(--card);
   border-radius: var(--r);
   padding: 40px 20px;
-  margin: 30px calc(-50vw + 50%) 30px;
+  margin: 30px calc(-50vw + 50%) 30px; /* FULL WIDTH EXPANSION */
   width: 100vw;
   border: 1px solid rgba(255,255,255,.08);
   position: relative;
@@ -259,15 +259,15 @@ margin-top:20px;border:1px solid rgba(255,255,255,.08)}
 background:#1a1a2e;border:5px solid #333;border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
 
 .room4-outer{position:absolute;left:0;top:0;width:45%;height:50%;
-border-right:5px solid #333;border-bottom:5px solid #333;background:#2a2a3e;transition:all 0.5s}
+border-right:5px solid #333;border-bottom:5px solid #333;background:#2a2a3e;transition:background 0.5s}
 .room4-door{position:absolute;left:0;bottom:-5px;width:15%;height:30px;background:#1a1a2e}
 
 .room3-outer{position:absolute;left:45%;top:0;width:55%;height:50%;
-border-bottom:5px solid #333;background:#2a2a3e;transition:all 0.5s}
+border-bottom:5px solid #333;background:#2a2a3e;transition:background 0.5s}
 .room3-door{position:absolute;left:15%;bottom:-5px;width:50px;height:30px;background:#1a1a2e}
 
 .room1-outer{position:absolute;left:0;top:50%;width:62%;height:50%;
-background:#2a2a3e;transition:all 0.5s}
+background:#2a2a3e;transition:background 0.5s}
 .room1-main-door{position:absolute;left:20%;bottom:-5px;width:80px;height:40px;
 background:#1a1a2e;border:3px solid #333;border-bottom:none;border-radius:2px 2px 0 0}
 .door-handle{position:absolute;width:8px;height:8px;background:#666;border-radius:50%;
@@ -276,7 +276,7 @@ left:20px;top:50%;transform:translateY(-50%)}
 right:20px;top:50%;transform:translateY(-50%)}
 
 .room2-outer{position:absolute;left:62%;top:50%;width:38%;height:50%;
-border-left:5px solid #333;background:#2a2a3e;transition:all 0.5s}
+border-left:5px solid #333;background:#2a2a3e;transition:background 0.5s}
 .room2-door{position:absolute;left:-5px;top:20%;width:30px;height:50px;background:#1a1a2e}
 
 .gateway{position:absolute;left:8%;bottom:35px;font-size:0.9rem;opacity:0.85;
@@ -285,84 +285,11 @@ border:1px solid rgba(255,255,255,.15)}
 
 .room-content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
 .room-label{font-size:3rem;font-weight:bold;margin-bottom:10px;opacity:0.9}
-
-/* Device Icons */
-.device-icon {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  background: #333;
-  margin: 15px auto 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  transition: all 0.6s;
-  box-shadow: 0 0 0 rgba(255,255,255,0);
-  border: 3px solid #555;
-  position: relative;
-  color: #666;
-}
-
-.device-icon.on {
-  box-shadow: 0 0 50px rgba(255,255,255,0.9);
-  border-color: #fff;
-}
-
-.device-icon::before {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,255,255,0.3), transparent);
-  opacity: 0;
-  transition: opacity 0.6s;
-}
-
-.device-icon.on::before {
-  opacity: 1;
-}
-
-/* Device specific styling */
-.device-m5go {
-  background: linear-gradient(135deg, #2c3e50, #34495e);
-}
-
-.device-rgb {
-  background: linear-gradient(135deg, #8e44ad, #9b59b6);
-}
-
-.device-arduino {
-  background: linear-gradient(135deg, #00979d, #00878d);
-}
-
-.device-icon.on.device-m5go {
-  background: linear-gradient(135deg, #3498db, #2980b9);
-  box-shadow: 0 0 50px rgba(52, 152, 219, 0.9);
-  color: #fff;
-}
-
-.device-icon.on.device-rgb {
-  background: linear-gradient(135deg, #e74c3c, #c0392b);
-  box-shadow: 0 0 50px rgba(231, 76, 60, 0.9);
-  color: #fff;
-}
-
-.device-icon.on.device-arduino {
-  background: linear-gradient(135deg, #00979d, #00bcb4);
-  box-shadow: 0 0 50px rgba(0, 188, 180, 0.9);
-  color: #fff;
-}
-
-/* Device labels */
-.device-label {
-  font-size: 0.75rem;
-  opacity: 0.7;
-  margin-top: 8px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
+.light-bulb{width:80px;height:80px;border-radius:50%;background:#333;
+margin:15px auto 0;display:flex;align-items:center;justify-content:center;
+font-size:3rem;transition:all 0.6s;box-shadow:0 0 0 rgba(255,255,255,0);
+border:3px solid #555}
+.light-bulb.on{box-shadow:0 0 50px rgba(255,255,255,0.9);border-color:#fff}
 
 .room-status{font-size:0.85rem;margin-top:8px;opacity:0.8;font-weight:500}
 .room-status.lit{color:#0f0}
@@ -846,30 +773,24 @@ border-top:1px solid rgba(255,255,255,.1)}
 
     <div class="office-container">
       <div class="office-map">
-        <!-- Room 3 (Top Left) - Arduino Mega -->
         <div class="room4-outer" id="room4bg">
           <div class="room4-door"></div>
           <div class="room-content">
-            <div class="room-label">3</div>
-            <div class="device-icon device-arduino" id="bulb4">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
-                <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/>
-              </svg>
-            </div>
-            <div class="device-label">Arduino Mega</div>
+            <div class="room-label">4</div>
+            <div class="light-bulb" id="bulb4">💡</div>
             <div class="room-status off" id="status4">OFF</div>
           </div>
         </div>
         
-        <!-- Room hidden (Top Right) -->
         <div class="room3-outer" id="room3bg">
           <div class="room3-door"></div>
           <div class="room-content">
-            <div class="room-label">-</div>
+            <div class="room-label">3</div>
+            <div class="light-bulb" id="bulb3">💡</div>
+            <div class="room-status off" id="status3">OFF</div>
           </div>
         </div>
         
-        <!-- Room 1 (Bottom Left) - M5GO LED -->
         <div class="room1-outer" id="room1bg">
           <div class="room1-main-door">
             <div class="door-handle"></div>
@@ -877,29 +798,14 @@ border-top:1px solid rgba(255,255,255,.1)}
           </div>
           <div class="room-content">
             <div class="room-label">1</div>
-            <div class="device-icon device-m5go" id="bulb3">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
-                <path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/>
-                <circle cx="12" cy="16" r="1.5"/>
-              </svg>
-            </div>
-            <div class="device-label">M5Stack GO</div>
-            <div class="room-status off" id="status3">OFF</div>
           </div>
         </div>
         
-        <!-- Room 2 (Bottom Right) - RGB LED -->
         <div class="room2-outer" id="room2bg">
           <div class="room2-door"></div>
           <div class="room-content">
             <div class="room-label">2</div>
-            <div class="device-icon device-rgb" id="bulb2">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="40" height="40">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/>
-                <circle cx="12" cy="12" r="5"/>
-              </svg>
-            </div>
-            <div class="device-label">RGB LED Strip</div>
+            <div class="light-bulb" id="bulb2">💡</div>
             <div class="room-status off" id="status2">OFF</div>
           </div>
         </div>
@@ -1028,7 +934,7 @@ border-top:1px solid rgba(255,255,255,.1)}
       <div class="led-grid">
         <div class="led-room-card">
           <div class="led-room-title">
-            <span>💡 Room 1 (M5GO)</span>
+            <span>💡 Room 1 (Main)</span>
             <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
           </div>
           <div class="led-preview" id="ledPreview1" style="background-color:#333"></div>
@@ -1047,7 +953,7 @@ border-top:1px solid rgba(255,255,255,.1)}
 
         <div class="led-room-card">
           <div class="led-room-title">
-            <span>💡 Room 2 (RGB)</span>
+            <span>💡 Room 2</span>
             <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
           </div>
           <div class="led-preview" id="ledPreview2" style="background-color:#333"></div>
@@ -1066,7 +972,7 @@ border-top:1px solid rgba(255,255,255,.1)}
 
         <div class="led-room-card">
           <div class="led-room-title">
-            <span>💡 Room 3 (Arduino)</span>
+            <span>💡 Room 3</span>
             <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
           </div>
           <div class="led-preview" id="ledPreview3" style="background-color:#333"></div>
@@ -1081,6 +987,25 @@ border-top:1px solid rgba(255,255,255,.1)}
                    value="#0000FF" style="height:50px;cursor:pointer">
           </div>
           <button class="btn-apply" onclick="applyColor(3)">Apply to Room 3</button>
+        </div>
+
+        <div class="led-room-card">
+          <div class="led-room-title">
+            <span>💡 Room 4</span>
+            <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
+          </div>
+          <div class="led-preview" id="ledPreview4" style="background-color:#333"></div>
+          <div class="color-input-group">
+            <label>Color (HEX):</label>
+            <input type="text" class="color-input" id="colorInput4" 
+                   placeholder="#FFFF00" maxlength="7" value="#FFFF00">
+          </div>
+          <div class="color-input-group">
+            <label>Color Picker:</label>
+            <input type="color" class="color-input" id="colorPicker4" 
+                   value="#FFFF00" style="height:50px;cursor:pointer">
+          </div>
+          <button class="btn-apply" onclick="applyColor(4)">Apply to Room 4</button>
         </div>
       </div>
     </div>
@@ -1134,6 +1059,11 @@ function updateClock(){
 setInterval(updateClock, 1000);
 updateClock();
 
+// NEW: Updated room mapping
+// Room 1 (Bottom Left) = M5GO LED (Field 5)
+// Room 2 (Bottom Right) = RGB LED (Field 6)
+// Room 3 (Top Left) = Arduino Mega (Field 4)
+
 function updateOfficeLights(room1Light, room2Light, room3Light) {
   var bulb2 = $('bulb2');
   var bulb3 = $('bulb3');
@@ -1156,6 +1086,10 @@ function updateOfficeLights(room1Light, room2Light, room3Light) {
   bulb3.classList.remove('on');
   bulb4.classList.remove('on');
   
+  bulb2.style.background = '#333';
+  bulb3.style.background = '#333';
+  bulb4.style.background = '#333';
+  
   room1.style.background = '#2a2a3e';
   room2.style.background = '#2a2a3e';
   room3.style.background = '#2a2a3e';
@@ -1169,49 +1103,48 @@ function updateOfficeLights(room1Light, room2Light, room3Light) {
   status3.className = 'room-status off';
   status4.className = 'room-status off';
   
+  // Hide top right room (not used)
   room3.style.display = 'none';
   
   var activeRooms = [];
   
-  // Room 1 (Bottom Left) - M5GO LED
+  // Room 1 (Bottom Left) - M5GO LED (bulb3 in room1bg)
   if(room1Light > 0) {
     bulb3.classList.add('on');
-    var opacity = room1Light / 100;
-    room1.style.background = 'rgba(52, 152, 219, ' + (opacity * 0.3) + ')';
-    room1.style.boxShadow = 'inset 0 0 50px rgba(52, 152, 219, ' + (opacity * 0.5) + ')';
+    var color = room1Light <= 25 ? '#ffff99' : room1Light <= 50 ? '#ffffaa' : 
+                room1Light <= 75 ? '#99ffff' : '#ffffff';
+    bulb3.style.background = 'radial-gradient(circle, ' + color + ', #888800)';
+    room1.style.background = 'rgba(255, 255, 153, ' + (room1Light/200) + ')';
     status3.textContent = room1Light + '%';
     status3.className = 'room-status lit';
     activeRooms.push('Room 1 (M5GO)');
-  } else {
-    room1.style.boxShadow = 'none';
   }
   
-  // Room 2 (Bottom Right) - RGB LED
+  // Room 2 (Bottom Right) - RGB LED (bulb2 in room2bg)
   if(room2Light > 0) {
     bulb2.classList.add('on');
-    var opacity = room2Light / 100;
-    room2.style.background = 'rgba(231, 76, 60, ' + (opacity * 0.3) + ')';
-    room2.style.boxShadow = 'inset 0 0 50px rgba(231, 76, 60, ' + (opacity * 0.5) + ')';
+    var color = room2Light <= 25 ? '#ffff99' : room2Light <= 50 ? '#ffffaa' : 
+                room2Light <= 75 ? '#99ffff' : '#ffffff';
+    bulb2.style.background = 'radial-gradient(circle, ' + color + ', #888800)';
+    room2.style.background = 'rgba(255, 255, 153, ' + (room2Light/200) + ')';
     status2.textContent = room2Light + '%';
     status2.className = 'room-status lit';
     activeRooms.push('Room 2 (RGB)');
-  } else {
-    room2.style.boxShadow = 'none';
   }
   
-  // Room 3 (Top Left) - Arduino Mega
+  // Room 3 (Top Left) - Arduino Mega (bulb4 in room4bg)
   if(room3Light > 0) {
     bulb4.classList.add('on');
-    var opacity = room3Light / 100;
-    room4.style.background = 'rgba(0, 188, 180, ' + (opacity * 0.3) + ')';
-    room4.style.boxShadow = 'inset 0 0 50px rgba(0, 188, 180, ' + (opacity * 0.5) + ')';
+    var color = room3Light <= 25 ? '#ffff99' : room3Light <= 50 ? '#ffffaa' : 
+                room3Light <= 75 ? '#99ffff' : '#ffffff';
+    bulb4.style.background = 'radial-gradient(circle, ' + color + ', #888800)';
+    room4.style.background = 'rgba(255, 255, 153, ' + (room3Light/200) + ')';
     status4.textContent = room3Light + '%';
     status4.className = 'room-status lit';
     activeRooms.push('Room 3 (Arduino)');
-  } else {
-    room4.style.boxShadow = 'none';
   }
   
+  // Overall status
   var maxLight = Math.max(room1Light, room2Light, room3Light);
   if(activeRooms.length === 0) {
     levelText.textContent = 'OFF (0%)';
@@ -1449,35 +1382,23 @@ function fetchData() {
   var url = 'https://api.thingspeak.com/channels/' + CHANNEL + 
             '/feeds.json?api_key=' + READ_KEY + '&results=30';
   
-  console.log('Fetching from:', url); // DEBUG
-  
   fetch(url)
     .then(res => {
-      console.log('Response status:', res.status); // DEBUG
       if (!res.ok) throw new Error('HTTP error! status: ' + res.status);
       return res.json();
     })
     .then(d => {
-      console.log('Received data:', d); // DEBUG
-      
-      if(!d.feeds || d.feeds.length === 0) {
-        console.error('No feeds in data!'); // DEBUG
-        throw new Error('No data feeds available');
-      }
+      if(!d.feeds || d.feeds.length === 0) throw new Error('No data feeds available');
       
       fc++;
       var f = d.feeds[d.feeds.length - 1];
       
-      console.log('Latest feed:', f); // DEBUG
-      
       var temp = parseFloat(f.field1) || 0;
       var hum = parseFloat(f.field2) || 0;
       var pres = parseFloat(f.field3) || 0;
-      var room3Light = parseInt(f.field4) || 0;
-      var room1Light = parseInt(f.field5) || 0;
-      var room2Light = parseInt(f.field6) || 0;
-
-      console.log('Parsed values - Temp:', temp, 'Hum:', hum, 'Pres:', pres, 'Lights:', room1Light, room2Light, room3Light); // DEBUG
+      var room3Light = parseInt(f.field4) || 0;  // Arduino Mega (Room 3)
+      var room1Light = parseInt(f.field5) || 0;  // M5GO LED (Room 1)
+      var room2Light = parseInt(f.field6) || 0;  // RGB LED (Room 2)
 
       historicalData.pressure.push(pres);
       historicalData.temperature.push(temp);
@@ -1565,7 +1486,7 @@ function fetchData() {
       $('homeStatus').textContent = 'LIVE';
     })
     .catch(err => {
-      console.error('Fetch Error:', err); // DEBUG
+      console.error('Fetch Error:', err);
       $('st').className = 'sd er';
       $('st2').className = 'sd er';
       $('st3').className = 'sd er';
@@ -1602,8 +1523,6 @@ function applyColor(room) {
   alert('✅ Color #' + color + ' applied to Room ' + room);
 }
 
-// Start fetching immediately
-console.log('Starting data fetch...'); // DEBUG
 fetchData();
 setInterval(fetchData, UPDATE_INTERVAL);
 $('homeEntries').textContent = '12';

@@ -79,7 +79,8 @@ border-color:rgba(255,255,255,.4)}
 .page.active{display:block}
 
 .sb{display:flex;align-items:center;justify-content:center;gap:8px;
-padding:12px 24px;border-radius:24px;font-size:.9rem;margin:0 auto 20px;background:var(--card);width:fit-content;border:1px solid rgba(255,255,255,.08);
+padding:12px 24px;border-radius:24px;font-size:.9rem;margin:0 auto 20px;
+background:var(--card);width:fit-content;border:1px solid rgba(255,255,255,.08);
 box-shadow:0 4px 12px rgba(0,0,0,.2)}
 .sd{width:10px;height:10px;border-radius:50%;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:.4;transform:scale(1)}50%{opacity:1;transform:scale(1.2)}}
@@ -88,7 +89,8 @@ box-shadow:0 4px 12px rgba(0,0,0,.2)}
 
 .weather-hero{background:linear-gradient(135deg,#0a1628,#1a3a5c,#2d6187,#3a7ca5);
 padding:40px 20px;margin-bottom:30px;border-radius:20px;position:relative;overflow:hidden}
-.weather-hero::before{content:'';position:absolute;width:100%;height:100%;background:radial-gradient(circle,rgba(255,255,255,.03) 0%,transparent 60%);animation:shimmer 8s infinite}
+.weather-hero::before{content:'';position:absolute;width:100%;height:100%;
+background:radial-gradient(circle,rgba(255,255,255,.03) 0%,transparent 60%);animation:shimmer 8s infinite}
 @keyframes shimmer{0%,100%{transform:rotate(0deg)}50%{transform:rotate(180deg)}}
 .weather-display{display:flex;align-items:center;justify-content:center;gap:30px;flex-wrap:wrap;position:relative;z-index:1}
 .weather-icon{font-size:6rem;animation:float 3s ease-in-out infinite}
@@ -103,7 +105,8 @@ padding:40px 20px;margin-bottom:30px;border-radius:20px;position:relative;overfl
 .gr{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;margin-top:20px}
 .cd{background:var(--card);border-radius:var(--r);padding:24px;
 border:1px solid rgba(255,255,255,.08);transition:all .3s;position:relative;overflow:hidden}
-.cd::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity .3s}
+.cd::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+background:linear-gradient(90deg,var(--accent),var(--accent2));opacity:0;transition:opacity .3s}
 .cd:hover{transform:translateY(-5px);box-shadow:0 10px 30px rgba(0,0,0,.3)}
 .cd:hover::before{opacity:1}
 .ic{font-size:2.5rem;margin-bottom:12px}
@@ -136,7 +139,7 @@ position:absolute;top:-7px;transform:translateX(-50%);box-shadow:0 3px 10px rgba
   background: var(--card);
   border-radius: var(--r);
   padding: 40px 20px;
-  margin: 30px calc(-50vw + 50%) 30px;
+  margin: 30px calc(-50vw + 50%) 30px; /* FULL WIDTH EXPANSION */
   width: 100vw;
   border: 1px solid rgba(255,255,255,.08);
   position: relative;
@@ -252,7 +255,8 @@ position:absolute;top:-7px;transform:translateX(-50%);box-shadow:0 3px 10px rgba
 
 .office-container{background:var(--card);border-radius:var(--r);padding:40px;
 margin-top:20px;border:1px solid rgba(255,255,255,.08)}
-.office-map{position:relative;width:100%;max-width:800px;height:450px;margin:0 auto;background:#1a1a2e;border:5px solid #333;border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.office-map{position:relative;width:100%;max-width:800px;height:450px;margin:0 auto;
+background:#1a1a2e;border:5px solid #333;border-radius:4px;box-shadow:0 8px 24px rgba(0,0,0,.4)}
 
 .room4-outer{position:absolute;left:0;top:0;width:45%;height:50%;
 border-right:5px solid #333;border-bottom:5px solid #333;background:#2a2a3e;transition:background 0.5s}
@@ -262,8 +266,10 @@ border-right:5px solid #333;border-bottom:5px solid #333;background:#2a2a3e;tran
 border-bottom:5px solid #333;background:#2a2a3e;transition:background 0.5s}
 .room3-door{position:absolute;left:15%;bottom:-5px;width:50px;height:30px;background:#1a1a2e}
 
-.room1-outer{position:absolute;left:0;top:50%;width:62%;height:50%;background:#2a2a3e;transition:background 0.5s}
-.room1-main-door{position:absolute;left:20%;bottom:-5px;width:80px;height:40px;background:#1a1a2e;border:3px solid #333;border-bottom:none;border-radius:2px 2px 0 0}
+.room1-outer{position:absolute;left:0;top:50%;width:62%;height:50%;
+background:#2a2a3e;transition:background 0.5s}
+.room1-main-door{position:absolute;left:20%;bottom:-5px;width:80px;height:40px;
+background:#1a1a2e;border:3px solid #333;border-bottom:none;border-radius:2px 2px 0 0}
 .door-handle{position:absolute;width:8px;height:8px;background:#666;border-radius:50%;
 left:20px;top:50%;transform:translateY(-50%)}
 .door-handle2{position:absolute;width:8px;height:8px;background:#666;border-radius:50%;
@@ -278,8 +284,7 @@ font-weight:500;padding:6px 14px;background:rgba(0,0,0,.4);border-radius:6px;
 border:1px solid rgba(255,255,255,.15)}
 
 .room-content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-.room-label{font-size:1.1rem;font-weight:bold;margin-bottom:6px;opacity:0.9;color:var(--accent)}
-.room-name{font-size:0.8rem;opacity:0.7;margin-bottom:8px}
+.room-label{font-size:3rem;font-weight:bold;margin-bottom:10px;opacity:0.9}
 .light-bulb{width:80px;height:80px;border-radius:50%;background:#333;
 margin:15px auto 0;display:flex;align-items:center;justify-content:center;
 font-size:3rem;transition:all 0.6s;box-shadow:0 0 0 rgba(255,255,255,0);
@@ -290,7 +295,8 @@ border:3px solid #555}
 .room-status.lit{color:#0f0}
 .room-status.off{color:#888}
 
-.light-info-section{text-align:center;margin:30px 0;padding:20px;background:rgba(255,255,255,.05);border-radius:12px}
+.light-info-section{text-align:center;margin:30px 0;padding:20px;
+background:rgba(255,255,255,.05);border-radius:12px}
 .light-level{font-weight:bold;font-size:1.5rem;color:var(--accent2);line-height:1.8}
 
 .log-container{background:var(--card);border-radius:var(--r);padding:30px;
@@ -307,32 +313,27 @@ margin-top:20px;border:1px solid rgba(255,255,255,.08)}
 .log-status.entry{background:rgba(0,255,0,.2);color:#0f0}
 .log-status.exit{background:rgba(255,0,0,.2);color:#f55}
 
-/* LED Control Page */
 .led-container{background:var(--card);border-radius:var(--r);padding:30px;
 margin-top:20px;border:1px solid rgba(255,255,255,.08)}
-.led-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:25px;margin-top:30px}
+.led-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:25px;margin-top:30px}
 .led-room-card{background:rgba(255,255,255,.05);padding:25px;border-radius:12px;
 border:2px solid rgba(255,255,255,.1);transition:all 0.3s}
 .led-room-card:hover{border-color:var(--accent);box-shadow:0 8px 20px rgba(0,0,0,.3)}
 .led-room-title{font-size:1.3rem;font-weight:600;margin-bottom:20px;display:flex;
 align-items:center;justify-content:space-between}
-.led-preview{width:100px;height:100px;border-radius:50%;margin:20px auto;
-transition:all 0.4s;border:4px solid rgba(255,255,255,0.15)}
-.led-preview.lit{box-shadow:0 0 40px 8px currentColor}
-.color-input-group{margin-top:15px}
+.led-preview{width:80px;height:80px;border-radius:50%;margin:20px auto;
+transition:all 0.3s;box-shadow:0 0 30px currentColor;border:3px solid currentColor}
+.color-input-group{margin-top:20px}
 .color-input-group label{display:block;margin-bottom:8px;font-size:.9rem;opacity:.8}
-.color-input{width:100%;padding:12px;border-radius:8px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:var(--text);font-size:1rem;transition:border-color 0.3s}
+.color-input{width:100%;padding:12px;border-radius:8px;border:2px solid rgba(255,255,255,.2);
+background:rgba(255,255,255,.05);color:var(--text);font-size:1rem;transition:border-color 0.3s}
 .color-input:focus{outline:none;border-color:var(--accent)}
 .btn-apply{width:100%;padding:12px;margin-top:15px;background:var(--accent);
 border:none;border-radius:8px;color:#000;font-weight:600;font-size:1rem;
 cursor:pointer;transition:all 0.3s}
 .btn-apply:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.3)}
 .btn-apply:active{transform:translateY(0)}
-.led-current-color{margin-top:12px;font-size:0.85rem;opacity:0.7;text-align:center}
-.led-send-status{margin-top:10px;font-size:0.85rem;text-align:center;min-height:20px;font-weight:500}
-.led-send-status.ok{color:#0f0}
-.led-send-status.fail{color:#f55}
-.led-send-status.sending{color:var(--accent2)}
+
 .dev-note{background:rgba(255,193,7,.1);border-left:4px solid #ffc107;
 padding:15px;margin:20px 0;border-radius:8px;font-family:monospace;font-size:.9rem}
 .dev-note-title{font-weight:600;color:#ffc107;margin-bottom:8px}
@@ -360,6 +361,7 @@ border-top:1px solid rgba(255,255,255,.1)}
       <span class="logo-icon">🏢</span>
       <span>Smart Office Hub</span>
     </div>
+    
     <div class="nav-header">
       <button class="nav-btn active" onclick="showPage('home')">🏠 Home</button>
       <button class="nav-btn" onclick="showPage('weather')">🌤️ Weather</button>
@@ -367,6 +369,7 @@ border-top:1px solid rgba(255,255,255,.1)}
       <button class="nav-btn" onclick="showPage('entry')">🔐 Entry Log</button>
       <button class="nav-btn" onclick="showPage('led')">🎨 LED Control</button>
     </div>
+    
     <div class="clock-header" id="clockHeader">00:00:00</div>
   </div>
 </div>
@@ -376,6 +379,7 @@ border-top:1px solid rgba(255,255,255,.1)}
     <div class="home-content">
       <h1 class="home-title">Smart Office Hub</h1>
       <p class="home-subtitle">IoT-Powered Workspace Management System</p>
+      
       <div class="home-stats">
         <div class="stat-card">
           <div class="stat-icon">🌡️</div>
@@ -398,26 +402,30 @@ border-top:1px solid rgba(255,255,255,.1)}
           <div class="stat-label">System Status</div>
         </div>
       </div>
+      
       <div class="nav-cards">
         <div class="nav-card" onclick="showPage('weather')">
           <div class="nav-card-icon">🌤️</div>
           <div class="nav-card-title">Weather Monitoring</div>
           <div class="nav-card-desc">Real-time environmental data including temperature, humidity, air pressure, and weather forecasting based on sensor readings.</div>
         </div>
+        
         <div class="nav-card" onclick="showPage('office')">
           <div class="nav-card-icon">💡</div>
           <div class="nav-card-title">Office Lighting</div>
           <div class="nav-card-desc">Visual map showing current lighting status across all office rooms with automatic brightness control.</div>
         </div>
+        
         <div class="nav-card" onclick="showPage('entry')">
           <div class="nav-card-icon">🔐</div>
           <div class="nav-card-title">Entry Access Log</div>
           <div class="nav-card-desc">Track employee access with RFID card scanning system, showing real-time entry and exit records.</div>
         </div>
+        
         <div class="nav-card" onclick="showPage('led')">
           <div class="nav-card-icon">🎨</div>
           <div class="nav-card-title">LED Color Control</div>
-          <div class="nav-card-desc">Customize RGB LED colors for M5GO and Arduino rooms using HEX color picker. Sends to ThingSpeak Field 8.</div>
+          <div class="nav-card-desc">Customize RGB LED strip colors for each room individually using HEX codes or color picker interface.</div>
         </div>
       </div>
     </div>
@@ -427,10 +435,12 @@ border-top:1px solid rgba(255,255,255,.1)}
 <div id="weather-page" class="page">
   <div class="wrap">
     <h2 class="page-title">🌤️ Environmental Monitoring</h2>
+    
     <div class="sb">
       <div class="sd ok" id="st"></div>
       <span id="su">Connecting to ThingSpeak...</span>
     </div>
+
     <div class="weather-hero">
       <div class="weather-display">
         <div class="weather-icon" id="weatherIcon">🌤️</div>
@@ -446,6 +456,7 @@ border-top:1px solid rgba(255,255,255,.1)}
         </div>
       </div>
     </div>
+
     <div class="gr">
       <div class="cd">
         <div class="ic">🌡️</div>
@@ -472,6 +483,7 @@ border-top:1px solid rgba(255,255,255,.1)}
         <div class="su">Based on pressure trend</div>
       </div>
     </div>
+
     <div class="hg-card">
       <div class="tt">Humidity Comfort Level</div>
       <div class="hg-labels">
@@ -483,6 +495,7 @@ border-top:1px solid rgba(255,255,255,.1)}
         <div class="hg-pin" id="hp" style="left:50%"></div>
       </div>
     </div>
+
     <div class="ch">
       <div class="tt">
         <span><span class="dt" style="background:#ff6b6b"></span> Temperature History</span>
@@ -507,6 +520,7 @@ border-top:1px solid rgba(255,255,255,.1)}
         </div>
       </div>
     </div>
+
     <div class="ch">
       <div class="tt">
         <span><span class="dt" style="background:#4ecdc4"></span> Humidity History</span>
@@ -531,6 +545,7 @@ border-top:1px solid rgba(255,255,255,.1)}
         </div>
       </div>
     </div>
+
     <div class="ch">
       <div class="tt">
         <span><span class="dt" style="background:#ffd93d"></span> Pressure History</span>
@@ -556,6 +571,7 @@ border-top:1px solid rgba(255,255,255,.1)}
       </div>
     </div>
   </div>
+
     <!-- Weather Conditions Reference Guide - FULL WIDTH -->
     <div class="weather-guide">
       <div class="weather-guide-inner">
@@ -563,7 +579,9 @@ border-top:1px solid rgba(255,255,255,.1)}
         <p style="text-align:center;opacity:0.7;margin-bottom:20px;font-size:0.95rem">
           Understanding how Temperature, Humidity, and Air Pressure determine weather forecasts
         </p>
+        
         <div class="conditions-grid" id="conditionsGrid">
+          <!-- Condition 1 -->
           <div class="condition-card" data-condition="heavy-rain">
             <div class="condition-header">
               <div class="condition-icon">🌧️</div>
@@ -578,6 +596,8 @@ border-top:1px solid rgba(255,255,255,.1)}
               Strong weather system approaching. Rapid pressure drop combined with increasing humidity indicates heavy precipitation within 1-3 hours.
             </div>
           </div>
+
+          <!-- Condition 2 -->
           <div class="condition-card" data-condition="rain-likely">
             <div class="condition-header">
               <div class="condition-icon">🌦️</div>
@@ -592,6 +612,8 @@ border-top:1px solid rgba(255,255,255,.1)}
               Atmospheric conditions favor precipitation. Sustained pressure decline with high humidity levels indicate rain within 3-6 hours.
             </div>
           </div>
+
+          <!-- Condition 3 -->
           <div class="condition-card" data-condition="cloudy">
             <div class="condition-header">
               <div class="condition-icon">☁️</div>
@@ -606,6 +628,8 @@ border-top:1px solid rgba(255,255,255,.1)}
               Gradual pressure decrease indicates cloud cover increasing. Overcast skies likely with no immediate precipitation expected.
             </div>
           </div>
+
+          <!-- Condition 4 -->
           <div class="condition-card" data-condition="clear-skies">
             <div class="condition-header">
               <div class="condition-icon">☀️</div>
@@ -620,6 +644,8 @@ border-top:1px solid rgba(255,255,255,.1)}
               Strong high-pressure system building. Rapid pressure increase clears clouds and brings sunny weather conditions.
             </div>
           </div>
+
+          <!-- Condition 5 -->
           <div class="condition-card" data-condition="improving">
             <div class="condition-header">
               <div class="condition-icon">🌤️</div>
@@ -634,13 +660,15 @@ border-top:1px solid rgba(255,255,255,.1)}
               Conditions clearing as pressure rises. Clouds breaking up with improving visibility and reduced precipitation chance.
             </div>
           </div>
+
+          <!-- Condition 6 -->
           <div class="condition-card" data-condition="fair-stable">
             <div class="condition-header">
               <div class="condition-icon">☀️</div>
-              <div class="condition-name">Fair &amp; Stable</div>
+              <div class="condition-name">Fair & Stable</div>
             </div>
             <div class="condition-indicators">
-              <span class="indicator pressure">➡️ Pressure: High &amp; Stable (&gt;1013 hPa)</span>
+              <span class="indicator pressure">➡️ Pressure: High & Stable (&gt;1013 hPa)</span>
               <span class="indicator humidity">💧 Humidity: Low (&lt;60%)</span>
               <span class="indicator temp">🌡️ Temperature: Comfortable</span>
             </div>
@@ -648,6 +676,8 @@ border-top:1px solid rgba(255,255,255,.1)}
               Excellent weather conditions. High pressure system with low humidity creates stable, pleasant conditions with clear skies.
             </div>
           </div>
+
+          <!-- Condition 7 -->
           <div class="condition-card" data-condition="unsettled">
             <div class="condition-header">
               <div class="condition-icon">🌧️</div>
@@ -662,6 +692,8 @@ border-top:1px solid rgba(255,255,255,.1)}
               Unstable atmospheric conditions. Low pressure combined with high humidity creates potential for cloudy skies and showers.
             </div>
           </div>
+
+          <!-- Condition 8 -->
           <div class="condition-card" data-condition="cold-front">
             <div class="condition-header">
               <div class="condition-icon">❄️</div>
@@ -676,6 +708,8 @@ border-top:1px solid rgba(255,255,255,.1)}
               Cold front passage detected. Temperature decrease with rising pressure brings cooler, clearer conditions ahead.
             </div>
           </div>
+
+          <!-- Condition 9 -->
           <div class="condition-card" data-condition="warm-front">
             <div class="condition-header">
               <div class="condition-icon">🌡️</div>
@@ -690,6 +724,8 @@ border-top:1px solid rgba(255,255,255,.1)}
               Warm front advancing. Temperature increase with falling pressure develops warmer, more humid conditions.
             </div>
           </div>
+
+          <!-- Condition 10 -->
           <div class="condition-card" data-condition="stable">
             <div class="condition-header">
               <div class="condition-icon">⛅</div>
@@ -704,6 +740,8 @@ border-top:1px solid rgba(255,255,255,.1)}
               Atmospheric equilibrium. No significant changes in pressure, temperature, or humidity. Current weather pattern expected to persist.
             </div>
           </div>
+
+          <!-- Condition 11 -->
           <div class="condition-card" data-condition="partly-cloudy">
             <div class="condition-header">
               <div class="condition-icon">⛅</div>
@@ -721,65 +759,69 @@ border-top:1px solid rgba(255,255,255,.1)}
         </div>
       </div>
     </div>
+
 </div>
 
-<!-- ===================== LIGHTING PAGE ===================== -->
 <div id="office-page" class="page">
   <div class="wrap">
     <h2 class="page-title">💡 Office Lighting Control Map</h2>
+    
     <div class="sb">
       <div class="sd ok" id="st2"></div>
       <span id="lightStatus">Monitoring lighting system...</span>
     </div>
+
     <div class="office-container">
       <div class="office-map">
-        <!-- Top-left: Room 1 (M5GO) — reads field4 -->
-        <div class="room4-outer" id="room1MbG">
+        <div class="room4-outer" id="room4bg">
           <div class="room4-door"></div>
           <div class="room-content">
-            <div class="room-label">Room 1</div>
-            <div class="room-name">M5GO</div>
-            <div class="light-bulb" id="bulbRoom1">💡</div>
-            <div class="room-status off" id="statusRoom1">OFF</div>
+            <div class="room-label">4</div>
+            <div class="light-bulb" id="bulb4">💡</div>
+            <div class="room-status off" id="status4">OFF</div>
           </div>
         </div>
-        <!-- Top-right: unused decorative room -->
+        
         <div class="room3-outer" id="room3bg">
           <div class="room3-door"></div>
           <div class="room-content">
-            <div class="room-label" style="font-size:1rem;opacity:0.4">Storage</div>
+            <div class="room-label">3</div>
+            <div class="light-bulb" id="bulb3">💡</div>
+            <div class="room-status off" id="status3">OFF</div>
           </div>
         </div>
-        <!-- Bottom-left: Main Entrance (no bulb, no label number) -->
+        
         <div class="room1-outer" id="room1bg">
           <div class="room1-main-door">
             <div class="door-handle"></div>
             <div class="door-handle2"></div>
           </div>
           <div class="room-content">
-            <div class="room-name" style="font-size:0.9rem;opacity:0.6">Main Hall</div>
+            <div class="room-label">1</div>
           </div>
         </div>
-        <!-- Bottom-right: Room 2 (Arduino) -->
-        <div class="room2-outer" id="room2Arduino">
+        
+        <div class="room2-outer" id="room2bg">
           <div class="room2-door"></div>
           <div class="room-content">
-            <div class="room-label">Room 2</div>
-            <div class="room-name">Arduino</div>
-            <div class="light-bulb" id="bulbRoom2">💡</div>
-            <div class="room-status off" id="statusRoom2">OFF</div>
+            <div class="room-label">2</div>
+            <div class="light-bulb" id="bulb2">💡</div>
+            <div class="room-status off" id="status2">OFF</div>
           </div>
         </div>
+        
         <div class="gateway">Main Office Entrance</div>
       </div>
     </div>
+
     <div class="light-info-section">
       <div style="font-size:1.1rem;opacity:0.8;margin-bottom:10px">Current Lighting Levels</div>
       <div class="light-level" id="lightLevelText">Loading...</div>
     </div>
+
     <div class="ch">
       <div class="tt">
-        <span><span class="dt" style="background:#ffd93d"></span> Room 1 (M5GO) Light Level History — Field 4</span>
+        <span><span class="dt" style="background:#ffd93d"></span> Average Light Level History</span>
       </div>
       <canvas id="c4"></canvas>
       <div class="chart-info">
@@ -804,14 +846,15 @@ border-top:1px solid rgba(255,255,255,.1)}
   </div>
 </div>
 
-<!-- ===================== ENTRY LOG PAGE ===================== -->
 <div id="entry-page" class="page">
   <div class="wrap">
     <h2 class="page-title">🔐 Office Entry Access Log</h2>
+    
     <div class="sb">
       <div class="sd ok" id="st3"></div>
       <span>Real-time RFID access monitoring</span>
     </div>
+
     <div class="dev-note">
       <div class="dev-note-title">📝 DEVELOPER NOTE - Arduino Mega Integration:</div>
       <div>Your friend should send data to this page using HTTP POST/GET requests.</div>
@@ -823,6 +866,7 @@ border-top:1px solid rgba(255,255,255,.1)}
         • <code>action</code> - "entry" or "exit"
       </div>
     </div>
+
     <div class="log-container">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px">
         <h3>Recent Access Records</h3>
@@ -830,6 +874,7 @@ border-top:1px solid rgba(255,255,255,.1)}
           Today: <span style="color:var(--accent);font-weight:600" id="todayCount">0</span> entries
         </div>
       </div>
+      
       <table class="log-table">
         <thead>
           <tr>
@@ -864,67 +909,680 @@ border-top:1px solid rgba(255,255,255,.1)}
   </div>
 </div>
 
-<!-- ===================== LED COLOR CONTROL PAGE ===================== -->
 <div id="led-page" class="page">
   <div class="wrap">
     <h2 class="page-title">🎨 Smart RGB LED Controller</h2>
+    
     <div class="sb">
       <div class="sd ok" id="st4"></div>
-      <span id="ledStatusText">Web-based LED color management</span>
+      <span>Web-based LED color management</span>
     </div>
+
     <div class="dev-note">
-      <div class="dev-note-title">📡 ThingSpeak Field 8 — RGB Color Control:</div>
-      <div>Colors are sent to <strong>ThingSpeak Field 8</strong> in <code>R,G,B</code> format (e.g. <code>255,0,128</code>).</div>
+      <div class="dev-note-title">📝 DEVELOPER NOTE - Arduino Mega LED Control:</div>
+      <div>This page sends color commands to Arduino Mega. Your friend needs to:</div>
       <div style="margin-top:8px">
-        The M5GO and Arduino both read Field 8 and apply the chosen color to their RGB LEDs.<br>
-        Use the color picker or type a HEX code, then press <strong>Apply Color</strong>.
+        <strong>1. Arduino Setup:</strong> Listen for HTTP requests with color data<br>
+        <strong>2. Endpoint:</strong> Create API endpoint (e.g., <code>/api/setLED.php?room=1&color=FF0000</code>)<br>
+        <strong>3. Arduino receives:</strong> Parse HEX color and set RGB LED strips accordingly
       </div>
     </div>
+
     <div class="led-container">
-      <h3 style="margin-bottom:5px">Room LED Color Control</h3>
-      <p style="opacity:0.6;font-size:0.9rem;margin-bottom:5px">Choose a color — both rooms share Field 8</p>
+      <h3>Individual Room LED Control</h3>
+      
       <div class="led-grid">
-        <!-- Room 1: M5GO -->
         <div class="led-room-card">
           <div class="led-room-title">
-            <span>💡 Room 1 — M5GO</span>
-            <span style="font-size:0.85rem;opacity:0.6;background:rgba(78,205,196,.15);color:var(--accent);padding:4px 10px;border-radius:10px">Field 8</span>
+            <span>💡 Room 1 (Main)</span>
+            <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
           </div>
-          <div class="led-preview" id="ledPreview1" style="background-color:#ff0000;box-shadow:0 0 30px #ff000066;border-color:#ff0000"></div>
-          <div class="led-current-color" id="ledCurrentColor1">Current: Loading from ThingSpeak...</div>
+          <div class="led-preview" id="ledPreview1" style="background-color:#333"></div>
           <div class="color-input-group">
-            <label>HEX Color:</label>
-            <input type="text" class="color-input" id="colorInput1" placeholder="#FF0000" maxlength="7" value="#FF0000">
+            <label>Color (HEX):</label>
+            <input type="text" class="color-input" id="colorInput1" 
+                   placeholder="#FF0000" maxlength="7" value="#FF0000">
           </div>
           <div class="color-input-group">
             <label>Color Picker:</label>
-            <input type="color" class="color-input" id="colorPicker1" value="#FF0000" style="height:50px;cursor:pointer">
+            <input type="color" class="color-input" id="colorPicker1" 
+                   value="#FF0000" style="height:50px;cursor:pointer">
           </div>
-          <button class="btn-apply" onclick="applyColor(1)">🚀 Apply Color to M5GO (Field 8)</button>
-          <div class="led-send-status" id="ledStatus1"></div>
+          <button class="btn-apply" onclick="applyColor(1)">Apply to Room 1</button>
         </div>
-        <!-- Room 2: Arduino -->
+
         <div class="led-room-card">
           <div class="led-room-title">
-            <span>💡 Room 2 — Arduino</span>
-            <span style="font-size:0.85rem;opacity:0.6;background:rgba(78,205,196,.15);color:var(--accent);padding:4px 10px;border-radius:10px">Field 8</span>
+            <span>💡 Room 2</span>
+            <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
           </div>
-          <div class="led-preview" id="ledPreview2" style="background-color:#00ff00;box-shadow:0 0 30px #00ff0066;border-color:#00ff00"></div>
-          <div class="led-current-color" id="ledCurrentColor2">Current: Loading from ThingSpeak...</div>
+          <div class="led-preview" id="ledPreview2" style="background-color:#333"></div>
           <div class="color-input-group">
-            <label>HEX Color:</label>
-            <input type="text" class="color-input" id="colorInput2" placeholder="#00FF00" maxlength="7" value="#00FF00">
+            <label>Color (HEX):</label>
+            <input type="text" class="color-input" id="colorInput2" 
+                   placeholder="#00FF00" maxlength="7" value="#00FF00">
           </div>
           <div class="color-input-group">
             <label>Color Picker:</label>
-            <input type="color" class="color-input" id="colorPicker2" value="#00FF00" style="height:50px;cursor:pointer">
+            <input type="color" class="color-input" id="colorPicker2" 
+                   value="#00FF00" style="height:50px;cursor:pointer">
           </div>
-          <button class="btn-apply" onclick="applyColor(2)">🚀 Apply Color to Arduino (Field 8)</button>
-          <div class="led-send-status" id="ledStatus2"></div>
+          <button class="btn-apply" onclick="applyColor(2)">Apply to Room 2</button>
+        </div>
+
+        <div class="led-room-card">
+          <div class="led-room-title">
+            <span>💡 Room 3</span>
+            <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
+          </div>
+          <div class="led-preview" id="ledPreview3" style="background-color:#333"></div>
+          <div class="color-input-group">
+            <label>Color (HEX):</label>
+            <input type="text" class="color-input" id="colorInput3" 
+                   placeholder="#0000FF" maxlength="7" value="#0000FF">
+          </div>
+          <div class="color-input-group">
+            <label>Color Picker:</label>
+            <input type="color" class="color-input" id="colorPicker3" 
+                   value="#0000FF" style="height:50px;cursor:pointer">
+          </div>
+          <button class="btn-apply" onclick="applyColor(3)">Apply to Room 3</button>
+        </div>
+
+        <div class="led-room-card">
+          <div class="led-room-title">
+            <span>💡 Room 4</span>
+            <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
+          </div>
+          <div class="led-preview" id="ledPreview4" style="background-color:#333"></div>
+          <div class="color-input-group">
+            <label>Color (HEX):</label>
+            <input type="text" class="color-input" id="colorInput4" 
+                   placeholder="#FFFF00" maxlength="7" value="#FFFF00">
+          </div>
+          <div class="color-input-group">
+            <label>Color Picker:</label>
+            <input type="color" class="color-input" id="colorPicker4" 
+                   value="#FFFF00" style="height:50px;cursor:pointer">
+          </div>
+          <button class="btn-apply" onclick="applyColor(4)">Apply to Room 4</button>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<footer>
+  Smart Office Hub © 2026 | NYP Engineering Project | Powered by M5GO + ThingSpeak + Arduino Mega
+</footer>
+
+<script>
+var CHANNEL = '3260324';
+var READ_KEY = 'RSDE9TXRGDX5HIL0';
+var UPDATE_INTERVAL = 5000;
+
+var fc = 0;
+var currentPage = 'home';
+var minTemp = 999, maxTemp = -999;
+
+var historicalData = {
+  pressure: [],
+  temperature: [],
+  humidity: [],
+  timestamps: [],
+  maxHistory: 720
+};
+
+// Store current forecast code - INITIALIZE TO -1 so first send always triggers
+var currentForecastCode = -1;
+var firstForecastSent = false;
+
+// Send forecast code to ThingSpeak Field 7
+function sendForecastToThingSpeak(forecastCode) {
+  var WRITE_KEY = 'W0R5AL9YS3DDDJHL';
+  
+  console.log('🌤️ Sending forecast code ' + forecastCode + ' to ThingSpeak Field 7...');
+  
+  var url = 'https://api.thingspeak.com/update?api_key=' + WRITE_KEY + '&field7=' + forecastCode;
+  
+  fetch(url)
+    .then(res => res.text())
+    .then(data => {
+      if(data.trim() !== '0') {
+        console.log('✅ Forecast code ' + forecastCode + ' sent successfully! Entry ID: ' + data);
+      } else {
+        console.error('❌ ThingSpeak returned 0 (rate limit or error)');
+      }
+    })
+    .catch(err => {
+      console.error('❌ Failed to send forecast:', err);
+    });
+}
+
+function $(id){return document.getElementById(id)}
+
+function showPage(page) {
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  
+  $(page + '-page').classList.add('active');
+  
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if(b.textContent.toLowerCase().includes(page) || 
+       (page === 'home' && b.textContent.includes('Home'))) {
+      b.classList.add('active');
+    }
+  });
+}
+
+function updateClock(){
+  var n = new Date();
+  var h = n.getHours(), m = n.getMinutes(), s = n.getSeconds();
+  $('clockHeader').textContent = 
+    (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+function updateOfficeLights(room1Light, room2Light, room3Light) {
+  var bulb2 = $('bulb2');
+  var bulb3 = $('bulb3');
+  var bulb4 = $('bulb4');
+  
+  var room1 = $('room1bg');
+  var room2 = $('room2bg');
+  var room3 = $('room3bg');
+  var room4 = $('room4bg');
+  
+  var status2 = $('status2');
+  var status3 = $('status3');
+  var status4 = $('status4');
+  
+  var levelText = $('lightLevelText');
+  var statusText = $('lightStatus');
+  
+  // Reset all
+  bulb2.classList.remove('on');
+  bulb3.classList.remove('on');
+  bulb4.classList.remove('on');
+  
+  bulb2.style.background = '#333';
+  bulb3.style.background = '#333';
+  bulb4.style.background = '#333';
+  
+  room1.style.background = '#2a2a3e';
+  room2.style.background = '#2a2a3e';
+  room3.style.background = '#2a2a3e';
+  room4.style.background = '#2a2a3e';
+  
+  status2.textContent = 'OFF';
+  status3.textContent = 'OFF';
+  status4.textContent = 'OFF';
+  
+  status2.className = 'room-status off';
+  status3.className = 'room-status off';
+  status4.className = 'room-status off';
+  
+  room3.style.display = 'none';
+  
+  var activeRooms = [];
+  
+  // Room 1 (Bottom Left) - M5GO LED (bulb3 in room1bg)
+  if(room1Light > 0) {
+    bulb3.classList.add('on');
+    var color = room1Light <= 25 ? '#ffff99' : room1Light <= 50 ? '#ffffaa' : 
+                room1Light <= 75 ? '#99ffff' : '#ffffff';
+    bulb3.style.background = 'radial-gradient(circle, ' + color + ', #888800)';
+    room1.style.background = 'rgba(255, 255, 153, ' + (room1Light/200) + ')';
+    status3.textContent = room1Light + '%';
+    status3.className = 'room-status lit';
+    activeRooms.push('Room 1 (M5GO)');
+  }
+  
+  // Room 2 (Bottom Right) - RGB LED (bulb2 in room2bg)
+  if(room2Light > 0) {
+    bulb2.classList.add('on');
+    var color = room2Light <= 25 ? '#ffff99' : room2Light <= 50 ? '#ffffaa' : 
+                room2Light <= 75 ? '#99ffff' : '#ffffff';
+    bulb2.style.background = 'radial-gradient(circle, ' + color + ', #888800)';
+    room2.style.background = 'rgba(255, 255, 153, ' + (room2Light/200) + ')';
+    status2.textContent = room2Light + '%';
+    status2.className = 'room-status lit';
+    activeRooms.push('Room 2 (RGB)');
+  }
+  
+  // Room 3 (Top Left) - Arduino Mega (bulb4 in room4bg)
+  if(room3Light > 0) {
+    bulb4.classList.add('on');
+    var color = room3Light <= 25 ? '#ffff99' : room3Light <= 50 ? '#ffffaa' : 
+                room3Light <= 75 ? '#99ffff' : '#ffffff';
+    bulb4.style.background = 'radial-gradient(circle, ' + color + ', #888800)';
+    room4.style.background = 'rgba(255, 255, 153, ' + (room3Light/200) + ')';
+    status4.textContent = room3Light + '%';
+    status4.className = 'room-status lit';
+    activeRooms.push('Room 3 (Arduino)');
+  }
+  
+  // Overall status
+  var maxLight = Math.max(room1Light, room2Light, room3Light);
+  if(activeRooms.length === 0) {
+    levelText.textContent = 'OFF (0%)';
+    levelText.style.color = '#888';
+    statusText.textContent = 'All lights are OFF';
+  } else {
+    var lMode = maxLight <= 25 ? 'ECO' : maxLight <= 50 ? 'NORMAL' : maxLight <= 75 ? 'BRIGHT' : 'MAX';
+    levelText.textContent = lMode + ' (' + maxLight + '%)';
+    levelText.style.color = maxLight <= 25 ? '#ffd93d' : maxLight <= 50 ? '#4ecdc4' : '#ff6b6b';
+    statusText.textContent = activeRooms.join(' • ');
+  }
+}
+
+function drawChart(canvas, data, color, unit, statsIds) {
+  if(!canvas || data.length === 0) return;
+  
+  var c = canvas.getContext('2d');
+  var dpr = window.devicePixelRatio || 1;
+  var W = canvas.clientWidth;
+  var H = canvas.clientHeight;
+  
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  c.scale(dpr, dpr);
+  
+  c.clearRect(0, 0, W, H);
+  
+  var mn = Math.min(...data);
+  var mx = Math.max(...data);
+  var range = mx - mn || 1;
+  var sum = data.reduce((a,b) => a+b, 0);
+  var avg = sum / data.length;
+  
+  var pts = [];
+  for(var i = 0; i < data.length; i++) {
+    var x = (i / (data.length - 1)) * W;
+    var y = H - ((data[i] - mn) / range) * (H - 40);
+    pts.push([x, y]);
+  }
+  
+  var gradient = c.createLinearGradient(0, 0, 0, H);
+  gradient.addColorStop(0, color + '40');
+  gradient.addColorStop(1, color + '00');
+  c.fillStyle = gradient;
+  c.beginPath();
+  c.moveTo(pts[0][0], H);
+  for(var i = 0; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]);
+  c.lineTo(pts[pts.length-1][0], H);
+  c.closePath();
+  c.fill();
+
+  c.strokeStyle = color;
+  c.lineWidth = 3 * dpr;
+  c.lineJoin = 'round';
+  c.lineCap = 'round';
+  c.beginPath();
+  c.moveTo(pts[0][0], pts[0][1]);
+  for(var i = 1; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]);
+  c.stroke();
+
+  for(var i = 0; i < pts.length; i++) {
+    c.fillStyle = color;
+    c.beginPath();
+    c.arc(pts[i][0], pts[i][1], 4*dpr, 0, Math.PI*2);
+    c.fill();
+    c.strokeStyle = '#1a1a2e';
+    c.lineWidth = 2*dpr;
+    c.stroke();
+  }
+
+  c.fillStyle = 'rgba(255,255,255,.7)';
+  c.font = (12*dpr) + 'px sans-serif';
+  c.textAlign = 'left';
+  c.fillText(mn.toFixed(1) + unit, 8, H - 8);
+  c.textAlign = 'right';
+  c.fillText(mx.toFixed(1) + unit, W - 8, 20*dpr);
+  
+  if(statsIds) {
+    $(statsIds.min).innerHTML = mn.toFixed(1) + unit;
+    $(statsIds.max).innerHTML = mx.toFixed(1) + unit;
+    $(statsIds.avg).innerHTML = avg.toFixed(1) + unit;
+    if(statsIds.count) $(statsIds.count).textContent = data.length;
+  }
+}
+
+// SINGLE getAdvancedForecast function with all forecast codes
+function getAdvancedForecast(currentTemp, currentHum, currentPres) {
+  var forecast = {
+    icon: '⛅',
+    text: 'Loading...',
+    confidence: 'low',
+    details: '',
+    code: 0
+  };
+  
+  // Changed from 120 to 12 (1 minute instead of 10 minutes)
+  if(historicalData.pressure.length < 12) {
+    forecast.text = 'Collecting Data...';
+    var remainingSeconds = (12 - historicalData.pressure.length) * 5;
+    forecast.details = 'Need ' + remainingSeconds + ' more seconds';
+    forecast.code = 0;
+    return forecast;
+  }
+  
+  var len = historicalData.pressure.length;
+  // Adjusted for shorter timeframes
+  var pressure15min = len > 36 ? historicalData.pressure[len - 36] : historicalData.pressure[0];
+  var pressure30min = len > 72 ? historicalData.pressure[len - 72] : historicalData.pressure[0];
+  var temp15min = len > 36 ? historicalData.temperature[len - 36] : historicalData.temperature[0];
+  var hum15min = len > 36 ? historicalData.humidity[len - 36] : historicalData.humidity[0];
+  
+  var trend15 = currentPres - pressure15min;
+  var trend30 = currentPres - pressure30min;
+  var tempChange = currentTemp - temp15min;
+  var humChange = currentHum - hum15min;
+  var pressureRate = trend15 * 4;
+  
+  if(trend15 < -1 && pressureRate < -3 && humChange > 5) {
+    forecast.icon = '🌧️';
+    forecast.text = 'Heavy Rain Soon';
+    forecast.confidence = 'high';
+    forecast.details = 'Pressure dropping fast (' + pressureRate.toFixed(1) + ' hPa/hr), humidity rising';
+    forecast.code = 1;
+  }
+  else if(trend30 < -2 && currentHum > 75) {
+    forecast.icon = '🌦️';
+    forecast.text = 'Rain Likely';
+    forecast.confidence = 'high';
+    forecast.details = 'Pressure falling (' + trend30.toFixed(1) + ' hPa/30min), high humidity';
+    forecast.code = 2;
+  }
+  else if(trend15 < -0.5 && currentPres < 1010) {
+    forecast.icon = '☁️';
+    forecast.text = 'Cloudy Weather';
+    forecast.confidence = 'medium';
+    forecast.details = 'Low pressure (' + currentPres.toFixed(0) + ' hPa), pressure declining';
+    forecast.code = 3;
+  }
+  else if(trend15 > 1 && pressureRate > 3) {
+    forecast.icon = '☀️';
+    forecast.text = 'Clear Skies Ahead';
+    forecast.confidence = 'high';
+    forecast.details = 'Pressure rising rapidly (' + pressureRate.toFixed(1) + ' hPa/hr)';
+    forecast.code = 4;
+  }
+  else if(trend30 > 1.5) {
+    forecast.icon = '🌤️';
+    forecast.text = 'Weather Improving';
+    forecast.confidence = 'medium';
+    forecast.details = 'Pressure steadily rising';
+    forecast.code = 5;
+  }
+  else if(currentPres > 1013 && currentHum < 60 && Math.abs(trend15) < 0.3) {
+    forecast.icon = '☀️';
+    forecast.text = 'Fair & Stable';
+    forecast.confidence = 'high';
+    forecast.details = 'High pressure (' + currentPres.toFixed(0) + ' hPa), low humidity';
+    forecast.code = 6;
+  }
+  else if(currentPres < 1010 && currentHum > 70) {
+    forecast.icon = '🌧️';
+    forecast.text = 'Unsettled Weather';
+    forecast.confidence = 'medium';
+    forecast.details = 'Low pressure, high humidity (' + currentHum.toFixed(0) + '%)';
+    forecast.code = 7;
+  }
+  else if(tempChange < -3 && trend15 < -0.5) {
+    forecast.icon = '❄️';
+    forecast.text = 'Cold Front Moving In';
+    forecast.confidence = 'high';
+    forecast.details = 'Temperature dropped ' + Math.abs(tempChange).toFixed(1) + '°C';
+    forecast.code = 8;
+  }
+  else if(tempChange > 3 && trend15 > 0.5) {
+    forecast.icon = '🌡️';
+    forecast.text = 'Warm Front Approaching';
+    forecast.confidence = 'high';
+    forecast.details = 'Temperature rose ' + tempChange.toFixed(1) + '°C, pressure rising';
+    forecast.code = 9;
+  }
+  else if(Math.abs(trend30) < 0.5 && Math.abs(humChange) < 3) {
+    forecast.icon = '🌤️';
+    forecast.text = 'Stable Conditions';
+    forecast.confidence = 'high';
+    forecast.details = 'No significant changes recently';
+    forecast.code = 10;
+  }
+  else {
+    forecast.icon = '⛅';
+    forecast.text = 'Partly Cloudy';
+    forecast.confidence = 'low';
+    forecast.details = 'Conditions unclear, monitoring trends';
+    forecast.code = 11;
+  }
+  
+  return forecast;
+}
+
+function highlightCurrentCondition(forecastText) {
+  document.querySelectorAll('.condition-card').forEach(card => {
+    card.classList.remove('active');
+  });
+  
+  document.querySelectorAll('.current-badge').forEach(badge => {
+    badge.remove();
+  });
+  
+  var conditionMap = {
+    'Heavy Rain Soon': 'heavy-rain',
+    'Rain Likely': 'rain-likely',
+    'Cloudy Weather': 'cloudy',
+    'Clear Skies Ahead': 'clear-skies',
+    'Weather Improving': 'improving',
+    'Fair & Stable': 'fair-stable',
+    'Unsettled Weather': 'unsettled',
+    'Cold Front Moving In': 'cold-front',
+    'Warm Front Approaching': 'warm-front',
+    'Stable Conditions': 'stable',
+    'Partly Cloudy': 'partly-cloudy'
+  };
+  
+  var conditionKey = conditionMap[forecastText];
+  if(conditionKey) {
+    var activeCard = document.querySelector('.condition-card[data-condition="' + conditionKey + '"]');
+    if(activeCard) {
+      activeCard.classList.add('active');
+      
+      var nameEl = activeCard.querySelector('.condition-name');
+      var badge = document.createElement('span');
+      badge.className = 'current-badge';
+      badge.textContent = 'CURRENT';
+      nameEl.appendChild(badge);
+      
+      if(window.innerWidth < 768) {
+        activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  }
+}
+
+function fetchData() {
+  var url = 'https://api.thingspeak.com/channels/' + CHANNEL + 
+            '/feeds.json?api_key=' + READ_KEY + '&results=30';
+  
+  fetch(url)
+    .then(res => {
+      if (!res.ok) throw new Error('HTTP error! status: ' + res.status);
+      return res.json();
+    })
+    .then(d => {
+      if(!d.feeds || d.feeds.length === 0) throw new Error('No data feeds available');
+      
+      fc++;
+      var f = d.feeds[d.feeds.length - 1];
+      
+      var temp = parseFloat(f.field1) || 0;
+      var hum = parseFloat(f.field2) || 0;
+      var pres = parseFloat(f.field3) || 0;
+      
+      var room3Light = parseInt(f.field4) || 0;  // Arduino Mega (Room 3)
+      var room1Light = parseInt(f.field5) || 0;  // M5GO LED (Room 1)
+      var room2Light = parseInt(f.field6) || 0;  // RGB LED (Room 2)
+
+      historicalData.pressure.push(pres);
+      historicalData.temperature.push(temp);
+      historicalData.humidity.push(hum);
+      historicalData.timestamps.push(new Date().getTime());
+      
+      if(historicalData.pressure.length > historicalData.maxHistory) {
+        historicalData.pressure.shift();
+        historicalData.temperature.shift();
+        historicalData.humidity.shift();
+        historicalData.timestamps.shift();
+      }
+
+      $('tv').innerHTML = temp.toFixed(1) + '<span class="un">°C</span>';
+      $('hv').innerHTML = hum.toFixed(1) + '<span class="un">%</span>';
+      $('pv').innerHTML = pres.toFixed(1) + '<span class="un">hPa</span>';
+      
+      $('weatherTemp').textContent = temp.toFixed(1);
+      if(temp < minTemp) minTemp = temp;
+      if(temp > maxTemp) maxTemp = temp;
+      $('weatherHi').textContent = maxTemp.toFixed(1);
+      $('weatherLo').textContent = minTemp.toFixed(1);
+      
+      var icon = '🌤️', desc = 'Pleasant';
+      if(temp < 10) { icon = '❄️'; desc = 'Very Cold'; }
+      else if(temp < 18) { icon = '🌥️'; desc = 'Cold'; }
+      else if(temp < 25) { icon = '🌤️'; desc = 'Comfortable'; }
+      else if(temp < 30) { icon = '🌞'; desc = 'Warm'; }
+      else { icon = '🔥'; desc = 'Hot'; }
+      
+      $('weatherIcon').textContent = icon;
+      $('weatherDesc').textContent = desc;
+      
+      // Get advanced forecast
+      var advancedForecast = getAdvancedForecast(temp, hum, pres);
+      $('forecast').innerHTML = advancedForecast.icon + ' ' + advancedForecast.text;
+      
+      // Update current forecast code (sent to ThingSpeak every 2.5 minutes by setInterval)
+      if(advancedForecast.code !== currentForecastCode) {
+        console.log('🔄 Forecast changed from', currentForecastCode, 'to', advancedForecast.code);
+      }
+      currentForecastCode = advancedForecast.code;
+      
+      // Send immediately on first valid forecast
+      if(!firstForecastSent && currentForecastCode >= 0) {
+        firstForecastSent = true;
+        sendForecastToThingSpeak(currentForecastCode);
+      }
+      
+      highlightCurrentCondition(advancedForecast.text);
+      
+      var forecastCard = $('forecast').closest('.cd');
+      if(forecastCard) {
+        var subtitle = forecastCard.querySelector('.su');
+        if(subtitle) {
+          subtitle.textContent = advancedForecast.details;
+        }
+      }
+      
+      $('homeTemp').innerHTML = temp.toFixed(1) + '°C';
+      $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
+      
+      updateOfficeLights(room1Light, room2Light, room3Light);
+
+      var tempData = [], humData = [], presData = [], lightData = [];
+      for(var i = 0; i < d.feeds.length; i++) {
+        tempData.push(parseFloat(d.feeds[i].field1) || 0);
+        humData.push(parseFloat(d.feeds[i].field2) || 0);
+        presData.push(parseFloat(d.feeds[i].field3) || 0);
+        var avgLight = Math.round(((parseInt(d.feeds[i].field4) || 0) + 
+                                    (parseInt(d.feeds[i].field5) || 0) + 
+                                    (parseInt(d.feeds[i].field6) || 0)) / 3);
+        lightData.push(avgLight);
+      }
+
+      drawChart($('c1'), tempData, '#ff6b6b', '°C', 
+                {min:'tempMin', max:'tempMax', avg:'tempAvg', count:'tempCount'});
+      drawChart($('c2'), humData, '#4ecdc4', '%', 
+                {min:'humMin', max:'humMax', avg:'humAvg', count:'humCount'});
+      drawChart($('c3'), presData, '#ffd93d', 'hPa', 
+                {min:'presMin', max:'presMax', avg:'presAvg', count:null});
+      drawChart($('c4'), lightData, '#ffd93d', '%', 
+                {min:'lightMin', max:'lightMax', avg:'lightAvg', count:null});
+      
+      var presTrend = presData.length > 1 ? presData[presData.length-1] - presData[0] : 0;
+      $('presTrend').textContent = presTrend > 0 ? '📈 Rising' : presTrend < 0 ? '📉 Falling' : '➡️ Stable';
+      
+      var maxLight = Math.max(room1Light, room2Light, room3Light);
+      var lMode = maxLight === 0 ? 'OFF' : maxLight <= 25 ? 'ECO' : 
+                  maxLight <= 50 ? 'NORMAL' : maxLight <= 75 ? 'BRIGHT' : 'MAX';
+      $('lightMode').textContent = lMode;
+
+      $('st').className = 'sd ok';
+      $('st2').className = 'sd ok';
+      $('st3').className = 'sd ok';
+      $('st4').className = 'sd ok';
+      $('su').textContent = 'Live · Updated ' + fc + ' times';
+      $('homeStatus').textContent = 'LIVE';
+    })
+    .catch(err => {
+      console.error('Fetch Error:', err);
+      $('st').className = 'sd er';
+      $('st2').className = 'sd er';
+      $('st3').className = 'sd er';
+      $('st4').className = 'sd er';
+      $('su').textContent = 'Error: ' + err.message;
+      $('homeStatus').textContent = 'ERROR';
+    });
+}
+
+// Color picker handlers for LED control (keeping your existing 4-room setup)
+for(let i = 1; i <= 4; i++) {
+  $('colorPicker' + i).addEventListener('input', function() {
+    $('colorInput' + i).value = this.value.toUpperCase();
+    $('ledPreview' + i).style.backgroundColor = this.value;
+  });
+  
+  $('colorInput' + i).addEventListener('input', function() {
+    var val = this.value;
+    if(val.startsWith('#') && (val.length === 7 || val.length === 4)) {
+      $('colorPicker' + i).value = val;
+      $('ledPreview' + i).style.backgroundColor = val;
+    }
+  });
+}
+
+function applyColor(room) {
+  var color = $('colorInput' + room).value.replace('#', '');
+  
+  if(!/^[0-9A-F]{6}$/i.test(color)) {
+    alert('Invalid HEX color! Use format: #RRGGBB');
+    return;
+  }
+  
+  console.log('Sending to Arduino: Room ' + room + ' = #' + color);
+  alert('✅ Color #' + color + ' applied to Room ' + room);
+}
+
+// Start fetching data
+fetchData();
+setInterval(fetchData, UPDATE_INTERVAL);
+$('homeEntries').textContent = '12';
+$('todayCount').textContent = '12';
+
+console.log('✅ Weather forecast system initialized. Forecast codes will be sent to Field 7 every 2.5 minutes.');
+
+// Send forecast code to ThingSpeak every 2.5 minutes (150 seconds)
+setInterval(function() {
+  if(currentForecastCode >= 0) {
+    sendForecastToThingSpeak(currentForecastCode);
+  }
+}, 150000);
+
+console.log('📡 Continuous forecast sending active: Every 150 seconds (2.5 minutes)');
+  
+</script>
+
 </body>
 </html>

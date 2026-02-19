@@ -215,7 +215,6 @@ function highlightCurrentCondition(forecastText) {
 }
 
 function fetchData() {
-  // Increased results to 100 to catch older light data if it hasn't updated recently
   var url = 'https://api.thingspeak.com/channels/' + CHANNEL + '/feeds.json?api_key=' + READ_KEY + '&results=100';
   
   fetch(url)
@@ -251,20 +250,17 @@ function fetchData() {
 
       var tempData = [], humData = [], presData = [], lightData = [];
       
-      // Loop forward to catch the newest data and populate charts
       for(var i = 0; i < d.feeds.length; i++) {
         tempData.push(parseFloat(d.feeds[i].field1) || 0);
         humData.push(parseFloat(d.feeds[i].field2) || 0);
         presData.push(parseFloat(d.feeds[i].field3) || 0);
         
-        // If field4 is NOT empty, update our global memory
         if (d.feeds[i].field4 !== null && d.feeds[i].field4 !== "") {
           globalLastLight = parseInt(d.feeds[i].field4) || 0;
         }
         lightData.push(globalLastLight);
       }
 
-      // Update UI with the global memory
       updateOfficeLights(globalLastLight);
 
       const chartConfigs = [
@@ -287,17 +283,25 @@ function fetchData() {
     });
 }
 
+// BUG FIXED HERE: Only look for elements that actually exist in the updated HTML
 for(let i = 1; i <= 2; i++) {
-  $('colorPicker' + i).addEventListener('input', function() {
-    $('colorInput' + i).value = this.value.toUpperCase(); $('ledPreview' + i).style.backgroundColor = this.value;
-  });
-  $('colorInput' + i).addEventListener('input', function() {
-    var val = this.value;
-    if(val.startsWith('#') && (val.length === 7 || val.length === 4)) {
-      $('colorPicker' + i).value = val; $('ledPreview' + i).style.backgroundColor = val;
-    }
-  });
+  let picker = $('colorPicker' + i);
+  let preview = $('ledPreview' + i);
+  if(picker && preview) {
+    picker.addEventListener('input', function() {
+      preview.style.backgroundColor = this.value;
+    });
+  }
 }
 
-function applyColor(room) { alert('✅ Applied to Room ' + room); }
-fetchData(); setInterval(fetchData, UPDATE_INTERVAL);
+function applyColor(room) {
+  var picker = $('colorPicker' + room);
+  if(picker) {
+    var color = picker.value;
+    console.log('Sending to Arduino: Room ' + room + ' = ' + color);
+    alert('✅ Color ' + color + ' applied to Room ' + room);
+  }
+}
+
+fetchData(); 
+setInterval(fetchData, UPDATE_INTERVAL);

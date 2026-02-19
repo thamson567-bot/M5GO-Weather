@@ -37,10 +37,22 @@
         <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-value" id="homeStatus">LIVE</div><div class="stat-label">System Status</div></div>
       </div>
       <div class="nav-cards">
-        <div class="nav-card" onclick="showPage('weather')"><div class="nav-card-icon">🌤️</div><div class="nav-card-title">Weather Monitoring</div></div>
-        <div class="nav-card" onclick="showPage('office')"><div class="nav-card-icon">💡</div><div class="nav-card-title">Office Lighting</div></div>
-        <div class="nav-card" onclick="showPage('entry')"><div class="nav-card-icon">🔐</div><div class="nav-card-title">Entry Access Log</div></div>
-        <div class="nav-card" onclick="showPage('led')"><div class="nav-card-icon">🎨</div><div class="nav-card-title">LED Color Control</div></div>
+        <div class="nav-card" onclick="showPage('weather')">
+          <div class="nav-card-icon">🌤️</div><div class="nav-card-title">Weather Monitoring</div>
+          <div class="nav-card-desc">Real-time environmental data including temperature, humidity, air pressure, and weather forecasting based on sensor readings.</div>
+        </div>
+        <div class="nav-card" onclick="showPage('office')">
+          <div class="nav-card-icon">💡</div><div class="nav-card-title">Office Lighting</div>
+          <div class="nav-card-desc">Visual map showing current lighting status across all office rooms with automatic brightness control.</div>
+        </div>
+        <div class="nav-card" onclick="showPage('entry')">
+          <div class="nav-card-icon">🔐</div><div class="nav-card-title">Entry Access Log</div>
+          <div class="nav-card-desc">Track employee access with RFID card scanning system, showing real-time entry and exit records.</div>
+        </div>
+        <div class="nav-card" onclick="showPage('led')">
+          <div class="nav-card-icon">🎨</div><div class="nav-card-title">LED Color Control</div>
+          <div class="nav-card-desc">Customize RGB LED strip colors for each room individually using HEX codes or color picker interface.</div>
+        </div>
       </div>
     </div>
   </div>
@@ -129,8 +141,6 @@
             <div class="room-status off" id="status2">OFF</div>
           </div>
         </div>
-        
-        <div class="gateway">Main Office Entrance</div>
       </div>
     </div>
 
@@ -171,14 +181,29 @@
       <div class="led-grid">
         <div class="led-room-card">
           <div class="led-room-title"><span>💡 Room 1 (M5Stack)</span></div>
-          <div class="led-preview" id="ledPreview1" style="background-color:#333"></div>
-          <div class="color-input-group"><input type="color" class="color-input" id="colorPicker1" value="#FF0000"></div>
+          <div class="led-preview" id="ledPreview1" style="background-color:#FF0000"></div>
+          <div class="color-input-group">
+            <label>Color (HEX):</label>
+            <input type="text" class="color-input" id="colorInput1" placeholder="#FF0000" maxlength="7" value="#FF0000">
+          </div>
+          <div class="color-input-group">
+            <label>Color Picker:</label>
+            <input type="color" class="color-input" id="colorPicker1" value="#FF0000" style="height:50px;cursor:pointer">
+          </div>
           <button class="btn-apply" onclick="applyColor(1)">Apply to Room 1</button>
         </div>
+
         <div class="led-room-card">
           <div class="led-room-title"><span>💡 Room 2 (Arduino)</span></div>
-          <div class="led-preview" id="ledPreview2" style="background-color:#333"></div>
-          <div class="color-input-group"><input type="color" class="color-input" id="colorPicker2" value="#00FF00"></div>
+          <div class="led-preview" id="ledPreview2" style="background-color:#00FF00"></div>
+          <div class="color-input-group">
+            <label>Color (HEX):</label>
+            <input type="text" class="color-input" id="colorInput2" placeholder="#00FF00" maxlength="7" value="#00FF00">
+          </div>
+          <div class="color-input-group">
+            <label>Color Picker:</label>
+            <input type="color" class="color-input" id="colorPicker2" value="#00FF00" style="height:50px;cursor:pointer">
+          </div>
           <button class="btn-apply" onclick="applyColor(2)">Apply to Room 2</button>
         </div>
       </div>

@@ -1035,6 +1035,7 @@ var historicalData = {
 
 // Store current forecast code - INITIALIZE TO -1 so first send always triggers
 var currentForecastCode = -1;
+var firstForecastSent = false;
 
 // Send forecast code to ThingSpeak Field 7
 function sendForecastToThingSpeak(forecastCode) {
@@ -1468,6 +1469,12 @@ function fetchData() {
         console.log('🔄 Forecast changed from', currentForecastCode, 'to', advancedForecast.code);
       }
       currentForecastCode = advancedForecast.code;
+      
+      // Send immediately on first valid forecast
+      if(!firstForecastSent && currentForecastCode >= 0) {
+        firstForecastSent = true;
+        sendForecastToThingSpeak(currentForecastCode);
+      }
       
       highlightCurrentCondition(advancedForecast.text);
       

@@ -1041,12 +1041,12 @@ function sendForecastToThingSpeak(forecastCode) {
   var WRITE_KEY = 'W0R5AL9YS3DDDJHL';  // Your ThingSpeak Write API Key
   
   // Send to Field 5
-  var url = 'https://api.thingspeak.com/update?api_key=' + WRITE_KEY + '&field5=' + forecastCode;
+  var url = 'https://api.thingspeak.com/update?api_key=' + WRITE_KEY + '&field7=' + forecastCode;
   
   fetch(url)
     .then(res => res.text())
     .then(data => {
-      console.log('Forecast code ' + forecastCode + ' sent to ThingSpeak (Field 5)');
+      console.log('Forecast code ' + forecastCode + ' sent to ThingSpeak (Field 7)');
     })
     .catch(err => {
       console.error('Failed to send forecast code:', err);

@@ -134,7 +134,7 @@ border-radius:7px;position:relative;margin-top:15px;box-shadow:inset 0 2px 4px r
 position:absolute;top:-7px;transform:translateX(-50%);box-shadow:0 3px 10px rgba(0,0,0,.4);transition:left .3s}
 .hg-labels{display:flex;justify-content:space-between;font-size:.8rem;opacity:.6;margin-top:12px}
 
-/* Weather Guide Section - EXPANDED */
+/* Weather Guide Section */
 .weather-guide {
   background: var(--card);
   border-radius: var(--r);
@@ -285,7 +285,6 @@ border:1px solid rgba(255,255,255,.15)}
 
 .room-content{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
 .room-label{font-size:3rem;font-weight:bold;margin-bottom:10px;opacity:0.9}
-.room-logo{font-size:4rem;margin-bottom:10px;opacity:0.9}
 .light-bulb{width:80px;height:80px;border-radius:50%;background:#333;
 margin:15px auto 0;display:flex;align-items:center;justify-content:center;
 font-size:3rem;transition:all 0.6s;box-shadow:0 0 0 rgba(255,255,255,0);
@@ -329,20 +328,11 @@ transition:all 0.3s;box-shadow:0 0 30px currentColor;border:3px solid currentCol
 .color-input{width:100%;padding:12px;border-radius:8px;border:2px solid rgba(255,255,255,.2);
 background:rgba(255,255,255,.05);color:var(--text);font-size:1rem;transition:border-color 0.3s}
 .color-input:focus{outline:none;border-color:var(--accent)}
-.color-slider-group{margin-top:15px}
-.color-slider-label{font-size:0.9rem;opacity:0.8;margin-bottom:5px;display:flex;justify-content:space-between}
-.color-slider{width:100%;height:8px;border-radius:4px;outline:none;-webkit-appearance:none;appearance:none;background:#333}
-.color-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer}
-.color-slider::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--accent);cursor:pointer;border:none}
 .btn-apply{width:100%;padding:12px;margin-top:15px;background:var(--accent);
 border:none;border-radius:8px;color:#000;font-weight:600;font-size:1rem;
 cursor:pointer;transition:all 0.3s}
 .btn-apply:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.3)}
 .btn-apply:active{transform:translateY(0)}
-
-.dev-note{background:rgba(255,193,7,.1);border-left:4px solid #ffc107;
-padding:15px;margin:20px 0;border-radius:8px;font-family:monospace;font-size:.9rem}
-.dev-note-title{font-weight:600;color:#ffc107;margin-bottom:8px}
 
 footer{text-align:center;padding:30px;font-size:.85rem;opacity:.5;margin-top:40px;
 border-top:1px solid rgba(255,255,255,.1)}
@@ -578,183 +568,181 @@ border-top:1px solid rgba(255,255,255,.1)}
     </div>
   </div>
 
-    <!-- Weather Conditions Reference Guide -->
-    <div class="weather-guide">
-      <div class="weather-guide-inner">
-        <h3 class="weather-guide-title">📚 Weather Conditions Reference Guide</h3>
-        <p style="text-align:center;opacity:0.7;margin-bottom:20px;font-size:0.95rem">
-          Understanding how Temperature, Humidity, and Air Pressure determine weather forecasts
-        </p>
-        
-        <div class="conditions-grid" id="conditionsGrid">
-          <div class="condition-card" data-condition="heavy-rain">
-            <div class="condition-header">
-              <div class="condition-icon">🌧️</div>
-              <div class="condition-name">Heavy Rain Soon</div>
-            </div>
-            <div class="condition-indicators">
-              <span class="indicator pressure">📉 Pressure: Dropping Fast (&lt;-3 hPa/hr)</span>
-              <span class="indicator humidity">💧 Humidity: Rising (&gt;+5%)</span>
-              <span class="indicator temp">🌡️ Temperature: Variable</span>
-            </div>
-            <div class="condition-description">
-              Strong weather system approaching. Rapid pressure drop combined with increasing humidity indicates heavy precipitation within 1-3 hours.
-            </div>
+  <div class="weather-guide">
+    <div class="weather-guide-inner">
+      <h3 class="weather-guide-title">📚 Weather Conditions Reference Guide</h3>
+      <p style="text-align:center;opacity:0.7;margin-bottom:20px;font-size:0.95rem">
+        Understanding how Temperature, Humidity, and Air Pressure determine weather forecasts
+      </p>
+      
+      <div class="conditions-grid" id="conditionsGrid">
+        <div class="condition-card" data-condition="heavy-rain">
+          <div class="condition-header">
+            <div class="condition-icon">🌧️</div>
+            <div class="condition-name">Heavy Rain Soon</div>
           </div>
-
-          <div class="condition-card" data-condition="rain-likely">
-            <div class="condition-header">
-              <div class="condition-icon">🌦️</div>
-              <div class="condition-name">Rain Likely</div>
-            </div>
-            <div class="condition-indicators">
-              <span class="indicator pressure">📉 Pressure: Falling (&lt;-2 hPa/30min)</span>
-              <span class="indicator humidity">💧 Humidity: High (&gt;75%)</span>
-              <span class="indicator temp">🌡️ Temperature: Moderate</span>
-            </div>
-            <div class="condition-description">
-              Atmospheric conditions favor precipitation. Sustained pressure decline with high humidity levels indicate rain within 3-6 hours.
-            </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📉 Pressure: Dropping Fast (&lt;-3 hPa/hr)</span>
+            <span class="indicator humidity">💧 Humidity: Rising (&gt;+5%)</span>
+            <span class="indicator temp">🌡️ Temperature: Variable</span>
           </div>
-
-          <div class="condition-card" data-condition="cloudy">
-            <div class="condition-header">
-              <div class="condition-icon">☁️</div>
-              <div class="condition-name">Cloudy Weather</div>
-            </div>
-            <div class="condition-indicators">
-              <span class="indicator pressure">📉 Pressure: Declining Steadily</span>
-              <span class="indicator humidity">💧 Humidity: Moderate</span>
-              <span class="indicator temp">🌡️ Temperature: Stable</span>
-            </div>
-            <div class="condition-description">
-              Gradual pressure decrease indicates cloud cover increasing. Overcast skies likely with no immediate precipitation expected.
-            </div>
+          <div class="condition-description">
+            Strong weather system approaching. Rapid pressure drop combined with increasing humidity indicates heavy precipitation within 1-3 hours.
           </div>
+        </div>
 
-          <div class="condition-card" data-condition="clear-skies">
-            <div class="condition-header">
-              <div class="condition-icon">☀️</div>
-              <div class="condition-name">Clear Skies Ahead</div>
-            </div>
-            <div class="condition-indicators">
-              <span class="indicator pressure">📈 Pressure: Rising Rapidly (&gt;+3 hPa/hr)</span>
-              <span class="indicator humidity">💧 Humidity: Decreasing</span>
-              <span class="indicator temp">🌡️ Temperature: Variable</span>
-            </div>
-            <div class="condition-description">
-              Strong high-pressure system building. Rapid pressure increase clears clouds and brings sunny weather conditions.
-            </div>
+        <div class="condition-card" data-condition="rain-likely">
+          <div class="condition-header">
+            <div class="condition-icon">🌦️</div>
+            <div class="condition-name">Rain Likely</div>
           </div>
-
-          <div class="condition-card" data-condition="improving">
-            <div class="condition-header">
-              <div class="condition-icon">🌤️</div>
-              <div class="condition-name">Weather Improving</div>
-            </div>
-            <div class="condition-indicators">
-              <span class="indicator pressure">📈 Pressure: Rising Steadily (&gt;+1.5 hPa)</span>
-              <span class="indicator humidity">💧 Humidity: Moderate</span>
-              <span class="indicator temp">🌡️ Temperature: Stable</span>
-            </div>
-            <div class="condition-description">
-              Conditions clearing as pressure rises. Clouds breaking up with improving visibility and reduced precipitation chance.
-            </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📉 Pressure: Falling (&lt;-2 hPa/30min)</span>
+            <span class="indicator humidity">💧 Humidity: High (&gt;75%)</span>
+            <span class="indicator temp">🌡️ Temperature: Moderate</span>
           </div>
-
-          <div class="condition-card" data-condition="fair-stable">
-            <div class="condition-header">
-              <div class="condition-icon">☀️</div>
-              <div class="condition-name">Fair & Stable</div>
-            </div>
-            <div class="condition-indicators">
-              <span class="indicator pressure">➡️ Pressure: High & Stable (&gt;1013 hPa)</span>
-              <span class="indicator humidity">💧 Humidity: Low (&lt;60%)</span>
-              <span class="indicator temp">🌡️ Temperature: Comfortable</span>
-            </div>
-            <div class="condition-description">
-              Excellent weather conditions. High pressure system with low humidity creates stable, pleasant conditions with clear skies.
-            </div>
+          <div class="condition-description">
+            Atmospheric conditions favor precipitation. Sustained pressure decline with high humidity levels indicate rain within 3-6 hours.
           </div>
+        </div>
 
-          <div class="condition-card" data-condition="unsettled">
-            <div class="condition-header">
-              <div class="condition-icon">🌧️</div>
-              <div class="condition-name">Unsettled Weather</div>
-            </div>
-            <div class="condition-indicators">
-              <span class="indicator pressure">📉 Pressure: Low (&lt;1010 hPa)</span>
-              <span class="indicator humidity">💧 Humidity: High (&gt;70%)</span>
-              <span class="indicator temp">🌡️ Temperature: Variable</span>
-            </div>
-            <div class="condition-description">
-              Unstable atmospheric conditions. Low pressure combined with high humidity creates potential for cloudy skies and showers.
-            </div>
+        <div class="condition-card" data-condition="cloudy">
+          <div class="condition-header">
+            <div class="condition-icon">☁️</div>
+            <div class="condition-name">Cloudy Weather</div>
           </div>
-
-          <div class="condition-card" data-condition="cold-front">
-            <div class="condition-header">
-              <div class="condition-icon">❄️</div>
-              <div class="condition-name">Cold Front Moving In</div>
-            </div>
-            <div class="condition-indicators">
-              <span class="indicator pressure">📈 Pressure: Rising</span>
-              <span class="indicator humidity">💧 Humidity: Variable</span>
-              <span class="indicator temp">🌡️ Temperature: Dropping (&lt;-1°C)</span>
-            </div>
-            <div class="condition-description">
-              Cold front passage detected. Temperature decrease with rising pressure brings cooler, clearer conditions ahead.
-            </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📉 Pressure: Declining Steadily</span>
+            <span class="indicator humidity">💧 Humidity: Moderate</span>
+            <span class="indicator temp">🌡️ Temperature: Stable</span>
           </div>
-
-          <div class="condition-card" data-condition="warm-front">
-            <div class="condition-header">
-              <div class="condition-icon">🌡️</div>
-              <div class="condition-name">Warm Front Approaching</div>
-            </div>
-            <div class="condition-indicators">
-              <span class="indicator pressure">📉 Pressure: Falling</span>
-              <span class="indicator humidity">💧 Humidity: Rising</span>
-              <span class="indicator temp">🌡️ Temperature: Rising (&gt;+1°C)</span>
-            </div>
-            <div class="condition-description">
-              Warm front advancing. Temperature increase with falling pressure develops warmer, more humid conditions.
-            </div>
+          <div class="condition-description">
+            Gradual pressure decrease indicates cloud cover increasing. Overcast skies likely with no immediate precipitation expected.
           </div>
+        </div>
 
-          <div class="condition-card" data-condition="stable">
-            <div class="condition-header">
-              <div class="condition-icon">⛅</div>
-              <div class="condition-name">Stable Conditions</div>
-            </div>
-            <div class="condition-indicators">
-              <span class="indicator pressure">➡️ Pressure: Stable (±0.5 hPa)</span>
-              <span class="indicator humidity">💧 Humidity: Moderate</span>
-              <span class="indicator temp">🌡️ Temperature: Stable</span>
-            </div>
-            <div class="condition-description">
-              Atmospheric equilibrium. No significant changes in pressure, temperature, or humidity. Current weather pattern expected to persist.
-            </div>
+        <div class="condition-card" data-condition="clear-skies">
+          <div class="condition-header">
+            <div class="condition-icon">☀️</div>
+            <div class="condition-name">Clear Skies Ahead</div>
           </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📈 Pressure: Rising Rapidly (&gt;+3 hPa/hr)</span>
+            <span class="indicator humidity">💧 Humidity: Decreasing</span>
+            <span class="indicator temp">🌡️ Temperature: Variable</span>
+          </div>
+          <div class="condition-description">
+            Strong high-pressure system building. Rapid pressure increase clears clouds and brings sunny weather conditions.
+          </div>
+        </div>
 
-          <div class="condition-card" data-condition="partly-cloudy">
-            <div class="condition-header">
-              <div class="condition-icon">⛅</div>
-              <div class="condition-name">Partly Cloudy</div>
-            </div>
-            <div class="condition-indicators">
-              <span class="indicator pressure">➡️ Pressure: Variable</span>
-              <span class="indicator humidity">💧 Humidity: Moderate</span>
-              <span class="indicator temp">🌡️ Temperature: Moderate</span>
-            </div>
-            <div class="condition-description">
-              Variable conditions with no strong weather signals. Mix of sun and clouds with no significant atmospheric changes detected.
-            </div>
+        <div class="condition-card" data-condition="improving">
+          <div class="condition-header">
+            <div class="condition-icon">🌤️</div>
+            <div class="condition-name">Weather Improving</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📈 Pressure: Rising Steadily (&gt;+1.5 hPa)</span>
+            <span class="indicator humidity">💧 Humidity: Moderate</span>
+            <span class="indicator temp">🌡️ Temperature: Stable</span>
+          </div>
+          <div class="condition-description">
+            Conditions clearing as pressure rises. Clouds breaking up with improving visibility and reduced precipitation chance.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="fair-stable">
+          <div class="condition-header">
+            <div class="condition-icon">☀️</div>
+            <div class="condition-name">Fair & Stable</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">➡️ Pressure: High & Stable (&gt;1013 hPa)</span>
+            <span class="indicator humidity">💧 Humidity: Low (&lt;60%)</span>
+            <span class="indicator temp">🌡️ Temperature: Comfortable</span>
+          </div>
+          <div class="condition-description">
+            Excellent weather conditions. High pressure system with low humidity creates stable, pleasant conditions with clear skies.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="unsettled">
+          <div class="condition-header">
+            <div class="condition-icon">🌧️</div>
+            <div class="condition-name">Unsettled Weather</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📉 Pressure: Low (&lt;1010 hPa)</span>
+            <span class="indicator humidity">💧 Humidity: High (&gt;70%)</span>
+            <span class="indicator temp">🌡️ Temperature: Variable</span>
+          </div>
+          <div class="condition-description">
+            Unstable atmospheric conditions. Low pressure combined with high humidity creates potential for cloudy skies and showers.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="cold-front">
+          <div class="condition-header">
+            <div class="condition-icon">❄️</div>
+            <div class="condition-name">Cold Front Moving In</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📈 Pressure: Rising</span>
+            <span class="indicator humidity">💧 Humidity: Variable</span>
+            <span class="indicator temp">🌡️ Temperature: Dropping (&lt;-1°C)</span>
+          </div>
+          <div class="condition-description">
+            Cold front passage detected. Temperature decrease with rising pressure brings cooler, clearer conditions ahead.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="warm-front">
+          <div class="condition-header">
+            <div class="condition-icon">🌡️</div>
+            <div class="condition-name">Warm Front Approaching</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📉 Pressure: Falling</span>
+            <span class="indicator humidity">💧 Humidity: Rising</span>
+            <span class="indicator temp">🌡️ Temperature: Rising (&gt;+1°C)</span>
+          </div>
+          <div class="condition-description">
+            Warm front advancing. Temperature increase with falling pressure develops warmer, more humid conditions.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="stable">
+          <div class="condition-header">
+            <div class="condition-icon">⛅</div>
+            <div class="condition-name">Stable Conditions</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">➡️ Pressure: Stable (±0.5 hPa)</span>
+            <span class="indicator humidity">💧 Humidity: Moderate</span>
+            <span class="indicator temp">🌡️ Temperature: Stable</span>
+          </div>
+          <div class="condition-description">
+            Atmospheric equilibrium. No significant changes in pressure, temperature, or humidity. Current weather pattern expected to persist.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="partly-cloudy">
+          <div class="condition-header">
+            <div class="condition-icon">⛅</div>
+            <div class="condition-name">Partly Cloudy</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">➡️ Pressure: Variable</span>
+            <span class="indicator humidity">💧 Humidity: Moderate</span>
+            <span class="indicator temp">🌡️ Temperature: Moderate</span>
+          </div>
+          <div class="condition-description">
+            Variable conditions with no strong weather signals. Mix of sun and clouds with no significant atmospheric changes detected.
           </div>
         </div>
       </div>
     </div>
-
+  </div>
 </div>
 
 <div id="office-page" class="page">
@@ -792,14 +780,13 @@ border-top:1px solid rgba(255,255,255,.1)}
             <div class="door-handle2"></div>
           </div>
           <div class="room-content">
-            <div class="room-logo">🔲</div>
-          </div>
+            </div>
         </div>
         
         <div class="room2-outer" id="room2bg">
           <div class="room2-door"></div>
           <div class="room-content">
-            <div class="room-logo">⚙️</div>
+            <div class="room-label">1</div>
             <div class="light-bulb" id="bulb2">💡</div>
             <div class="room-status off" id="status2">OFF</div>
           </div>
@@ -848,18 +835,6 @@ border-top:1px solid rgba(255,255,255,.1)}
     <div class="sb">
       <div class="sd ok" id="st3"></div>
       <span>Real-time RFID access monitoring</span>
-    </div>
-
-    <div class="dev-note">
-      <div class="dev-note-title">📝 DEVELOPER NOTE - Arduino Mega Integration:</div>
-      <div>Your friend should send data to this page using HTTP POST/GET requests.</div>
-      <div style="margin-top:8px"><strong>Endpoint:</strong> Create a backend endpoint (e.g., PHP/Node.js) to receive:</div>
-      <div style="margin-left:15px;margin-top:5px">
-        • <code>cardID</code> - RFID card unique identifier<br>
-        • <code>name</code> - Employee/User name<br>
-        • <code>timestamp</code> - Entry time (or use server time)<br>
-        • <code>action</code> - "entry" or "exit"
-      </div>
     </div>
 
     <div class="log-container">
@@ -913,87 +888,47 @@ border-top:1px solid rgba(255,255,255,.1)}
       <span>Web-based LED color management</span>
     </div>
 
-    <div class="dev-note">
-      <div class="dev-note-title">📝 DEVELOPER NOTE - RGB Color Control:</div>
-      <div>This page sends RGB color commands to ThingSpeak Field 8 in format: r,g,b</div>
-      <div style="margin-top:8px">
-        <strong>M5GO RGB:</strong> Adjust sliders to set color (0-255 per channel)<br>
-        <strong>Arduino RGB:</strong> Adjust sliders to set color (0-255 per channel)<br>
-        <strong>Data Sent:</strong> field8 receives "255,128,64" format
-      </div>
-    </div>
-
     <div class="led-container">
-      <h3>M5GO RGB LED Control</h3>
+      <h3>Individual Room LED Control</h3>
       
-      <div class="led-room-card">
-        <div class="led-room-title">
-          <span>🔲 M5Stack M5GO</span>
-          <span style="font-size:0.9rem;opacity:0.7">RGB LED Strip</span>
-        </div>
-        <div class="led-preview" id="ledPreviewM5" style="background-color:#333"></div>
-        
-        <div class="color-slider-group">
-          <div class="color-slider-label">
-            <span>Red</span>
-            <span id="valR">128</span>
+      <div class="led-grid">
+        <div class="led-room-card">
+          <div class="led-room-title">
+            <span>💡 Room 1</span>
+            <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
           </div>
-          <input type="range" min="0" max="255" value="128" class="color-slider" id="sliderR" oninput="updateM5Color()">
-        </div>
-        
-        <div class="color-slider-group">
-          <div class="color-slider-label">
-            <span>Green</span>
-            <span id="valG">128</span>
+          <div class="led-preview" id="ledPreview1" style="background-color:#333"></div>
+          <div class="color-input-group">
+            <label>Color (HEX):</label>
+            <input type="text" class="color-input" id="colorInput1" 
+                   placeholder="#FF0000" maxlength="7" value="#FF0000">
           </div>
-          <input type="range" min="0" max="255" value="128" class="color-slider" id="sliderG" oninput="updateM5Color()">
-        </div>
-        
-        <div class="color-slider-group">
-          <div class="color-slider-label">
-            <span>Blue</span>
-            <span id="valB">128</span>
+          <div class="color-input-group">
+            <label>Color Picker:</label>
+            <input type="color" class="color-input" id="colorPicker1" 
+                   value="#FF0000" style="height:50px;cursor:pointer">
           </div>
-          <input type="range" min="0" max="255" value="128" class="color-slider" id="sliderB" oninput="updateM5Color()">
+          <button class="btn-apply" onclick="applyColor(1)">Apply to Room 1</button>
         </div>
-        
-        <button class="btn-apply" onclick="sendM5Color()">Apply M5GO Color</button>
-      </div>
 
-      <h3 style="margin-top:30px">Arduino RGB LED Control</h3>
-      
-      <div class="led-room-card">
-        <div class="led-room-title">
-          <span>⚙️ Arduino Mega</span>
-          <span style="font-size:0.9rem;opacity:0.7">RGB LED Strip</span>
-        </div>
-        <div class="led-preview" id="ledPreviewArduino" style="background-color:#333"></div>
-        
-        <div class="color-slider-group">
-          <div class="color-slider-label">
-            <span>Red</span>
-            <span id="valR2">200</span>
+        <div class="led-room-card">
+          <div class="led-room-title">
+            <span>💡 Room 2</span>
+            <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
           </div>
-          <input type="range" min="0" max="255" value="200" class="color-slider" id="sliderR2" oninput="updateArduinoColor()">
-        </div>
-        
-        <div class="color-slider-group">
-          <div class="color-slider-label">
-            <span>Green</span>
-            <span id="valG2">100</span>
+          <div class="led-preview" id="ledPreview2" style="background-color:#333"></div>
+          <div class="color-input-group">
+            <label>Color (HEX):</label>
+            <input type="text" class="color-input" id="colorInput2" 
+                   placeholder="#00FF00" maxlength="7" value="#00FF00">
           </div>
-          <input type="range" min="0" max="255" value="100" class="color-slider" id="sliderG2" oninput="updateArduinoColor()">
-        </div>
-        
-        <div class="color-slider-group">
-          <div class="color-slider-label">
-            <span>Blue</span>
-            <span id="valB2">50</span>
+          <div class="color-input-group">
+            <label>Color Picker:</label>
+            <input type="color" class="color-input" id="colorPicker2" 
+                   value="#00FF00" style="height:50px;cursor:pointer">
           </div>
-          <input type="range" min="0" max="255" value="50" class="color-slider" id="sliderB2" oninput="updateArduinoColor()">
+          <button class="btn-apply" onclick="applyColor(2)">Apply to Room 2</button>
         </div>
-        
-        <button class="btn-apply" onclick="sendArduinoColor()">Apply Arduino Color</button>
       </div>
     </div>
   </div>
@@ -1025,7 +960,9 @@ var firstForecastSent = false;
 
 function sendForecastToThingSpeak(forecastCode) {
   var WRITE_KEY = 'W0R5AL9YS3DDDJHL';
+  
   console.log('🌤️ Sending forecast code ' + forecastCode + ' to ThingSpeak Field 7...');
+  
   var url = 'https://api.thingspeak.com/update?api_key=' + WRITE_KEY + '&field7=' + forecastCode;
   
   fetch(url)
@@ -1040,71 +977,6 @@ function sendForecastToThingSpeak(forecastCode) {
     .catch(err => {
       console.error('❌ Failed to send forecast:', err);
     });
-}
-
-function sendRGBToThingSpeak(r, g, b, field) {
-  var WRITE_KEY = 'W0R5AL9YS3DDDJHL';
-  var rgbString = r + ',' + g + ',' + b;
-  console.log('📤 Sending RGB to field ' + field + ': ' + rgbString);
-  
-  var url = 'https://api.thingspeak.com/update?api_key=' + WRITE_KEY + '&field' + field + '=' + encodeURIComponent(rgbString);
-  
-  fetch(url)
-    .then(res => res.text())
-    .then(data => {
-      if(data.trim() !== '0') {
-        console.log('✅ RGB sent successfully! Entry ID: ' + data);
-      } else {
-        console.error('❌ ThingSpeak returned 0');
-      }
-    })
-    .catch(err => {
-      console.error('❌ Failed to send RGB:', err);
-    });
-}
-
-function updateM5Color() {
-  var r = parseInt($('sliderR').value);
-  var g = parseInt($('sliderG').value);
-  var b = parseInt($('sliderB').value);
-  
-  $('valR').textContent = r;
-  $('valG').textContent = g;
-  $('valB').textContent = b;
-  
-  var hex = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
-  $('ledPreviewM5').style.backgroundColor = hex;
-}
-
-function updateArduinoColor() {
-  var r = parseInt($('sliderR2').value);
-  var g = parseInt($('sliderG2').value);
-  var b = parseInt($('sliderB2').value);
-  
-  $('valR2').textContent = r;
-  $('valG2').textContent = g;
-  $('valB2').textContent = b;
-  
-  var hex = '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
-  $('ledPreviewArduino').style.backgroundColor = hex;
-}
-
-function sendM5Color() {
-  var r = parseInt($('sliderR').value);
-  var g = parseInt($('sliderG').value);
-  var b = parseInt($('sliderB').value);
-  
-  sendRGBToThingSpeak(r, g, b, 8);
-  alert('✅ M5GO Color (' + r + ',' + g + ',' + b + ') sent to ThingSpeak Field 8');
-}
-
-function sendArduinoColor() {
-  var r = parseInt($('sliderR2').value);
-  var g = parseInt($('sliderG2').value);
-  var b = parseInt($('sliderB2').value);
-  
-  sendRGBToThingSpeak(r, g, b, 8);
-  alert('✅ Arduino Color (' + r + ',' + g + ',' + b + ') sent to ThingSpeak Field 8');
 }
 
 function $(id){return document.getElementById(id)}
@@ -1128,4 +1000,475 @@ function updateClock(){
   var n = new Date();
   var h = n.getHours(), m = n.getMinutes(), s = n.getSeconds();
   $('clockHeader').textContent = 
-    (h
+    (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+function updateOfficeLights(lightValue) {
+  // Map to the new visual layout
+  var bulb1 = $('bulb2'); // Visual bottom-right
+  var bulb2 = $('bulb4'); // Visual top-left
+  var bulb3 = $('bulb3'); // Old top-right
+  
+  var room1bg = $('room2bg');
+  var room2bg = $('room4bg');
+  var room3bg = $('room3bg');
+  var oldRoom1 = $('room1bg'); // Bottom-left
+  
+  var status1 = $('status2');
+  var status2 = $('status4');
+  var status3 = $('status3');
+  
+  var levelText = $('lightLevelText');
+  var statusText = $('lightStatus');
+  
+  // Reset all
+  bulb1.classList.remove('on'); bulb1.style.background = '#333';
+  bulb2.classList.remove('on'); bulb2.style.background = '#333';
+  bulb3.classList.remove('on'); bulb3.style.background = '#333';
+  
+  room1bg.style.background = '#2a2a3e';
+  room2bg.style.background = '#2a2a3e';
+  room3bg.style.background = '#2a2a3e';
+  oldRoom1.style.background = '#2a2a3e';
+  
+  status1.textContent = 'OFF'; status1.className = 'room-status off';
+  status2.textContent = 'OFF'; status2.className = 'room-status off';
+  status3.textContent = 'OFF'; status3.className = 'room-status off';
+  
+  room3bg.style.display = 'none'; 
+  
+  var activeRooms = [];
+  
+  if(lightValue > 0) {
+    var color = lightValue <= 25 ? '#ffff99' : lightValue <= 50 ? '#ffffaa' : 
+                lightValue <= 75 ? '#99ffff' : '#ffffff';
+    var radial = 'radial-gradient(circle, ' + color + ', #888800)';
+    var bgStyle = 'rgba(255, 255, 153, ' + (lightValue/200) + ')';
+    
+    // Apply to new Room 1 (Bottom Right)
+    bulb1.classList.add('on');
+    bulb1.style.background = radial;
+    room1bg.style.background = bgStyle;
+    status1.textContent = lightValue + '%';
+    status1.className = 'room-status lit';
+    activeRooms.push('Room 1');
+    
+    // Apply to new Room 2 (Top Left)
+    bulb2.classList.add('on');
+    bulb2.style.background = radial;
+    room2bg.style.background = bgStyle;
+    status2.textContent = lightValue + '%';
+    status2.className = 'room-status lit';
+    activeRooms.push('Room 2');
+  }
+  
+  // Update Overall Status UI
+  if(lightValue === 0) {
+    levelText.textContent = 'OFF (0%)';
+    levelText.style.color = '#888';
+    statusText.textContent = 'All lights are OFF';
+  } else {
+    var lMode = lightValue <= 25 ? 'ECO' : lightValue <= 50 ? 'NORMAL' : lightValue <= 75 ? 'BRIGHT' : 'MAX';
+    levelText.textContent = lMode + ' (' + lightValue + '%)';
+    levelText.style.color = lightValue <= 25 ? '#ffd93d' : lightValue <= 50 ? '#4ecdc4' : '#ff6b6b';
+    statusText.textContent = activeRooms.join(' & ') + ' active';
+  }
+}
+
+function drawChart(canvas, data, color, unit, statsIds) {
+  if(!canvas || data.length === 0) return;
+  
+  var c = canvas.getContext('2d');
+  var dpr = window.devicePixelRatio || 1;
+  var W = canvas.clientWidth;
+  var H = canvas.clientHeight;
+  
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  c.scale(dpr, dpr);
+  
+  c.clearRect(0, 0, W, H);
+  
+  var mn = Math.min(...data);
+  var mx = Math.max(...data);
+  var range = mx - mn || 1;
+  var sum = data.reduce((a,b) => a+b, 0);
+  var avg = sum / data.length;
+  
+  var pts = [];
+  for(var i = 0; i < data.length; i++) {
+    var x = (i / (data.length - 1)) * W;
+    var y = H - ((data[i] - mn) / range) * (H - 40);
+    pts.push([x, y]);
+  }
+  
+  var gradient = c.createLinearGradient(0, 0, 0, H);
+  gradient.addColorStop(0, color + '40');
+  gradient.addColorStop(1, color + '00');
+  c.fillStyle = gradient;
+  c.beginPath();
+  c.moveTo(pts[0][0], H);
+  for(var i = 0; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]);
+  c.lineTo(pts[pts.length-1][0], H);
+  c.closePath();
+  c.fill();
+
+  c.strokeStyle = color;
+  c.lineWidth = 3 * dpr;
+  c.lineJoin = 'round';
+  c.lineCap = 'round';
+  c.beginPath();
+  c.moveTo(pts[0][0], pts[0][1]);
+  for(var i = 1; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]);
+  c.stroke();
+
+  for(var i = 0; i < pts.length; i++) {
+    c.fillStyle = color;
+    c.beginPath();
+    c.arc(pts[i][0], pts[i][1], 4*dpr, 0, Math.PI*2);
+    c.fill();
+    c.strokeStyle = '#1a1a2e';
+    c.lineWidth = 2*dpr;
+    c.stroke();
+  }
+
+  c.fillStyle = 'rgba(255,255,255,.7)';
+  c.font = (12*dpr) + 'px sans-serif';
+  c.textAlign = 'left';
+  c.fillText(mn.toFixed(1) + unit, 8, H - 8);
+  c.textAlign = 'right';
+  c.fillText(mx.toFixed(1) + unit, W - 8, 20*dpr);
+  
+  if(statsIds) {
+    $(statsIds.min).innerHTML = mn.toFixed(1) + unit;
+    $(statsIds.max).innerHTML = mx.toFixed(1) + unit;
+    $(statsIds.avg).innerHTML = avg.toFixed(1) + unit;
+    if(statsIds.count) $(statsIds.count).textContent = data.length;
+  }
+}
+
+function getAdvancedForecast(currentTemp, currentHum, currentPres) {
+  var forecast = {
+    icon: '⛅',
+    text: 'Loading...',
+    confidence: 'low',
+    details: '',
+    code: 0
+  };
+  
+  if(historicalData.pressure.length < 12) {
+    forecast.text = 'Collecting Data...';
+    var remainingSeconds = (12 - historicalData.pressure.length) * 5;
+    forecast.details = 'Need ' + remainingSeconds + ' more seconds';
+    forecast.code = 0;
+    return forecast;
+  }
+  
+  var len = historicalData.pressure.length;
+  var pressure15min = len > 36 ? historicalData.pressure[len - 36] : historicalData.pressure[0];
+  var pressure30min = len > 72 ? historicalData.pressure[len - 72] : historicalData.pressure[0];
+  var temp15min = len > 36 ? historicalData.temperature[len - 36] : historicalData.temperature[0];
+  var hum15min = len > 36 ? historicalData.humidity[len - 36] : historicalData.humidity[0];
+  
+  var trend15 = currentPres - pressure15min;
+  var trend30 = currentPres - pressure30min;
+  var tempChange = currentTemp - temp15min;
+  var humChange = currentHum - hum15min;
+  var pressureRate = trend15 * 4;
+  
+  if(trend15 < -1 && pressureRate < -3 && humChange > 5) {
+    forecast.icon = '🌧️';
+    forecast.text = 'Heavy Rain Soon';
+    forecast.confidence = 'high';
+    forecast.details = 'Pressure dropping fast (' + pressureRate.toFixed(1) + ' hPa/hr), humidity rising';
+    forecast.code = 1;
+  }
+  else if(trend30 < -2 && currentHum > 75) {
+    forecast.icon = '🌦️';
+    forecast.text = 'Rain Likely';
+    forecast.confidence = 'high';
+    forecast.details = 'Pressure falling (' + trend30.toFixed(1) + ' hPa/30min), high humidity';
+    forecast.code = 2;
+  }
+  else if(trend15 < -0.5 && currentPres < 1010) {
+    forecast.icon = '☁️';
+    forecast.text = 'Cloudy Weather';
+    forecast.confidence = 'medium';
+    forecast.details = 'Low pressure (' + currentPres.toFixed(0) + ' hPa), pressure declining';
+    forecast.code = 3;
+  }
+  else if(trend15 > 1 && pressureRate > 3) {
+    forecast.icon = '☀️';
+    forecast.text = 'Clear Skies Ahead';
+    forecast.confidence = 'high';
+    forecast.details = 'Pressure rising rapidly (' + pressureRate.toFixed(1) + ' hPa/hr)';
+    forecast.code = 4;
+  }
+  else if(trend30 > 1.5) {
+    forecast.icon = '🌤️';
+    forecast.text = 'Weather Improving';
+    forecast.confidence = 'medium';
+    forecast.details = 'Pressure steadily rising';
+    forecast.code = 5;
+  }
+  else if(currentPres > 1013 && currentHum < 60 && Math.abs(trend15) < 0.3) {
+    forecast.icon = '☀️';
+    forecast.text = 'Fair & Stable';
+    forecast.confidence = 'high';
+    forecast.details = 'High pressure (' + currentPres.toFixed(0) + ' hPa), low humidity';
+    forecast.code = 6;
+  }
+  else if(currentPres < 1010 && currentHum > 70) {
+    forecast.icon = '🌧️';
+    forecast.text = 'Unsettled Weather';
+    forecast.confidence = 'medium';
+    forecast.details = 'Low pressure, high humidity (' + currentHum.toFixed(0) + '%)';
+    forecast.code = 7;
+  }
+  else if(tempChange < -3 && trend15 < -0.5) {
+    forecast.icon = '❄️';
+    forecast.text = 'Cold Front Moving In';
+    forecast.confidence = 'high';
+    forecast.details = 'Temperature dropped ' + Math.abs(tempChange).toFixed(1) + '°C';
+    forecast.code = 8;
+  }
+  else if(tempChange > 3 && trend15 > 0.5) {
+    forecast.icon = '🌡️';
+    forecast.text = 'Warm Front Approaching';
+    forecast.confidence = 'high';
+    forecast.details = 'Temperature rose ' + tempChange.toFixed(1) + '°C, pressure rising';
+    forecast.code = 9;
+  }
+  else if(Math.abs(trend30) < 0.5 && Math.abs(humChange) < 3) {
+    forecast.icon = '🌤️';
+    forecast.text = 'Stable Conditions';
+    forecast.confidence = 'high';
+    forecast.details = 'No significant changes recently';
+    forecast.code = 10;
+  }
+  else {
+    forecast.icon = '⛅';
+    forecast.text = 'Partly Cloudy';
+    forecast.confidence = 'low';
+    forecast.details = 'Conditions unclear, monitoring trends';
+    forecast.code = 11;
+  }
+  
+  return forecast;
+}
+
+function highlightCurrentCondition(forecastText) {
+  document.querySelectorAll('.condition-card').forEach(card => {
+    card.classList.remove('active');
+  });
+  
+  document.querySelectorAll('.current-badge').forEach(badge => {
+    badge.remove();
+  });
+  
+  var conditionMap = {
+    'Heavy Rain Soon': 'heavy-rain',
+    'Rain Likely': 'rain-likely',
+    'Cloudy Weather': 'cloudy',
+    'Clear Skies Ahead': 'clear-skies',
+    'Weather Improving': 'improving',
+    'Fair & Stable': 'fair-stable',
+    'Unsettled Weather': 'unsettled',
+    'Cold Front Moving In': 'cold-front',
+    'Warm Front Approaching': 'warm-front',
+    'Stable Conditions': 'stable',
+    'Partly Cloudy': 'partly-cloudy'
+  };
+  
+  var conditionKey = conditionMap[forecastText];
+  if(conditionKey) {
+    var activeCard = document.querySelector('.condition-card[data-condition="' + conditionKey + '"]');
+    if(activeCard) {
+      activeCard.classList.add('active');
+      
+      var nameEl = activeCard.querySelector('.condition-name');
+      var badge = document.createElement('span');
+      badge.className = 'current-badge';
+      badge.textContent = 'CURRENT';
+      nameEl.appendChild(badge);
+      
+      if(window.innerWidth < 768) {
+        activeCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  }
+}
+
+function fetchData() {
+  var url = 'https://api.thingspeak.com/channels/' + CHANNEL + 
+            '/feeds.json?api_key=' + READ_KEY + '&results=30';
+  
+  fetch(url)
+    .then(res => {
+      if (!res.ok) throw new Error('HTTP error! status: ' + res.status);
+      return res.json();
+    })
+    .then(d => {
+      if(!d.feeds || d.feeds.length === 0) throw new Error('No data feeds available');
+      
+      fc++;
+      var f = d.feeds[d.feeds.length - 1];
+      
+      var temp = parseFloat(f.field1) || 0;
+      var hum = parseFloat(f.field2) || 0;
+      var pres = parseFloat(f.field3) || 0;
+      
+      var lightIntensity = parseInt(f.field4) || 0;
+
+      historicalData.pressure.push(pres);
+      historicalData.temperature.push(temp);
+      historicalData.humidity.push(hum);
+      historicalData.timestamps.push(new Date().getTime());
+      
+      if(historicalData.pressure.length > historicalData.maxHistory) {
+        historicalData.pressure.shift();
+        historicalData.temperature.shift();
+        historicalData.humidity.shift();
+        historicalData.timestamps.shift();
+      }
+
+      $('tv').innerHTML = temp.toFixed(1) + '<span class="un">°C</span>';
+      $('hv').innerHTML = hum.toFixed(1) + '<span class="un">%</span>';
+      $('pv').innerHTML = pres.toFixed(1) + '<span class="un">hPa</span>';
+      
+      $('weatherTemp').textContent = temp.toFixed(1);
+      if(temp < minTemp) minTemp = temp;
+      if(temp > maxTemp) maxTemp = temp;
+      $('weatherHi').textContent = maxTemp.toFixed(1);
+      $('weatherLo').textContent = minTemp.toFixed(1);
+      
+      var icon = '🌤️', desc = 'Pleasant';
+      if(temp < 10) { icon = '❄️'; desc = 'Very Cold'; }
+      else if(temp < 18) { icon = '🌥️'; desc = 'Cold'; }
+      else if(temp < 25) { icon = '🌤️'; desc = 'Comfortable'; }
+      else if(temp < 30) { icon = '🌞'; desc = 'Warm'; }
+      else { icon = '🔥'; desc = 'Hot'; }
+      
+      $('weatherIcon').textContent = icon;
+      $('weatherDesc').textContent = desc;
+      
+      var advancedForecast = getAdvancedForecast(temp, hum, pres);
+      $('forecast').innerHTML = advancedForecast.icon + ' ' + advancedForecast.text;
+      
+      if(advancedForecast.code !== currentForecastCode) {
+        console.log('🔄 Forecast changed from', currentForecastCode, 'to', advancedForecast.code);
+      }
+      currentForecastCode = advancedForecast.code;
+      
+      if(!firstForecastSent && currentForecastCode >= 0) {
+        firstForecastSent = true;
+        sendForecastToThingSpeak(currentForecastCode);
+      }
+      
+      highlightCurrentCondition(advancedForecast.text);
+      
+      var forecastCard = $('forecast').closest('.cd');
+      if(forecastCard) {
+        var subtitle = forecastCard.querySelector('.su');
+        if(subtitle) {
+          subtitle.textContent = advancedForecast.details;
+        }
+      }
+      
+      $('homeTemp').innerHTML = temp.toFixed(1) + '°C';
+      $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
+      
+      updateOfficeLights(lightIntensity);
+
+      var tempData = [], humData = [], presData = [], lightData = [];
+      for(var i = 0; i < d.feeds.length; i++) {
+        tempData.push(parseFloat(d.feeds[i].field1) || 0);
+        humData.push(parseFloat(d.feeds[i].field2) || 0);
+        presData.push(parseFloat(d.feeds[i].field3) || 0);
+        var currentLight = parseInt(d.feeds[i].field4) || 0;
+        lightData.push(currentLight);
+      }
+
+      drawChart($('c1'), tempData, '#ff6b6b', '°C', 
+                {min:'tempMin', max:'tempMax', avg:'tempAvg', count:'tempCount'});
+      drawChart($('c2'), humData, '#4ecdc4', '%', 
+                {min:'humMin', max:'humMax', avg:'humAvg', count:'humCount'});
+      drawChart($('c3'), presData, '#ffd93d', 'hPa', 
+                {min:'presMin', max:'presMax', avg:'presAvg', count:null});
+      drawChart($('c4'), lightData, '#ffd93d', '%', 
+                {min:'lightMin', max:'lightMax', avg:'lightAvg', count:null});
+      
+      var presTrend = presData.length > 1 ? presData[presData.length-1] - presData[0] : 0;
+      $('presTrend').textContent = presTrend > 0 ? '📈 Rising' : presTrend < 0 ? '📉 Falling' : '➡️ Stable';
+      
+      var maxLight = lightIntensity;
+      var lMode = maxLight === 0 ? 'OFF' : maxLight <= 25 ? 'ECO' : 
+                  maxLight <= 50 ? 'NORMAL' : maxLight <= 75 ? 'BRIGHT' : 'MAX';
+      $('lightMode').textContent = lMode;
+
+      $('st').className = 'sd ok';
+      $('st2').className = 'sd ok';
+      $('st3').className = 'sd ok';
+      $('st4').className = 'sd ok';
+      $('su').textContent = 'Live · Updated ' + fc + ' times';
+      $('homeStatus').textContent = 'LIVE';
+    })
+    .catch(err => {
+      console.error('Fetch Error:', err);
+      $('st').className = 'sd er';
+      $('st2').className = 'sd er';
+      $('st3').className = 'sd er';
+      $('st4').className = 'sd er';
+      $('su').textContent = 'Error: ' + err.message;
+      $('homeStatus').textContent = 'ERROR';
+    });
+}
+
+for(let i = 1; i <= 2; i++) {
+  $('colorPicker' + i).addEventListener('input', function() {
+    $('colorInput' + i).value = this.value.toUpperCase();
+    $('ledPreview' + i).style.backgroundColor = this.value;
+  });
+  
+  $('colorInput' + i).addEventListener('input', function() {
+    var val = this.value;
+    if(val.startsWith('#') && (val.length === 7 || val.length === 4)) {
+      $('colorPicker' + i).value = val;
+      $('ledPreview' + i).style.backgroundColor = val;
+    }
+  });
+}
+
+function applyColor(room) {
+  var color = $('colorInput' + room).value.replace('#', '');
+  
+  if(!/^[0-9A-F]{6}$/i.test(color)) {
+    alert('Invalid HEX color! Use format: #RRGGBB');
+    return;
+  }
+  
+  console.log('Sending to Arduino: Room ' + room + ' = #' + color);
+  alert('✅ Color #' + color + ' applied to Room ' + room);
+}
+
+fetchData();
+setInterval(fetchData, UPDATE_INTERVAL);
+$('homeEntries').textContent = '12';
+$('todayCount').textContent = '12';
+
+console.log('✅ Weather forecast system initialized. Forecast codes will be sent to Field 7 every 2.5 minutes.');
+
+setInterval(function() {
+  if(currentForecastCode >= 0) {
+    sendForecastToThingSpeak(currentForecastCode);
+  }
+}, 150000);
+
+console.log('📡 Continuous forecast sending active: Every 150 seconds (2.5 minutes)');
+  
+</script>
+
+</body>
+</html>

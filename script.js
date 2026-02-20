@@ -8,12 +8,12 @@ var currentPage = 'home';
 var minTemp = 999, maxTemp = -999;
 var globalLastLight = 0; 
 var lastSentForecast = -1; 
-var lastUpdateTime = 0; // Tracks ThingSpeak 15s limit
+var lastUpdateTime = 0; 
 
-// Global state to remember colors so updating one room doesn't reset the other
+// --- LED STATE (2 Rooms Only) ---
 var deviceState = {
-    room1: { r: 255, g: 255, b: 255 }, // Default White
-    room2: { r: 255, g: 255, b: 255 }  // Default White
+    room1: { r: 255, g: 255, b: 255 }, 
+    room2: { r: 255, g: 255, b: 255 }  
 };
 
 var historicalData = {
@@ -22,7 +22,7 @@ var historicalData = {
 
 var currentForecastCode = -1;
 
-// Send weather forecast every 3 minutes (180,000 ms)
+// Send weather forecast every 3 minutes
 setInterval(function() {
   if (currentForecastCode > 0) {
     sendForecastToThingSpeak(currentForecastCode);
@@ -80,132 +80,92 @@ function showPage(page) {
 
 function updateClock(){
   var n = new Date();
-  var h = n.getHours(), m = n.getMinutes(), s = n.getSeconds();
   var clockEl = $('clockHeader');
-  if(clockEl) clockEl.textContent = (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  if(clockEl) clockEl.textContent = n.toLocaleTimeString('en-GB');
 }
 setInterval(updateClock, 1000);
 updateClock();
 
 function sendForecastToThingSpeak(forecastCode) {
   if (forecastCode <= 0) return; 
-  var url = `https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field7=${forecastCode}&t=${new Date().getTime()}`;
+  var url = `https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field7=${forecastCode}&t=${Date.now()}`;
   fetch(url).then(res => res.text()).catch(err => console.error("Forecast failed:", err));
 }
 
 function processEntryLogs(feeds) {
-  const allowedUsers = {
-    "21 4D 5D 5D": "PANG SHENG YUAN",
-    "F1 96 EA 01": "THIRSHEN S/O SIVA BALAN",
-    "51 FC BA 5D": "CHEW QIBIN BRYANT"
-  };
-  let html = '';
-  let todayCount = 0;
-  let todayStr = new Date().toDateString();
-
+  const allowedUsers = { "21 4D 5D 5D": "PANG SHENG YUAN", "F1 96 EA 01": "THIRSHEN S/O SIVA BALAN", "51 FC BA 5D": "CHEW QIBIN BRYANT" };
+  let html = '', todayCount = 0, todayStr = new Date().toDateString();
   for(let i = feeds.length - 1; i >= 0; i--) {
     let uid = feeds[i].field5;
-    if(uid && typeof uid === 'string') {
-      uid = uid.trim().toUpperCase();
-      if(allowedUsers[uid]) {
-        let dateObj = new Date(feeds[i].created_at);
-        let timeStr = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString();
-        if(dateObj.toDateString() === todayStr) todayCount++;
-        html += `<tr><td>${timeStr}</td><td style="color:var(--accent);font-weight:600">${allowedUsers[uid]}</td><td style="font-family:monospace">${uid}</td><td><span class="log-status entry">ENTRY</span></td></tr>`;
-      }
+    if(uid && allowedUsers[uid.trim().toUpperCase()]) {
+      let dateObj = new Date(feeds[i].created_at);
+      if(dateObj.toDateString() === todayStr) todayCount++;
+      html += `<tr><td>${dateObj.toLocaleString()}</td><td style="color:var(--accent);font-weight:600">${allowedUsers[uid.trim().toUpperCase()]}</td><td>${uid}</td><td><span class="log-status entry">ENTRY</span></td></tr>`;
     }
   }
-  if($('logTableBody')) $('logTableBody').innerHTML = html || '<tr><td colspan="4">No entries today.</td></tr>';
+  if($('logTableBody')) $('logTableBody').innerHTML = html || '<tr><td colspan="4">Waiting for RFID...</td></tr>';
   if($('todayCount')) $('todayCount').textContent = todayCount;
   if($('homeEntries')) $('homeEntries').textContent = todayCount;
 }
 
-// ==========================================
-// 3. STATE-AWARE LED CONTROL (FIELD 8)
-// ==========================================
-
+// --- UPDATED LED LOGIC (2 ROOMS) ---
 function updateLocalState(room) {
-    const picker = $(`colorPicker${room}`);
-    const input = $(`colorInput${room}`);
-    const preview = $(`ledPreview${room}`);
+    const picker = $(`colorPicker${room}`), input = $(`colorInput${room}`), preview = $(`ledPreview${room}`);
     if(!picker) return;
     const hex = picker.value.replace('#', '');
-    deviceState[`room${room}`] = {
-        r: parseInt(hex.substring(0, 2), 16),
-        g: parseInt(hex.substring(2, 4), 16),
-        b: parseInt(hex.substring(4, 6), 16)
-    };
+    deviceState[`room${room}`] = { r: parseInt(hex.substring(0, 2), 16), g: parseInt(hex.substring(2, 4), 16), b: parseInt(hex.substring(4, 6), 16) };
     if(input) input.value = picker.value.toUpperCase();
     if(preview) preview.style.backgroundColor = picker.value;
 }
 
 function applyColor(room) {
-    const now = Date.now();
-    const btn = document.querySelector(`button[onclick="applyColor(${room})"]`);
-    const timeSinceLastUpdate = (now - lastUpdateTime) / 1000;
-
-    // Visual safeguard for ThingSpeak rate limit
-    if (timeSinceLastUpdate < 15) {
-        const remaining = Math.ceil(15 - timeSinceLastUpdate);
-        const originalText = btn.textContent;
-        btn.textContent = `⏳ Cool down (${remaining}s)`;
-        btn.style.background = "#ffb347";
-        setTimeout(() => { btn.textContent = originalText; btn.style.background = ""; }, 2000);
-        return; 
+    const now = Date.now(), btn = document.querySelector(`button[onclick="applyColor(${room})"]`);
+    if ((now - lastUpdateTime) / 1000 < 15) {
+        const rem = Math.ceil(15 - (now - lastUpdateTime) / 1000);
+        const old = btn.textContent; btn.textContent = `⏳ Cool down (${rem}s)`;
+        setTimeout(() => { btn.textContent = old; }, 2000); return; 
     }
-
     const s = deviceState;
-    // Formatting: R1,G1,B1,R2,G2,B2 for friend's logic
     const combinedData = `${s.room1.r},${s.room1.g},${s.room1.b},${s.room2.r},${s.room2.g},${s.room2.b}`;
-    const url = `https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field8=${combinedData}`;
-
-    btn.textContent = "🚀 Sending...";
-    btn.disabled = true;
-
-    fetch(url).then(res => res.text()).then(data => {
-        if (data !== "0") {
-            lastUpdateTime = Date.now();
-            btn.style.background = "#4ecdc4";
-            btn.textContent = "✅ Synced Both";
-        } else {
-            btn.style.background = "#ff6b6b";
-            btn.textContent = "❌ Server Busy";
-        }
-        setTimeout(() => { btn.disabled = false; btn.textContent = `Apply to Room ${room}`; btn.style.background = ""; }, 3000);
-    }).catch(() => { btn.disabled = false; btn.textContent = "⚠️ Error"; });
+    btn.textContent = "🚀 Sending..."; btn.disabled = true;
+    fetch(`https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field8=${combinedData}`)
+        .then(res => res.text()).then(data => {
+            if (data !== "0") { lastUpdateTime = Date.now(); btn.textContent = "✅ Synced"; } 
+            else { btn.textContent = "❌ Busy"; }
+            setTimeout(() => { btn.disabled = false; btn.textContent = `Apply to Room ${room}`; }, 3000);
+        });
 }
 
 for(let i = 1; i <= 2; i++) {
-    let picker = $('colorPicker' + i);
-    let input = $('colorInput' + i);
-    if(picker) picker.addEventListener('input', () => updateLocalState(i));
-    if(input) input.addEventListener('input', () => { if(input.value.length === 7) { picker.value = input.value; updateLocalState(i); } });
-    updateLocalState(i); // Set initial defaults to White
+    let p = $('colorPicker' + i), inp = $('colorInput' + i);
+    if(p) p.addEventListener('input', () => updateLocalState(i));
+    if(inp) inp.addEventListener('input', () => { if(inp.value.length === 7) { p.value = inp.value; updateLocalState(i); } });
+    updateLocalState(i);
 }
 
+// --- OFFICE & SENSOR LOGIC ---
 function updateOfficeLights(lightValue) {
   var icon1 = $('bulb2'), icon2 = $('bulb4'), room1bg = $('room2bg'), room2bg = $('room4bg');
   var status1 = $('status2'), status2 = $('status4'), levelText = $('lightLevelText'), statusText = $('lightStatus');
-  if(icon1) { icon1.classList.remove('on'); icon1.style.boxShadow = 'none'; icon1.style.borderColor = '#555'; }
-  if(icon2) { icon2.classList.remove('on'); icon2.style.boxShadow = 'none'; icon2.style.borderColor = '#555'; }
-  if(room1bg) room1bg.style.background = '#2a2a3e';
-  if(room2bg) room2bg.style.background = '#2a2a3e';
+  [icon1, icon2].forEach(ic => { if(ic) { ic.classList.remove('on'); ic.style.boxShadow = 'none'; ic.style.borderColor = '#555'; }});
+  if(room1bg) room1bg.style.background = '#2a2a3e'; if(room2bg) room2bg.style.background = '#2a2a3e';
   
   if(lightValue > 0) {
-    var intensity = Math.min(Math.max(lightValue, 0), 100); 
-    var opacity = intensity / 100;
-    var glowStyle = '0 0 ' + (intensity) + 'px rgba(255, 255, 153, ' + opacity + ')';
-    if(icon1) { icon1.classList.add('on'); icon1.style.boxShadow = glowStyle; icon1.style.borderColor = '#ffffaa'; }
-    if(room1bg) room1bg.style.background = 'rgba(255,255,153,'+(opacity*0.25)+')';
-    if(status1) status1.textContent = intensity + '%';
+    var intensity = Math.min(Math.max(lightValue, 0), 100), opacity = intensity / 100;
+    var glow = `0 0 ${intensity}px rgba(255, 255, 153, ${opacity})`;
+    if(icon1) { icon1.classList.add('on'); icon1.style.boxShadow = glow; icon1.style.borderColor = '#ffffaa'; }
+    if(icon2) { icon2.classList.add('on'); icon2.style.boxShadow = glow; icon2.style.borderColor = '#ffffaa'; }
+    if(room1bg) room1bg.style.background = `rgba(255, 255, 153, ${opacity * 0.25})`;
+    if(room2bg) room2bg.style.background = `rgba(255, 255, 153, ${opacity * 0.25})`;
+    if(status1) status1.textContent = intensity + '%'; if(status2) status2.textContent = intensity + '%';
   }
+  if(levelText) levelText.textContent = lightValue + '%';
 }
 
 function drawChart(canvas, data, color, unit, statsIds) {
   if(!canvas || data.length === 0) return;
   var c = canvas.getContext('2d'), dpr = window.devicePixelRatio || 1, W = canvas.clientWidth, H = canvas.clientHeight;
-  canvas.width = W * dpr; canvas.height = H * dpr;
-  c.scale(dpr, dpr);
+  canvas.width = W * dpr; canvas.height = H * dpr; c.scale(dpr, dpr);
   var mn = Math.min(...data), mx = Math.max(...data), range = mx - mn || 1;
   c.strokeStyle = color; c.lineWidth = 2; c.beginPath();
   for(var i = 0; i < data.length; i++) c.lineTo((i/(data.length-1))*W, H - ((data[i]-mn)/range)*(H-40));
@@ -214,20 +174,42 @@ function drawChart(canvas, data, color, unit, statsIds) {
   if(statsIds && $(statsIds.max)) $(statsIds.max).textContent = mx.toFixed(1) + unit;
 }
 
-function fetchData() {
-  fetch(`https://api.thingspeak.com/channels/${CHANNEL}/feeds.json?api_key=${READ_KEY}&results=100`)
-    .then(res => res.json())
-    .then(d => {
-      if(!d.feeds || d.feeds.length === 0) return;
-      var f = d.feeds[d.feeds.length - 1];
-      if($('tv')) $('tv').innerHTML = parseFloat(f.field1).toFixed(1) + '°C';
-      if($('hv')) $('hv').innerHTML = parseFloat(f.field2).toFixed(1) + '%';
-      if($('pv')) $('pv').innerHTML = parseFloat(f.field3).toFixed(1) + ' hPa';
-      processEntryLogs(d.feeds);
-      updateOfficeLights(parseInt(f.field4) || 0);
-      drawChart($('c1'), d.feeds.map(x => parseFloat(x.field1)), '#ff6b6b', '°C', {min:'tempMin', max:'tempMax'});
-    });
+function getAdvancedForecast(temp, hum, pres) {
+  if(historicalData.pressure.length < 12) return { icon: '⛅', text: 'Collecting...', code: 0 };
+  let trend = pres - historicalData.pressure[historicalData.pressure.length-12];
+  if(trend < -1 && hum > 80) return { icon: '🌧️', text: 'Heavy Rain Soon', code: 1 };
+  if(trend > 1) return { icon: '☀️', text: 'Clear Skies Ahead', code: 4 };
+  return { icon: '⛅', text: 'Stable', code: 10 };
 }
 
-fetchData(); 
-setInterval(fetchData, UPDATE_INTERVAL);
+function fetchData() {
+  fetch(`https://api.thingspeak.com/channels/${CHANNEL}/feeds.json?api_key=${READ_KEY}&results=100`)
+    .then(res => res.json()).then(d => {
+      if(!d.feeds.length) return;
+      fc++; var f = d.feeds[d.feeds.length-1];
+      var temp = parseFloat(f.field1), hum = parseFloat(f.field2), pres = parseFloat(f.field3);
+      historicalData.pressure.push(pres);
+      if($('tv')) $('tv').innerHTML = temp.toFixed(1) + '°C';
+      if($('hv')) $('hv').innerHTML = hum.toFixed(1) + '%';
+      if($('pv')) $('pv').innerHTML = pres.toFixed(1) + ' hPa';
+      if($('weatherTemp')) $('weatherTemp').textContent = temp.toFixed(1);
+      if($('homeTemp')) $('homeTemp').textContent = temp.toFixed(1) + '°C';
+      
+      var forecast = getAdvancedForecast(temp, hum, pres);
+      if($('forecast')) $('forecast').innerHTML = forecast.icon + ' ' + forecast.text;
+      currentForecastCode = forecast.code;
+
+      processEntryLogs(d.feeds);
+      updateOfficeLights(parseInt(f.field4) || 0);
+      
+      drawChart($('c1'), d.feeds.map(x => parseFloat(x.field1)), '#ff6b6b', '°C', {min:'tempMin', max:'tempMax'});
+      drawChart($('c2'), d.feeds.map(x => parseFloat(x.field2)), '#4ecdc4', '%', {min:'humMin', max:'humMax'});
+      drawChart($('c3'), d.feeds.map(x => parseFloat(x.field3)), '#ffd93d', 'hPa', {min:'presMin', max:'presMax'});
+      drawChart($('c4'), d.feeds.map(x => parseFloat(x.field4)||0), '#ffd93d', '%', {min:'lightMin', max:'lightMax'});
+      
+      ['st','st2','st3','st4'].forEach(id => { if($(id)) $(id).className = 'sd ok'; });
+      if($('su')) $('su').textContent = 'Live · Updated ' + fc + ' times';
+    }).catch(err => { console.error(err); ['st','st2','st3','st4'].forEach(id => { if($(id)) $(id).className = 'sd er'; }); });
+}
+
+fetchData(); setInterval(fetchData, UPDATE_INTERVAL);

@@ -1,40 +1,607 @@
-<div id="led-page" class="page">
-  <div class="wrap">
-    <h2 class="page-title">🎨 Smart RGB LED Controller</h2>
-    <div class="sb glass-panel"><div class="sd ok" id="st4"></div><span>Web-based LED color management</span></div>
-    <div class="led-container glass-panel">
-      <h3>Individual Room LED Control</h3>
-      <div class="led-grid">
-        
-        <div class="led-room-card">
-          <div class="led-room-title"><span>💡 Room 1 (Arduino Mega)</span></div>
-          <div class="led-preview" id="ledPreview1" style="background-color:#FFFFFF"></div>
-          <div class="color-input-group">
-            <label>Color (HEX):</label>
-            <input type="text" class="color-input" id="colorInput1" placeholder="#FFFFFF" maxlength="7" value="#FFFFFF">
-          </div>
-          <div class="color-input-group">
-            <label>Color Picker:</label>
-            <input type="color" class="color-input" id="colorPicker1" value="#FFFFFF" style="height:50px;cursor:pointer">
-          </div>
-          <button class="btn-apply" onclick="applyColor(1)">Apply to Arduino</button>
-        </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Office Hub - IoT Management System</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-        <div class="led-room-card">
-          <div class="led-room-title"><span>💡 Room 2 (M5Stack)</span></div>
-          <div class="led-preview" id="ledPreview2" style="background-color:#FFFFFF"></div>
-          <div class="color-input-group">
-            <label>Color (HEX):</label>
-            <input type="text" class="color-input" id="colorInput2" placeholder="#FFFFFF" maxlength="7" value="#FFFFFF">
-          </div>
-          <div class="color-input-group">
-            <label>Color Picker:</label>
-            <input type="color" class="color-input" id="colorPicker2" value="#FFFFFF" style="height:50px;cursor:pointer">
-          </div>
-          <button class="btn-apply" onclick="applyColor(2)">Apply to M5Stack</button>
-        </div>
-        
-      </div>
-    </div>
-  </div>
+<div class="header">
+  <div class="header-content">
+    <div class="logo">
+      <span class="logo-icon">🏢</span>
+      <span>Smart Office Hub</span>
+    </div>
+    
+    <div class="nav-header">
+      <button class="nav-btn active" onclick="showPage('home')">🏠 Home</button>
+      <button class="nav-btn" onclick="showPage('weather')">🌤️ Weather</button>
+      <button class="nav-btn" onclick="showPage('office')">💡 Lighting</button>
+      <button class="nav-btn" onclick="showPage('entry')">🔐 Entry Log</button>
+      <button class="nav-btn" onclick="showPage('led')">🎨 LED Control</button>
+    </div>
+    
+    <div class="clock-header" id="clockHeader">00:00:00</div>
+  </div>
 </div>
+
+<div id="home-page" class="page active">
+  <div class="home-hero">
+    <div class="home-content">
+      <h1 class="home-title">Smart Office Hub</h1>
+      <p class="home-subtitle">IoT-Powered Workspace Management System</p>
+      
+      <div class="home-stats">
+        <div class="stat-card">
+          <div class="stat-icon">🌡️</div>
+          <div class="stat-value" id="homeTemp">--°C</div>
+          <div class="stat-label">Current Temperature</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">💡</div>
+          <div class="stat-value" id="homeLights">--</div>
+          <div class="stat-label">Active Lights</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-value" id="homeEntries">0</div>
+          <div class="stat-label">Today's Entries</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⚡</div>
+          <div class="stat-value" id="homeStatus">LIVE</div>
+          <div class="stat-label">System Status</div>
+        </div>
+      </div>
+      
+      <div class="nav-cards">
+        <div class="nav-card" onclick="showPage('weather')">
+          <div class="nav-card-icon">🌤️</div>
+          <div class="nav-card-title">Weather Monitoring</div>
+          <div class="nav-card-desc">Real-time environmental data including temperature, humidity, air pressure, and weather forecasting based on sensor readings.</div>
+        </div>
+        
+        <div class="nav-card" onclick="showPage('office')">
+          <div class="nav-card-icon">💡</div>
+          <div class="nav-card-title">Office Lighting</div>
+          <div class="nav-card-desc">Visual map showing current lighting status across all office rooms with automatic brightness control.</div>
+        </div>
+        
+        <div class="nav-card" onclick="showPage('entry')">
+          <div class="nav-card-icon">🔐</div>
+          <div class="nav-card-title">Entry Access Log</div>
+          <div class="nav-card-desc">Track employee access with RFID card scanning system, showing real-time entry and exit records.</div>
+        </div>
+        
+        <div class="nav-card" onclick="showPage('led')">
+          <div class="nav-card-icon">🎨</div>
+          <div class="nav-card-title">LED Color Control</div>
+          <div class="nav-card-desc">Customize RGB LED strip colors for each room individually using HEX codes or color picker interface.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="weather-page" class="page">
+  <div class="wrap">
+    <h2 class="page-title">🌤️ Environmental Monitoring</h2>
+    
+    <div class="sb">
+      <div class="sd ok" id="st"></div>
+      <span id="su">Connecting to ThingSpeak...</span>
+    </div>
+
+    <div class="weather-hero">
+      <div class="weather-display">
+        <div class="weather-icon" id="weatherIcon">🌤️</div>
+        <div class="weather-main">
+          <div>
+            <span class="weather-temp" id="weatherTemp">--</span>
+            <span class="weather-deg">°C</span>
+          </div>
+          <div class="weather-desc" id="weatherDesc">Loading...</div>
+          <div class="weather-hl">
+            H: <span id="weatherHi">--</span>°C | L: <span id="weatherLo">--</span>°C
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gr">
+      <div class="cd">
+        <div class="ic">🌡️</div>
+        <div class="lb">Temperature</div>
+        <div class="vl" id="tv">--<span class="un">°C</span></div>
+        <div class="su">Current ambient temperature</div>
+      </div>
+      <div class="cd">
+        <div class="ic">💧</div>
+        <div class="lb">Humidity</div>
+        <div class="vl" id="hv">--<span class="un">%</span></div>
+        <div class="su">Relative air humidity</div>
+      </div>
+      <div class="cd">
+        <div class="ic">🌬️</div>
+        <div class="lb">Air Pressure</div>
+        <div class="vl" id="pv">--<span class="un">hPa</span></div>
+        <div class="su">Atmospheric pressure</div>
+      </div>
+      <div class="cd">
+        <div class="ic">🌦️</div>
+        <div class="lb">Weather Forecast</div>
+        <div class="vl" id="forecast" style="font-size:1.5rem">--</div>
+        <div class="su">Based on pressure trend</div>
+      </div>
+    </div>
+
+    <div class="hg-card">
+      <div class="tt">Humidity Comfort Level</div>
+      <div class="hg-labels">
+        <span>🏜️ Very Dry</span>
+        <span>😊 Comfortable</span>
+        <span>💧 Very Humid</span>
+      </div>
+      <div class="hg-track">
+        <div class="hg-pin" id="hp" style="left:50%"></div>
+      </div>
+    </div>
+
+    <div class="ch">
+      <div class="tt">
+        <span><span class="dt" style="background:#ff6b6b"></span> Temperature History</span>
+      </div>
+      <canvas id="c1"></canvas>
+      <div class="chart-info">
+        <div class="chart-stat">
+          <span class="chart-stat-label">Min:</span>
+          <span class="chart-stat-value" id="tempMin">--°C</span>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat-label">Max:</span>
+          <span class="chart-stat-value" id="tempMax">--°C</span>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat-label">Avg:</span>
+          <span class="chart-stat-value" id="tempAvg">--°C</span>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat-label">Data Points:</span>
+          <span class="chart-stat-value" id="tempCount">--</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ch">
+      <div class="tt">
+        <span><span class="dt" style="background:#4ecdc4"></span> Humidity History</span>
+      </div>
+      <canvas id="c2"></canvas>
+      <div class="chart-info">
+        <div class="chart-stat">
+          <span class="chart-stat-label">Min:</span>
+          <span class="chart-stat-value" id="humMin">--%</span>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat-label">Max:</span>
+          <span class="chart-stat-value" id="humMax">--%</span>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat-label">Avg:</span>
+          <span class="chart-stat-value" id="humAvg">--%</span>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat-label">Data Points:</span>
+          <span class="chart-stat-value" id="humCount">--</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="ch">
+      <div class="tt">
+        <span><span class="dt" style="background:#ffd93d"></span> Pressure History</span>
+      </div>
+      <canvas id="c3"></canvas>
+      <div class="chart-info">
+        <div class="chart-stat">
+          <span class="chart-stat-label">Min:</span>
+          <span class="chart-stat-value" id="presMin">--hPa</span>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat-label">Max:</span>
+          <span class="chart-stat-value" id="presMax">--hPa</span>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat-label">Avg:</span>
+          <span class="chart-stat-value" id="presAvg">--hPa</span>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat-label">Trend:</span>
+          <span class="chart-stat-value" id="presTrend">--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="weather-guide">
+    <div class="weather-guide-inner">
+      <h3 class="weather-guide-title">📚 Weather Conditions Reference Guide</h3>
+      <p style="text-align:center;opacity:0.7;margin-bottom:20px;font-size:0.95rem">
+        Understanding how Temperature, Humidity, and Air Pressure determine weather forecasts
+      </p>
+      
+      <div class="conditions-grid" id="conditionsGrid">
+        <div class="condition-card" data-condition="heavy-rain">
+          <div class="condition-header">
+            <div class="condition-icon">🌧️</div>
+            <div class="condition-name">Heavy Rain Soon</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📉 Pressure: Dropping Fast (&lt;-3 hPa/hr)</span>
+            <span class="indicator humidity">💧 Humidity: Rising (&gt;+5%)</span>
+            <span class="indicator temp">🌡️ Temperature: Variable</span>
+          </div>
+          <div class="condition-description">
+            Strong weather system approaching. Rapid pressure drop combined with increasing humidity indicates heavy precipitation within 1-3 hours.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="rain-likely">
+          <div class="condition-header">
+            <div class="condition-icon">🌦️</div>
+            <div class="condition-name">Rain Likely</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📉 Pressure: Falling (&lt;-2 hPa/30min)</span>
+            <span class="indicator humidity">💧 Humidity: High (&gt;75%)</span>
+            <span class="indicator temp">🌡️ Temperature: Moderate</span>
+          </div>
+          <div class="condition-description">
+            Atmospheric conditions favor precipitation. Sustained pressure decline with high humidity levels indicate rain within 3-6 hours.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="cloudy">
+          <div class="condition-header">
+            <div class="condition-icon">☁️</div>
+            <div class="condition-name">Cloudy Weather</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📉 Pressure: Declining Steadily</span>
+            <span class="indicator humidity">💧 Humidity: Moderate</span>
+            <span class="indicator temp">🌡️ Temperature: Stable</span>
+          </div>
+          <div class="condition-description">
+            Gradual pressure decrease indicates cloud cover increasing. Overcast skies likely with no immediate precipitation expected.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="clear-skies">
+          <div class="condition-header">
+            <div class="condition-icon">☀️</div>
+            <div class="condition-name">Clear Skies Ahead</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📈 Pressure: Rising Rapidly (&gt;+3 hPa/hr)</span>
+            <span class="indicator humidity">💧 Humidity: Decreasing</span>
+            <span class="indicator temp">🌡️ Temperature: Variable</span>
+          </div>
+          <div class="condition-description">
+            Strong high-pressure system building. Rapid pressure increase clears clouds and brings sunny weather conditions.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="improving">
+          <div class="condition-header">
+            <div class="condition-icon">🌤️</div>
+            <div class="condition-name">Weather Improving</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📈 Pressure: Rising Steadily (&gt;+1.5 hPa)</span>
+            <span class="indicator humidity">💧 Humidity: Moderate</span>
+            <span class="indicator temp">🌡️ Temperature: Stable</span>
+          </div>
+          <div class="condition-description">
+            Conditions clearing as pressure rises. Clouds breaking up with improving visibility and reduced precipitation chance.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="fair-stable">
+          <div class="condition-header">
+            <div class="condition-icon">☀️</div>
+            <div class="condition-name">Fair &amp; Stable</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">➡️ Pressure: High &amp; Stable (&gt;1013 hPa)</span>
+            <span class="indicator humidity">💧 Humidity: Low (&lt;60%)</span>
+            <span class="indicator temp">🌡️ Temperature: Comfortable</span>
+          </div>
+          <div class="condition-description">
+            Excellent weather conditions. High pressure system with low humidity creates stable, pleasant conditions with clear skies.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="unsettled">
+          <div class="condition-header">
+            <div class="condition-icon">🌧️</div>
+            <div class="condition-name">Unsettled Weather</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📉 Pressure: Low (&lt;1010 hPa)</span>
+            <span class="indicator humidity">💧 Humidity: High (&gt;70%)</span>
+            <span class="indicator temp">🌡️ Temperature: Variable</span>
+          </div>
+          <div class="condition-description">
+            Unstable atmospheric conditions. Low pressure combined with high humidity creates potential for cloudy skies and showers.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="cold-front">
+          <div class="condition-header">
+            <div class="condition-icon">❄️</div>
+            <div class="condition-name">Cold Front Moving In</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📈 Pressure: Rising</span>
+            <span class="indicator humidity">💧 Humidity: Variable</span>
+            <span class="indicator temp">🌡️ Temperature: Dropping (&lt;-1°C)</span>
+          </div>
+          <div class="condition-description">
+            Cold front passage detected. Temperature decrease with rising pressure brings cooler, clearer conditions ahead.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="warm-front">
+          <div class="condition-header">
+            <div class="condition-icon">🌡️</div>
+            <div class="condition-name">Warm Front Approaching</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">📉 Pressure: Falling</span>
+            <span class="indicator humidity">💧 Humidity: Rising</span>
+            <span class="indicator temp">🌡️ Temperature: Rising (&gt;+1°C)</span>
+          </div>
+          <div class="condition-description">
+            Warm front advancing. Temperature increase with falling pressure develops warmer, more humid conditions.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="stable">
+          <div class="condition-header">
+            <div class="condition-icon">⛅</div>
+            <div class="condition-name">Stable Conditions</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">➡️ Pressure: Stable (±0.5 hPa)</span>
+            <span class="indicator humidity">💧 Humidity: Moderate</span>
+            <span class="indicator temp">🌡️ Temperature: Stable</span>
+          </div>
+          <div class="condition-description">
+            Atmospheric equilibrium. No significant changes in pressure, temperature, or humidity. Current weather pattern expected to persist.
+          </div>
+        </div>
+
+        <div class="condition-card" data-condition="partly-cloudy">
+          <div class="condition-header">
+            <div class="condition-icon">⛅</div>
+            <div class="condition-name">Partly Cloudy</div>
+          </div>
+          <div class="condition-indicators">
+            <span class="indicator pressure">➡️ Pressure: Variable</span>
+            <span class="indicator humidity">💧 Humidity: Moderate</span>
+            <span class="indicator temp">🌡️ Temperature: Moderate</span>
+          </div>
+          <div class="condition-description">
+            Variable conditions with no strong weather signals. Mix of sun and clouds with no significant atmospheric changes detected.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="office-page" class="page">
+  <div class="wrap">
+    <h2 class="page-title">💡 Office Lighting Control Map</h2>
+    
+    <div class="sb">
+      <div class="sd ok" id="st2"></div>
+      <span id="lightStatus">Monitoring lighting system...</span>
+    </div>
+
+    <div class="office-container">
+      <div class="office-map">
+        <div class="room4-outer" id="room4bg">
+          <div class="room4-door"></div>
+          <div class="room-content">
+            <div class="room-label">2</div>
+            <div class="light-bulb" id="bulb4">💡</div>
+            <div class="room-status off" id="status4">OFF</div>
+          </div>
+        </div>
+        
+        <div class="room3-outer" id="room3bg">
+          <div class="room3-door"></div>
+          <div class="room-content">
+            <div class="room-label">3</div>
+            <div class="light-bulb" id="bulb3">💡</div>
+            <div class="room-status off" id="status3">OFF</div>
+          </div>
+        </div>
+        
+        <div class="room1-outer" id="room1bg">
+          <div class="room1-main-door">
+            <div class="door-handle"></div>
+            <div class="door-handle2"></div>
+          </div>
+          <div class="room-content">
+          </div>
+        </div>
+        
+        <div class="room2-outer" id="room2bg">
+          <div class="room2-door"></div>
+          <div class="room-content">
+            <div class="room-label">1</div>
+            <div class="light-bulb" id="bulb2">💡</div>
+            <div class="room-status off" id="status2">OFF</div>
+          </div>
+        </div>
+        
+        <div class="gateway">Main Office Entrance</div>
+      </div>
+    </div>
+
+    <div class="light-info-section">
+      <div style="font-size:1.1rem;opacity:0.8;margin-bottom:10px">Current Lighting Levels</div>
+      <div class="light-level" id="lightLevelText">Loading...</div>
+    </div>
+
+    <div class="ch">
+      <div class="tt">
+        <span><span class="dt" style="background:#ffd93d"></span> Average Light Level History</span>
+      </div>
+      <canvas id="c4"></canvas>
+      <div class="chart-info">
+        <div class="chart-stat">
+          <span class="chart-stat-label">Min:</span>
+          <span class="chart-stat-value" id="lightMin">--%</span>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat-label">Max:</span>
+          <span class="chart-stat-value" id="lightMax">--%</span>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat-label">Avg:</span>
+          <span class="chart-stat-value" id="lightAvg">--%</span>
+        </div>
+        <div class="chart-stat">
+          <span class="chart-stat-label">Mode:</span>
+          <span class="chart-stat-value" id="lightMode">--</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="entry-page" class="page">
+  <div class="wrap">
+    <h2 class="page-title">🔐 Office Entry Access Log</h2>
+    
+    <div class="sb">
+      <div class="sd ok" id="st3"></div>
+      <span>Real-time RFID access monitoring</span>
+    </div>
+
+    <div class="log-container">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px">
+        <h3>Recent Access Records</h3>
+        <div style="font-size:0.9rem;opacity:0.7">
+          Today: <span style="color:var(--accent);font-weight:600" id="todayCount">0</span> entries
+        </div>
+      </div>
+      
+      <table class="log-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Employee Name</th>
+            <th>Card ID</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="logTableBody">
+          <tr>
+            <td class="log-time">2026-02-15 09:23:45</td>
+            <td class="log-name">John Doe</td>
+            <td>RFID-001234</td>
+            <td><span class="log-status entry">ENTRY</span></td>
+          </tr>
+          <tr>
+            <td class="log-time">2026-02-15 09:15:32</td>
+            <td class="log-name">Jane Smith</td>
+            <td>RFID-005678</td>
+            <td><span class="log-status entry">ENTRY</span></td>
+          </tr>
+          <tr>
+            <td class="log-time">2026-02-15 08:45:12</td>
+            <td class="log-name">Mike Johnson</td>
+            <td>RFID-009876</td>
+            <td><span class="log-status exit">EXIT</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="led-page" class="page">
+  <div class="wrap">
+    <h2 class="page-title">🎨 Smart RGB LED Controller</h2>
+    
+    <div class="sb">
+      <div class="sd ok" id="st4"></div>
+      <span>Web-based LED color management</span>
+    </div>
+
+    <div class="led-container">
+      <h3>Individual Room LED Control</h3>
+      
+      <div class="led-grid">
+        <div class="led-room-card">
+          <div class="led-room-title">
+            <span>💡 Room 1</span>
+            <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
+          </div>
+          <div class="led-preview" id="ledPreview1" style="background-color:#333"></div>
+          <div class="color-input-group">
+            <label>Color (HEX):</label>
+            <input type="text" class="color-input" id="colorInput1" 
+                   placeholder="#FF0000" maxlength="7" value="#FF0000">
+          </div>
+          <div class="color-input-group">
+            <label>Color Picker:</label>
+            <input type="color" class="color-input" id="colorPicker1" 
+                   value="#FF0000" style="height:50px;cursor:pointer">
+          </div>
+          <button class="btn-apply" onclick="applyColor(1)">Apply to Room 1</button>
+        </div>
+
+        <div class="led-room-card">
+          <div class="led-room-title">
+            <span>💡 Room 2</span>
+            <span style="font-size:0.9rem;opacity:0.7">LED Strip</span>
+          </div>
+          <div class="led-preview" id="ledPreview2" style="background-color:#333"></div>
+          <div class="color-input-group">
+            <label>Color (HEX):</label>
+            <input type="text" class="color-input" id="colorInput2" 
+                   placeholder="#00FF00" maxlength="7" value="#00FF00">
+          </div>
+          <div class="color-input-group">
+            <label>Color Picker:</label>
+            <input type="color" class="color-input" id="colorPicker2" 
+                   value="#00FF00" style="height:50px;cursor:pointer">
+          </div>
+          <button class="btn-apply" onclick="applyColor(2)">Apply to Room 2</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Smart Office Hub © 2026 | NYP Engineering Project | Powered by M5GO + ThingSpeak + Arduino Mega
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
+
+
+
+OK, DO NOT GO SIMPLIFY ANY OF THE CODE, LEAVE THEM BE, ONLY CHANGE what I told you change, first fix the java script make sure it can received and sent data for all the pages. also fix the humidity  comfort level bar (the CSS)
+
+same goes to the lgithing page, card reading page and led control  make sure the function and script is synchronized

@@ -156,38 +156,39 @@ function processEntryLogs(feeds) {
 // 3. LED CONTROL & RGB CONVERTER (FIELD 8)
 // ==========================================
 function applyColor(room) {
-    const room1Hex = $('colorPicker1').value.replace('#', '');
-    const room2Hex = $('colorPicker2').value.replace('#', '');
+  // Get current values from both pickers
+  const p1 = $('colorPicker1').value.replace('#', '');
+  const p2 = $('colorPicker2').value.replace('#', '');
+
+  // Convert hex to R,G,B for Room 1
+  const r1 = parseInt(p1.substring(0, 2), 16), 
+        g1 = parseInt(p1.substring(2, 4), 16), 
+        b1 = parseInt(p1.substring(4, 6), 16);
+
+  // Convert hex to R,G,B for Room 2
+  const r2 = parseInt(p2.substring(0, 2), 16), 
+        g2 = parseInt(p2.substring(2, 4), 16), 
+        b2 = parseInt(p2.substring(4, 6), 16);
+
+  // Format: "R1,G1,B1|R2,G2,B2"
+  const combinedData = `${r1},${g1},${b1}|${r2},${g2},${b2}`;
+  
+  const url = `https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field8=${encodeURIComponent(combinedData)}&_=${Date.now()}`;
+
+  console.log("Sending Combined RGB:", combinedData);
+  
+  fetch(url)
+    .then(res => res.text())
+    .then(data => {
+      if(data !== "0") {
+        alert(`✅ Colors Synced!\nRoom 1: ${r1},${g1},${b1}\nRoom 2: ${r2},${g2},${b2}`);
+      } else {
+        alert('⚠️ ThingSpeak is busy. Wait 15s before next change.');
+      }
+    })
+    .catch(err => alert('❌ Error connecting to ThingSpeak.'));
+}
     
-    // Create a combined string: "R,G,B|R,G,B"
-    const r1 = hexToRgb(room1Hex);
-    const r2 = hexToRgb(room2Hex);
-    const combinedData = `${r1.r},${r1.g},${r1.b}|${r2.r},${r2.g},${r2.b}`;
-
-    const url = `https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field8=${encodeURIComponent(combinedData)}`;
-
-    fetch(url).then(res => res.text()).then(data => {
-        if(data !== "0") alert("Settings synced to Field 8!");
-    });
-}
-
-function hexToRgb(hex) {
-    const bigint = parseInt(hex, 16);
-    return { r: (bigint >> 16) & 255, g: (bigint >> 8) & 255, b: bigint & 255 };
-}
-    
-    fetch(url)
-      .then(res => res.text())
-      .then(data => {
-        if(data !== "0") {
-          alert(`✅ Applied RGB(${rgbStr}) to Room ${room}`);
-        } else {
-          alert('⚠️ ThingSpeak is busy. Please wait 15 seconds before changing colors again.');
-        }
-      })
-      .catch(err => alert('❌ Network error while sending color.'));
-  }
-}
 
 for(let i = 1; i <= 2; i++) {
   let picker = $('colorPicker' + i);

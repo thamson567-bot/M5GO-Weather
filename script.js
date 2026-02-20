@@ -6,17 +6,17 @@ var historicalData = { pressure: [], temperature: [], humidity: [], maxHistory: 
 function $(id){return document.getElementById(id)}
 
 const weatherConditions = [
-  { id: 'heavy-rain', icon: '🌧️', name: 'Heavy Rain Soon', p: '📉 Pressure: Dropping Fast', desc: 'Strong weather system approaching. Rain likely within 1-3 hours.' },
-  { id: 'rain-likely', icon: '🌦️', name: 'Rain Likely', p: '📉 Pressure: Falling', desc: 'Atmospheric conditions favor rain within 3-6 hours.' },
-  { id: 'cloudy', icon: '☁️', name: 'Cloudy Weather', p: '📉 Pressure: Declining', desc: 'Overcast skies likely with no immediate rain expected.' },
-  { id: 'clear-skies', icon: '☀️', name: 'Clear Skies Ahead', p: '📈 Pressure: Rising Fast', desc: 'High-pressure system building. Sunny weather expected.' },
-  { id: 'improving', icon: '🌤️', name: 'Weather Improving', p: '📈 Pressure: Rising', desc: 'Conditions clearing with reduced precipitation chance.' },
-  { id: 'fair-stable', icon: '☀️', name: 'Fair & Stable', p: '➡️ Pressure: High/Stable', desc: 'Stable, pleasant conditions with clear skies.' },
-  { id: 'unsettled', icon: '🌧️', name: 'Unsettled', p: '📉 Pressure: Low', desc: 'Low pressure creates potential for showers.' },
-  { id: 'cold-front', icon: '❄️', name: 'Cold Front', p: '📈 Pressure: Rising', desc: 'Temperature dropping, cooler conditions ahead.' },
-  { id: 'warm-front', icon: '🌡️', name: 'Warm Front', p: '📉 Pressure: Falling', desc: 'Warmer, more humid conditions developing.' },
-  { id: 'stable', icon: '⛅', name: 'Stable Conditions', p: '➡️ Pressure: Stable', desc: 'Current weather pattern expected to persist.' },
-  { id: 'partly-cloudy', icon: '⛅', name: 'Partly Cloudy', p: '➡️ Pressure: Variable', desc: 'Mix of sun and clouds with no significant changes.' }
+  { id: 'heavy-rain', icon: '🌧️', name: 'Heavy Rain Soon', p: '📉 Pres: Dropping Fast', desc: 'Precipitation likely within 1-3 hours.' },
+  { id: 'rain-likely', icon: '🌦️', name: 'Rain Likely', p: '📉 Pres: Falling', desc: 'Atmospheric conditions favor rain within 3-6 hours.' },
+  { id: 'cloudy', icon: '☁️', name: 'Cloudy Weather', p: '📉 Pres: Declining', desc: 'Overcast skies likely.' },
+  { id: 'clear-skies', icon: '☀️', name: 'Clear Skies Ahead', p: '📈 Pres: Rising Fast', desc: 'High-pressure system building. Sunny weather expected.' },
+  { id: 'improving', icon: '🌤️', name: 'Weather Improving', p: '📈 Pres: Rising', desc: 'Conditions clearing.' },
+  { id: 'fair-stable', icon: '☀️', name: 'Fair & Stable', p: '➡️ Pres: High/Stable', desc: 'Stable, pleasant clear skies.' },
+  { id: 'unsettled', icon: '🌧️', name: 'Unsettled', p: '📉 Pres: Low', desc: 'Potential for showers.' },
+  { id: 'cold-front', icon: '❄️', name: 'Cold Front', p: '📈 Pres: Rising', desc: 'Cooler conditions ahead.' },
+  { id: 'warm-front', icon: '🌡️', name: 'Warm Front', p: '📉 Pres: Falling', desc: 'Warmer, more humid conditions.' },
+  { id: 'stable', icon: '⛅', name: 'Stable Conditions', p: '➡️ Pres: Stable', desc: 'Current weather pattern persists.' },
+  { id: 'partly-cloudy', icon: '⛅', name: 'Partly Cloudy', p: '➡️ Pres: Variable', desc: 'Mix of sun and clouds.' }
 ];
 
 function renderWeatherCards() {
@@ -40,12 +40,10 @@ function showPage(p) {
 function updateClock(){ if($('clockHeader')) $('clockHeader').textContent = new Date().toLocaleTimeString('en-GB'); }
 setInterval(updateClock, 1000);
 
-// --- LED LOGIC (Arduino=Room1, M5GO=Room2) ---
 function applyColor(room) {
     const now = Date.now(), btn = document.querySelector(`button[onclick="applyColor(${room})"]`);
-    const diff = (now - lastUpdateTime) / 1000;
-    if (diff < 15) {
-        const rem = Math.ceil(15 - diff), old = btn.textContent;
+    if ((now - lastUpdateTime) / 1000 < 15) {
+        const rem = Math.ceil(15 - (now - lastUpdateTime) / 1000);
         btn.textContent = `⏳ Wait ${rem}s`;
         setTimeout(() => { btn.textContent = room === 1 ? "Apply to Arduino" : "Apply to M5Stack"; }, 2000); return; 
     }
@@ -54,15 +52,14 @@ function applyColor(room) {
     const s = deviceState;
     const data = `${s.room1.r},${s.room1.g},${s.room1.b},${s.room2.r},${s.room2.g},${s.room2.b}`;
     fetch(`https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field8=${data}`).then(() => { 
-        lastUpdateTime = Date.now(); 
-        btn.textContent = "✅ Synced Both";
+        lastUpdateTime = Date.now(); btn.textContent = "✅ Synced"; 
         setTimeout(() => { btn.textContent = room === 1 ? "Apply to Arduino" : "Apply to M5Stack"; }, 3000);
     });
 }
 
 function updateOfficeLights(val) {
   const iconM5 = $('bulb2'), iconArdu = $('bulb4'), s2 = $('status2'), s4 = $('status4');
-  [iconM5, iconArdu].forEach(i => { if(i) i.classList.remove('on'); });
+  [iconM5, iconArdu].forEach(i => { if(i) { i.classList.remove('on'); i.style.boxShadow = 'none'; }});
   if(val > 0) {
     [iconM5, iconArdu].forEach(i => { if(i) { i.classList.add('on'); i.style.boxShadow = `0 0 ${val}px yellow`; }});
     if(s2) s2.textContent = val + '%'; if(s4) s4.textContent = val + '%';
@@ -85,13 +82,12 @@ function drawChart(canvasId, data, color, unit, minId, maxId, avgId) {
 function fetchData() {
   fetch(`https://api.thingspeak.com/channels/${CHANNEL}/feeds.json?api_key=${READ_KEY}&results=100`)
     .then(res => res.json()).then(d => {
-      if(!d.feeds.length) return;
       const f = d.feeds[d.feeds.length-1];
       const t = parseFloat(f.field1), h = parseFloat(f.field2), p = parseFloat(f.field3);
       historicalData.pressure.push(p);
       if($('tv')) $('tv').textContent = t.toFixed(1) + '°C';
       if($('hv')) $('hv').textContent = h.toFixed(1) + '%';
-      if($('pv')) $('pv').textContent = p.toFixed(1) + ' hPa';
+      if($('pv')) $('pv').textContent = p.toFixed(1) + 'hPa';
       if(t < minTemp) minTemp = t; if(t > maxTemp) maxTemp = t;
       if($('weatherHi')) $('weatherHi').textContent = maxTemp.toFixed(1);
       if($('weatherLo')) $('weatherLo').textContent = minTemp.toFixed(1);
@@ -105,8 +101,7 @@ function fetchData() {
       drawChart('c2', d.feeds.map(x => parseFloat(x.field2)||0), '#4ecdc4', '%', 'humMin', 'humMax');
       drawChart('c3', d.feeds.map(x => parseFloat(x.field3)||0), '#ffd93d', 'hPa', 'presMin', 'presMax');
       drawChart('c4', d.feeds.map(x => parseInt(x.field4)||0), '#ffd93d', '%', 'lightMin', 'lightMax');
-      
       ['st','st2','st3','st4'].forEach(id => { if($(id)) $(id).className = 'sd ok'; });
     });
 }
-fetchData(); setInterval(fetchData, UPDATE_INTERVAL);
+fetchData(); setInterval(fetchData, 5000);

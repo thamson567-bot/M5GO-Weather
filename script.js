@@ -153,23 +153,28 @@ function processEntryLogs(feeds) {
 }
 
 // ==========================================
-// 3. LED CONTROL & RGB CONVERTER (FIELD 8 / 9)
+// 3. LED CONTROL & RGB CONVERTER (FIELD 8)
 // ==========================================
 function applyColor(room) {
-  var picker = $('colorPicker' + room);
-  if(picker) {
-    // Convert #RRGGBB to R,G,B format
-    var hex = picker.value.replace('#', '');
-    var r = parseInt(hex.substring(0, 2), 16);
-    var g = parseInt(hex.substring(2, 4), 16);
-    var b = parseInt(hex.substring(4, 6), 16);
-    var rgbStr = r + ',' + g + ',' + b;
+    const room1Hex = $('colorPicker1').value.replace('#', '');
+    const room2Hex = $('colorPicker2').value.replace('#', '');
+    
+    // Create a combined string: "R,G,B|R,G,B"
+    const r1 = hexToRgb(room1Hex);
+    const r2 = hexToRgb(room2Hex);
+    const combinedData = `${r1.r},${r1.g},${r1.b}|${r2.r},${r2.g},${r2.b}`;
 
-    // Room 2 (Arduino) uses field 8. Room 1 (M5Stack) uses field 9.
-    var targetField = (room === 2) ? 'field8' : 'field9';
-    var url = `https://api.thingspeak.com/update?api_key=${WRITE_KEY}&${targetField}=${rgbStr}&t=${new Date().getTime()}`;
+    const url = `https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field8=${encodeURIComponent(combinedData)}`;
 
-    console.log(`Sending to Room ${room} (${targetField}): RGB ${rgbStr}`);
+    fetch(url).then(res => res.text()).then(data => {
+        if(data !== "0") alert("Settings synced to Field 8!");
+    });
+}
+
+function hexToRgb(hex) {
+    const bigint = parseInt(hex, 16);
+    return { r: (bigint >> 16) & 255, g: (bigint >> 8) & 255, b: bigint & 255 };
+}
     
     fetch(url)
       .then(res => res.text())

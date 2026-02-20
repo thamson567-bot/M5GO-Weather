@@ -15,6 +15,13 @@ var historicalData = {
 
 var currentForecastCode = -1;
 
+// Send weather forecast every 3 minutes (180,000 ms)
+setInterval(function() {
+  if (currentForecastCode > 0) {
+    sendForecastToThingSpeak(currentForecastCode);
+  }
+}, 180000);
+
 const weatherConditions = [
   { id: 'heavy-rain', icon: '🌧️', name: 'Heavy Rain Soon', p: '📉 Pressure: Dropping Fast (<-3 hPa/hr)', h: '💧 Humidity: Rising (>+5%)', t: '🌡️ Temperature: Variable', desc: 'Strong weather system approaching. Rapid pressure drop combined with increasing humidity indicates heavy precipitation within 1-3 hours.' },
   { id: 'rain-likely', icon: '🌦️', name: 'Rain Likely', p: '📉 Pressure: Falling (<-2 hPa/30min)', h: '💧 Humidity: High (>75%)', t: '🌡️ Temperature: Moderate', desc: 'Atmospheric conditions favor precipitation. Sustained pressure decline with high humidity levels indicate rain within 3-6 hours.' },
@@ -371,9 +378,8 @@ function fetchData() {
       if($('forecast')) $('forecast').innerHTML = advancedForecast.icon + ' ' + advancedForecast.text;
       
       // TRIGGER FORECAST SEND
-      if(advancedForecast.code > 0) {
-        sendForecastToThingSpeak(advancedForecast.code);
-      }
+    // Store the code so the 3-minute interval can send it
+      currentForecastCode = advancedForecast.code;
       
       highlightCurrentCondition(advancedForecast.text);
       if($('homeTemp')) $('homeTemp').innerHTML = temp.toFixed(1) + '°C';

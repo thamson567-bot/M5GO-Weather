@@ -39,19 +39,19 @@
       <div class="nav-cards">
         <div class="nav-card" onclick="showPage('weather')">
           <div class="nav-card-icon">🌤️</div><div class="nav-card-title">Weather Monitoring</div>
-          <div class="nav-card-desc">Real-time environmental data including temperature, humidity, air pressure, and weather forecasting based on sensor readings.</div>
+          <div class="nav-card-desc">Real-time environmental data including temperature, humidity, air pressure, and weather forecasting.</div>
         </div>
         <div class="nav-card" onclick="showPage('office')">
           <div class="nav-card-icon">💡</div><div class="nav-card-title">Office Lighting</div>
-          <div class="nav-card-desc">Visual map showing current lighting status across all office rooms with automatic brightness control.</div>
+          <div class="nav-card-desc">Visual map showing current lighting status across all office rooms.</div>
         </div>
         <div class="nav-card" onclick="showPage('entry')">
           <div class="nav-card-icon">🔐</div><div class="nav-card-title">Entry Access Log</div>
-          <div class="nav-card-desc">Track employee access with RFID card scanning system, showing real-time entry and exit records.</div>
+          <div class="nav-card-desc">Track employee access with RFID card scanning system.</div>
         </div>
         <div class="nav-card" onclick="showPage('led')">
           <div class="nav-card-icon">🎨</div><div class="nav-card-title">LED Color Control</div>
-          <div class="nav-card-desc">Customize RGB LED strip colors for each room individually using HEX codes or color picker interface.</div>
+          <div class="nav-card-desc">Customize RGB LED strip colors for each room individually.</div>
         </div>
       </div>
     </div>
@@ -83,22 +83,6 @@
       <canvas id="c1"></canvas>
       <div class="chart-info"><div class="chart-stat"><span class="chart-stat-label">Min:</span><span class="chart-stat-value" id="tempMin">--°C</span></div><div class="chart-stat"><span class="chart-stat-label">Max:</span><span class="chart-stat-value" id="tempMax">--°C</span></div></div>
     </div>
-    <div class="ch glass-panel">
-      <div class="tt"><span><span class="dt" style="background:#4ecdc4"></span> Humidity History</span></div>
-      <canvas id="c2"></canvas>
-      <div class="chart-info"><div class="chart-stat"><span class="chart-stat-label">Min:</span><span class="chart-stat-value" id="humMin">--%</span></div><div class="chart-stat"><span class="chart-stat-label">Max:</span><span class="chart-stat-value" id="humMax">--%</span></div></div>
-    </div>
-    <div class="ch glass-panel">
-      <div class="tt"><span><span class="dt" style="background:#ffd93d"></span> Pressure History</span></div>
-      <canvas id="c3"></canvas>
-      <div class="chart-info"><div class="chart-stat"><span class="chart-stat-label">Min:</span><span class="chart-stat-value" id="presMin">--hPa</span></div><div class="chart-stat"><span class="chart-stat-label">Max:</span><span class="chart-stat-value" id="presMax">--hPa</span></div></div>
-    </div>
-  </div>
-  <div class="weather-guide glass-panel">
-    <div class="weather-guide-inner">
-      <h3 class="weather-guide-title">📚 Weather Conditions Reference Guide</h3>
-      <div class="conditions-grid" id="conditionsGrid"></div>
-    </div>
   </div>
 </div>
 
@@ -106,10 +90,8 @@
   <div class="wrap">
     <h2 class="page-title">💡 Office Lighting Control Map</h2>
     <div class="sb glass-panel"><div class="sd ok" id="st2"></div><span id="lightStatus">Monitoring lighting system...</span></div>
-
     <div class="office-container glass-panel">
       <div class="office-map">
-        
         <div class="room4-outer" id="room4bg">
           <div class="room4-door"></div>
           <div class="room-content">
@@ -120,13 +102,9 @@
             <div class="room-status off" id="status4">OFF</div>
           </div>
         </div>
-        
-        <div class="room3-outer" id="room3bg" style="display:none;"></div>
-        
         <div class="room1-outer" id="room1bg">
           <div class="room1-main-door"><div class="door-handle"></div><div class="door-handle2"></div></div>
         </div>
-        
         <div class="room2-outer" id="room2bg">
           <div class="room2-door"></div>
           <div class="room-content">
@@ -143,16 +121,6 @@
         </div>
       </div>
     </div>
-
-    <div class="light-info-section">
-      <div style="font-size:1.1rem;opacity:0.8;margin-bottom:10px">Current Lighting Levels</div>
-      <div class="light-level" id="lightLevelText">Loading...</div>
-    </div>
-    <div class="ch glass-panel">
-      <div class="tt"><span><span class="dt" style="background:#ffd93d"></span> Average Light Level History</span></div>
-      <canvas id="c4"></canvas>
-      <div class="chart-info"><div class="chart-stat"><span class="chart-stat-label">Min:</span><span class="chart-stat-value" id="lightMin">--%</span></div><div class="chart-stat"><span class="chart-stat-label">Max:</span><span class="chart-stat-value" id="lightMax">--%</span></div></div>
-    </div>
   </div>
 </div>
 
@@ -164,9 +132,7 @@
       <h3>Recent Access Records</h3>
       <table class="log-table">
         <thead><tr><th>Timestamp</th><th>Employee Name</th><th>Card ID</th><th>Action</th></tr></thead>
-        <tbody id="logTableBody">
-          <tr><td class="log-time">2026-02-15 09:23:45</td><td class="log-name">John Doe</td><td>RFID-001234</td><td><span class="log-status entry">ENTRY</span></td></tr>
-        </tbody>
+        <tbody id="logTableBody"></tbody>
       </table>
     </div>
   </div>
@@ -178,36 +144,36 @@
     <div class="sb glass-panel"><div class="sd ok" id="st4"></div><span>Web-based LED color management</span></div>
     <div class="led-container glass-panel">
       <h3>Individual Room LED Control</h3>
+      
+      <div class="led-grid">
+        <div class="led-room-card">
+          <div class="led-room-title"><span>💡 Room 1 (M5Stack)</span></div>
+          <div class="led-preview" id="ledPreview1" style="background-color:#FFFFFF"></div>
+          <div class="color-input-group">
+            <label>Color (HEX):</label>
+            <input type="text" class="color-input" id="colorInput1" placeholder="#FFFFFF" maxlength="7" value="#FFFFFF">
+          </div>
+          <div class="color-input-group">
+            <label>Color Picker:</label>
+            <input type="color" class="color-input" id="colorPicker1" value="#FFFFFF" style="height:50px;cursor:pointer">
+          </div>
+          <button class="btn-apply" onclick="applyColor(1)">Apply to Room 1</button>
+        </div>
 
-<div class="led-room-card">
-  <div class="led-room-title"><span>💡 Room 1 (M5Stack)</span></div>
-  <div class="led-preview" id="ledPreview1" style="background-color:#FFFFFF"></div>
-  <div class="color-input-group">
-    <label>Color (HEX):</label>
-    <input type="text" class="color-input" id="colorInput1" placeholder="#FFFFFF" maxlength="7" value="#FFFFFF">
-  </div>
-  <div class="color-input-group">
-    <label>Color Picker:</label>
-    <input type="color" class="color-input" id="colorPicker1" value="#FFFFFF" style="height:50px;cursor:pointer">
-  </div>
-  <button class="btn-apply" onclick="applyColor(1)">Apply to Room 1</button>
-</div>
-
-<div class="led-room-card">
-  <div class="led-room-title"><span>💡 Room 2 (Arduino)</span></div>
-  <div class="led-preview" id="ledPreview2" style="background-color:#FFFFFF"></div>
-  <div class="color-input-group">
-    <label>Color (HEX):</label>
-    <input type="text" class="color-input" id="colorInput2" placeholder="#FFFFFF" maxlength="7" value="#FFFFFF">
-  </div>
-  <div class="color-input-group">
-    <label>Color Picker:</label>
-    <input type="color" class="color-input" id="colorPicker2" value="#FFFFFF" style="height:50px;cursor:pointer">
-  </div>
-  <button class="btn-apply" onclick="applyColor(2)">Apply to Room 2</button>
-</div>
-
-<footer>Smart Office Hub © 2026 | Powered by M5GO + ThingSpeak + Arduino Mega</footer>
+        <div class="led-room-card">
+          <div class="led-room-title"><span>💡 Room 2 (Arduino)</span></div>
+          <div class="led-preview" id="ledPreview2" style="background-color:#FFFFFF"></div>
+          <div class="color-input-group">
+            <label>Color (HEX):</label>
+            <input type="text" class="color-input" id="colorInput2" placeholder="#FFFFFF" maxlength="7" value="#FFFFFF">
+          </div>
+          <div class="color-input-group">
+            <label>Color Picker:</label>
+            <input type="color" class="color-input" id="colorPicker2" value="#FFFFFF" style="height:50px;cursor:pointer">
+          </div>
+          <button class="btn-apply" onclick="applyColor(2)">Apply to Room 2</button>
+        </div>
+      </div> </div> </div> </div> <footer>Smart Office Hub © 2026 | Powered by M5GO + ThingSpeak + Arduino Mega</footer>
 
 <script src="script.js"></script>
 </body>

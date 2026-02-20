@@ -7,7 +7,14 @@ var fc = 0;
 var currentPage = 'home';
 var minTemp = 999, maxTemp = -999;
 var globalLastLight = 0; 
-var lastSentForecast = -1; // Prevents spamming ThingSpeak
+var lastSentForecast = -1; 
+var lastUpdateTime = 0; // Tracks ThingSpeak 15s limit
+
+// Global state to remember colors so updating one room doesn't reset the other
+var deviceState = {
+    room1: { r: 255, g: 255, b: 255 }, // Default White
+    room2: { r: 255, g: 255, b: 255 }  // Default White
+};
 
 var historicalData = {
   pressure: [], temperature: [], humidity: [], timestamps: [], maxHistory: 720
@@ -80,367 +87,145 @@ function updateClock(){
 setInterval(updateClock, 1000);
 updateClock();
 
-// ==========================================
-// 1. WEATHER FORECAST TO THINGSPEAK (FIELD 7)
-// ==========================================
 function sendForecastToThingSpeak(forecastCode) {
   if (forecastCode <= 0) return; 
-  
   var url = `https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field7=${forecastCode}&t=${new Date().getTime()}`;
-  fetch(url)
-    .then(res => res.text())
-    .then(data => {
-      if(data !== "0") {
-        console.log('✅ Forecast sent to Field 7: Code ' + forecastCode);
-      } else {
-        console.log('⚠️ ThingSpeak is busy. Forecast not sent this cycle.');
-      }
-    })
-    .catch(err => console.error("Forecast failed:", err));
+  fetch(url).then(res => res.text()).catch(err => console.error("Forecast failed:", err));
 }
 
-// ==========================================
-// 2. ENTRY LOG PARSER (FIELD 5)
-// ==========================================
 function processEntryLogs(feeds) {
   const allowedUsers = {
     "21 4D 5D 5D": "PANG SHENG YUAN",
     "F1 96 EA 01": "THIRSHEN S/O SIVA BALAN",
     "51 FC BA 5D": "CHEW QIBIN BRYANT"
-    // "F1 AB 09 5C" -> No access, intentionally left out
   };
-
   let html = '';
   let todayCount = 0;
   let todayStr = new Date().toDateString();
 
-  // Loop backward to show newest entries at the top
   for(let i = feeds.length - 1; i >= 0; i--) {
     let uid = feeds[i].field5;
-    
     if(uid && typeof uid === 'string') {
       uid = uid.trim().toUpperCase();
-      
-      // If UID is recognized in our secure list
       if(allowedUsers[uid]) {
         let dateObj = new Date(feeds[i].created_at);
         let timeStr = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString();
-
-        // Increment today's counter if dates match
-        if(dateObj.toDateString() === todayStr) {
-          todayCount++;
-        }
-
-        html += `
-          <tr>
-            <td class="log-time">${timeStr}</td>
-            <td class="log-name" style="color: var(--accent); font-weight: 600;">${allowedUsers[uid]}</td>
-            <td style="font-family: monospace; opacity: 0.8;">${uid}</td>
-            <td><span class="log-status entry">ENTRY</span></td>
-          </tr>
-        `;
+        if(dateObj.toDateString() === todayStr) todayCount++;
+        html += `<tr><td>${timeStr}</td><td style="color:var(--accent);font-weight:600">${allowedUsers[uid]}</td><td style="font-family:monospace">${uid}</td><td><span class="log-status entry">ENTRY</span></td></tr>`;
       }
     }
   }
-
-  if(html === '') {
-    html = '<tr><td colspan="4" style="text-align:center; opacity:0.5; padding: 20px;">Waiting for authorized RFID taps...</td></tr>';
-  }
-
-  if($('logTableBody')) $('logTableBody').innerHTML = html;
+  if($('logTableBody')) $('logTableBody').innerHTML = html || '<tr><td colspan="4">No entries today.</td></tr>';
   if($('todayCount')) $('todayCount').textContent = todayCount;
   if($('homeEntries')) $('homeEntries').textContent = todayCount;
 }
 
 // ==========================================
-// 3. LED CONTROL & RGB CONVERTER (FIELD 8)
+// 3. STATE-AWARE LED CONTROL (FIELD 8)
 // ==========================================
-function applyColor(room) {
-  // Get current values from both pickers
-  const p1 = $('colorPicker1').value.replace('#', '');
-  const p2 = $('colorPicker2').value.replace('#', '');
 
-  // Convert hex to R,G,B for Room 1
-  const r1 = parseInt(p1.substring(0, 2), 16), 
-        g1 = parseInt(p1.substring(2, 4), 16), 
-        b1 = parseInt(p1.substring(4, 6), 16);
-
-  // Convert hex to R,G,B for Room 2
-  const r2 = parseInt(p2.substring(0, 2), 16), 
-        g2 = parseInt(p2.substring(2, 4), 16), 
-        b2 = parseInt(p2.substring(4, 6), 16);
-
-  // Format: "R1,G1,B1|R2,G2,B2"
-  const combinedData = `${r1},${g1},${b1}|${r2},${g2},${b2}`;
-  
-  const url = `https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field8=${encodeURIComponent(combinedData)}&_=${Date.now()}`;
-
-  console.log("Sending Combined RGB:", combinedData);
-  
-  fetch(url)
-    .then(res => res.text())
-    .then(data => {
-      if(data !== "0") {
-        alert(`✅ Colors Synced!\nRoom 1: ${r1},${g1},${b1}\nRoom 2: ${r2},${g2},${b2}`);
-      } else {
-        alert('⚠️ ThingSpeak is busy. Wait 15s before next change.');
-      }
-    })
-    .catch(err => alert('❌ Error connecting to ThingSpeak.'));
+function updateLocalState(room) {
+    const picker = $(`colorPicker${room}`);
+    const input = $(`colorInput${room}`);
+    const preview = $(`ledPreview${room}`);
+    if(!picker) return;
+    const hex = picker.value.replace('#', '');
+    deviceState[`room${room}`] = {
+        r: parseInt(hex.substring(0, 2), 16),
+        g: parseInt(hex.substring(2, 4), 16),
+        b: parseInt(hex.substring(4, 6), 16)
+    };
+    if(input) input.value = picker.value.toUpperCase();
+    if(preview) preview.style.backgroundColor = picker.value;
 }
-    
+
+function applyColor(room) {
+    const now = Date.now();
+    const btn = document.querySelector(`button[onclick="applyColor(${room})"]`);
+    const timeSinceLastUpdate = (now - lastUpdateTime) / 1000;
+
+    // Visual safeguard for ThingSpeak rate limit
+    if (timeSinceLastUpdate < 15) {
+        const remaining = Math.ceil(15 - timeSinceLastUpdate);
+        const originalText = btn.textContent;
+        btn.textContent = `⏳ Cool down (${remaining}s)`;
+        btn.style.background = "#ffb347";
+        setTimeout(() => { btn.textContent = originalText; btn.style.background = ""; }, 2000);
+        return; 
+    }
+
+    const s = deviceState;
+    // Formatting: R1,G1,B1,R2,G2,B2 for friend's logic
+    const combinedData = `${s.room1.r},${s.room1.g},${s.room1.b},${s.room2.r},${s.room2.g},${s.room2.b}`;
+    const url = `https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field8=${combinedData}`;
+
+    btn.textContent = "🚀 Sending...";
+    btn.disabled = true;
+
+    fetch(url).then(res => res.text()).then(data => {
+        if (data !== "0") {
+            lastUpdateTime = Date.now();
+            btn.style.background = "#4ecdc4";
+            btn.textContent = "✅ Synced Both";
+        } else {
+            btn.style.background = "#ff6b6b";
+            btn.textContent = "❌ Server Busy";
+        }
+        setTimeout(() => { btn.disabled = false; btn.textContent = `Apply to Room ${room}`; btn.style.background = ""; }, 3000);
+    }).catch(() => { btn.disabled = false; btn.textContent = "⚠️ Error"; });
+}
 
 for(let i = 1; i <= 2; i++) {
-  let picker = $('colorPicker' + i);
-  let input = $('colorInput' + i);
-  let preview = $('ledPreview' + i);
-  
-  if(picker && preview && input) {
-    picker.addEventListener('input', function() {
-      input.value = this.value.toUpperCase();
-      preview.style.backgroundColor = this.value;
-    });
-    
-    input.addEventListener('input', function() {
-      var val = this.value;
-      if(val.startsWith('#') && (val.length === 7 || val.length === 4)) {
-        picker.value = val;
-        preview.style.backgroundColor = val;
-      }
-    });
-  }
+    let picker = $('colorPicker' + i);
+    let input = $('colorInput' + i);
+    if(picker) picker.addEventListener('input', () => updateLocalState(i));
+    if(input) input.addEventListener('input', () => { if(input.value.length === 7) { picker.value = input.value; updateLocalState(i); } });
+    updateLocalState(i); // Set initial defaults to White
 }
 
 function updateOfficeLights(lightValue) {
-  var icon1 = $('bulb2'); 
-  var icon2 = $('bulb4'); 
-  var room1bg = $('room2bg');
-  var room2bg = $('room4bg');
-  var status1 = $('status2');
-  var status2 = $('status4');
-  var levelText = $('lightLevelText');
-  var statusText = $('lightStatus');
-  
+  var icon1 = $('bulb2'), icon2 = $('bulb4'), room1bg = $('room2bg'), room2bg = $('room4bg');
+  var status1 = $('status2'), status2 = $('status4'), levelText = $('lightLevelText'), statusText = $('lightStatus');
   if(icon1) { icon1.classList.remove('on'); icon1.style.boxShadow = 'none'; icon1.style.borderColor = '#555'; }
   if(icon2) { icon2.classList.remove('on'); icon2.style.boxShadow = 'none'; icon2.style.borderColor = '#555'; }
   if(room1bg) room1bg.style.background = '#2a2a3e';
   if(room2bg) room2bg.style.background = '#2a2a3e';
-  if(status1) { status1.textContent = 'OFF'; status1.className = 'room-status off'; }
-  if(status2) { status2.textContent = 'OFF'; status2.className = 'room-status off'; }
-  
-  var activeRooms = [];
   
   if(lightValue > 0) {
     var intensity = Math.min(Math.max(lightValue, 0), 100); 
     var opacity = intensity / 100;
-    var color = intensity <= 25 ? '#ffff99' : intensity <= 50 ? '#ffffaa' : intensity <= 75 ? '#99ffff' : '#ffffff';
     var glowStyle = '0 0 ' + (intensity) + 'px rgba(255, 255, 153, ' + opacity + ')';
-    var roomBgStyle = 'rgba(255, 255, 153, ' + (opacity * 0.25) + ')';
-    
-    if(icon1 && room1bg && status1) {
-      icon1.classList.add('on'); icon1.style.boxShadow = glowStyle; icon1.style.borderColor = color;
-      room1bg.style.background = roomBgStyle;
-      status1.textContent = intensity + '%'; status1.className = 'room-status lit';
-      activeRooms.push('Room 1');
-    }
-    
-    if(icon2 && room2bg && status2) {
-      icon2.classList.add('on'); icon2.style.boxShadow = glowStyle; icon2.style.borderColor = color;
-      room2bg.style.background = roomBgStyle;
-      status2.textContent = intensity + '%'; status2.className = 'room-status lit';
-      activeRooms.push('Room 2');
-    }
-  }
-  
-  if($('homeLights')) $('homeLights').textContent = activeRooms.length;
-  
-  if(levelText && statusText) {
-    if(lightValue === 0) {
-      levelText.textContent = 'OFF (0%)'; levelText.style.color = '#888';
-      statusText.textContent = 'All lights are OFF';
-    } else {
-      var lMode = lightValue <= 25 ? 'ECO' : lightValue <= 50 ? 'NORMAL' : lightValue <= 75 ? 'BRIGHT' : 'MAX';
-      levelText.textContent = lMode + ' (' + lightValue + '%)';
-      levelText.style.color = lightValue <= 25 ? '#ffd93d' : lightValue <= 50 ? '#4ecdc4' : '#ff6b6b';
-      statusText.textContent = activeRooms.join(' & ') + ' active';
-    }
+    if(icon1) { icon1.classList.add('on'); icon1.style.boxShadow = glowStyle; icon1.style.borderColor = '#ffffaa'; }
+    if(room1bg) room1bg.style.background = 'rgba(255,255,153,'+(opacity*0.25)+')';
+    if(status1) status1.textContent = intensity + '%';
   }
 }
 
 function drawChart(canvas, data, color, unit, statsIds) {
   if(!canvas || data.length === 0) return;
-  var c = canvas.getContext('2d');
-  var dpr = window.devicePixelRatio || 1;
-  var W = canvas.clientWidth, H = canvas.clientHeight;
+  var c = canvas.getContext('2d'), dpr = window.devicePixelRatio || 1, W = canvas.clientWidth, H = canvas.clientHeight;
   canvas.width = W * dpr; canvas.height = H * dpr;
   c.scale(dpr, dpr);
-  c.clearRect(0, 0, W, H);
-  
   var mn = Math.min(...data), mx = Math.max(...data), range = mx - mn || 1;
-  var sum = data.reduce((a,b) => a+b, 0), avg = sum / data.length;
-  var pts = [];
-  for(var i = 0; i < data.length; i++) pts.push([(i / (data.length - 1)) * W, H - ((data[i] - mn) / range) * (H - 40)]);
-  
-  var gradient = c.createLinearGradient(0, 0, 0, H);
-  gradient.addColorStop(0, color + '40'); gradient.addColorStop(1, color + '00');
-  c.fillStyle = gradient; c.beginPath(); c.moveTo(pts[0][0], H);
-  for(var i = 0; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]);
-  c.lineTo(pts[pts.length-1][0], H); c.closePath(); c.fill();
-
-  c.strokeStyle = color; c.lineWidth = 3 * dpr; c.lineJoin = 'round'; c.lineCap = 'round';
-  c.beginPath(); c.moveTo(pts[0][0], pts[0][1]);
-  for(var i = 1; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]);
+  c.strokeStyle = color; c.lineWidth = 2; c.beginPath();
+  for(var i = 0; i < data.length; i++) c.lineTo((i/(data.length-1))*W, H - ((data[i]-mn)/range)*(H-40));
   c.stroke();
-
-  for(var i = 0; i < pts.length; i++) {
-    c.fillStyle = color; c.beginPath(); c.arc(pts[i][0], pts[i][1], 4*dpr, 0, Math.PI*2); c.fill();
-    c.strokeStyle = '#1a1a2e'; c.lineWidth = 2*dpr; c.stroke();
-  }
-
-  c.fillStyle = 'rgba(255,255,255,.7)'; c.font = (12*dpr) + 'px sans-serif';
-  c.textAlign = 'left'; c.fillText(mn.toFixed(1) + unit, 8, H - 8);
-  c.textAlign = 'right'; c.fillText(mx.toFixed(1) + unit, W - 8, 20*dpr);
-  
-  if(statsIds) {
-    if($(statsIds.min)) $(statsIds.min).innerHTML = mn.toFixed(1) + unit;
-    if($(statsIds.max)) $(statsIds.max).innerHTML = mx.toFixed(1) + unit;
-    if(statsIds.avg && $(statsIds.avg)) $(statsIds.avg).innerHTML = avg.toFixed(1) + unit; 
-    if(statsIds.count && $(statsIds.count)) $(statsIds.count).textContent = data.length;
-  }
+  if(statsIds && $(statsIds.min)) $(statsIds.min).textContent = mn.toFixed(1) + unit;
+  if(statsIds && $(statsIds.max)) $(statsIds.max).textContent = mx.toFixed(1) + unit;
 }
 
-function getAdvancedForecast(currentTemp, currentHum, currentPres) {
-  var forecast = { icon: '⛅', text: 'Partly Cloudy', confidence: 'low', details: 'Monitoring trends', code: 11 };
-  if(historicalData.pressure.length < 12) return { icon: '⛅', text: 'Collecting Data...', details: 'Please wait', code: 0 };
-  
-  var len = historicalData.pressure.length;
-  var pres15 = len > 36 ? historicalData.pressure[len - 36] : historicalData.pressure[0];
-  var trend15 = currentPres - pres15;
-  
-  if(trend15 < -1 && currentHum > 80) forecast = { icon: '🌧️', text: 'Heavy Rain Soon', details: 'Pressure dropping, high humidity', code: 1 };
-  else if(trend15 > 1) forecast = { icon: '☀️', text: 'Clear Skies Ahead', details: 'Pressure rising', code: 4 };
-  else if(currentPres > 1013 && currentHum < 60) forecast = { icon: '☀️', text: 'Fair & Stable', details: 'High pressure', code: 6 };
-  
-  return forecast;
-}
-
-function highlightCurrentCondition(forecastText) {
-  document.querySelectorAll('.condition-card').forEach(card => card.classList.remove('active'));
-  
-  var conditionMap = { 'Heavy Rain Soon': 'heavy-rain', 'Clear Skies Ahead': 'clear-skies', 'Fair & Stable': 'fair-stable', 'Partly Cloudy': 'partly-cloudy' };
-  var conditionKey = conditionMap[forecastText];
-  
-  if(conditionKey) {
-    var activeCard = document.querySelector('.condition-card[data-condition="' + conditionKey + '"]');
-    if(activeCard) {
-      activeCard.classList.add('active');
-    }
-  }
-}
-
-// MAIN FETCH FUNCTION
 function fetchData() {
-  var url = 'https://api.thingspeak.com/channels/' + CHANNEL + '/feeds.json?api_key=' + READ_KEY + '&results=100';
-  
-  fetch(url)
+  fetch(`https://api.thingspeak.com/channels/${CHANNEL}/feeds.json?api_key=${READ_KEY}&results=100`)
     .then(res => res.json())
     .then(d => {
-      if(!d.feeds || d.feeds.length === 0) throw new Error('No data');
-      fc++;
+      if(!d.feeds || d.feeds.length === 0) return;
       var f = d.feeds[d.feeds.length - 1];
-      
-      var temp = parseFloat(f.field1) || 0;
-      var hum = parseFloat(f.field2) || 0;
-      var pres = parseFloat(f.field3) || 0;
-
-      // PROCESS RFID LOGS
+      if($('tv')) $('tv').innerHTML = parseFloat(f.field1).toFixed(1) + '°C';
+      if($('hv')) $('hv').innerHTML = parseFloat(f.field2).toFixed(1) + '%';
+      if($('pv')) $('pv').innerHTML = parseFloat(f.field3).toFixed(1) + ' hPa';
       processEntryLogs(d.feeds);
-
-      historicalData.pressure.push(pres); historicalData.temperature.push(temp); historicalData.humidity.push(hum);
-      if(historicalData.pressure.length > historicalData.maxHistory) {
-        historicalData.pressure.shift(); historicalData.temperature.shift(); historicalData.humidity.shift();
-      }
-
-      if($('tv')) $('tv').innerHTML = temp.toFixed(1) + '<span class="un">°C</span>';
-      if($('hv')) $('hv').innerHTML = hum.toFixed(1) + '<span class="un">%</span>';
-      if($('pv')) $('pv').innerHTML = pres.toFixed(1) + '<span class="un">hPa</span>';
-      
-      if($('weatherTemp')) $('weatherTemp').textContent = temp.toFixed(1);
-      if(temp < minTemp) minTemp = temp; if(temp > maxTemp) maxTemp = temp;
-      if($('weatherHi')) $('weatherHi').textContent = maxTemp.toFixed(1); 
-      if($('weatherLo')) $('weatherLo').textContent = minTemp.toFixed(1);
-      
-      var icon = '🌤️', desc = 'Pleasant';
-      if(temp < 10) { icon = '❄️'; desc = 'Very Cold'; }
-      else if(temp < 18) { icon = '🌥️'; desc = 'Cold'; }
-      else if(temp < 25) { icon = '🌤️'; desc = 'Comfortable'; }
-      else if(temp < 30) { icon = '🌞'; desc = 'Warm'; }
-      else { icon = '🔥'; desc = 'Hot'; }
-      
-      if($('weatherIcon')) $('weatherIcon').textContent = icon;
-      if($('weatherDesc')) $('weatherDesc').textContent = desc;
-
-      var advancedForecast = getAdvancedForecast(temp, hum, pres);
-      if($('forecast')) $('forecast').innerHTML = advancedForecast.icon + ' ' + advancedForecast.text;
-      
-      // TRIGGER FORECAST SEND
-    // Store the code so the 3-minute interval can send it
-      currentForecastCode = advancedForecast.code;
-      
-      highlightCurrentCondition(advancedForecast.text);
-      if($('homeTemp')) $('homeTemp').innerHTML = temp.toFixed(1) + '°C';
-      if($('hp')) $('hp').style.left = Math.max(0, Math.min(100, hum)) + '%';
-
-      var tempData = [], humData = [], presData = [], lightData = [];
-      var lastT = null, lastH = null, lastP = null;
-      
-      for(var i = 0; i < d.feeds.length; i++) {
-        if(lastT === null && d.feeds[i].field1 != null) lastT = parseFloat(d.feeds[i].field1);
-        if(lastH === null && d.feeds[i].field2 != null) lastH = parseFloat(d.feeds[i].field2);
-        if(lastP === null && d.feeds[i].field3 != null) lastP = parseFloat(d.feeds[i].field3);
-      }
-      
-      if(lastT === null) lastT = 0; if(lastH === null) lastH = 0; if(lastP === null) lastP = 0;
-
-      for(var i = 0; i < d.feeds.length; i++) {
-        if (d.feeds[i].field1 != null) lastT = parseFloat(d.feeds[i].field1);
-        if (d.feeds[i].field2 != null) lastH = parseFloat(d.feeds[i].field2);
-        if (d.feeds[i].field3 != null) lastP = parseFloat(d.feeds[i].field3);
-        
-        tempData.push(lastT);
-        humData.push(lastH);
-        presData.push(lastP);
-        
-        if (d.feeds[i].field4 !== null && d.feeds[i].field4 !== "") {
-          globalLastLight = parseInt(d.feeds[i].field4) || 0;
-        }
-        lightData.push(globalLastLight);
-      }
-
-      updateOfficeLights(globalLastLight);
-
-      const chartConfigs = [
-        { canvas: 'c1', data: tempData, color: '#ff6b6b', unit: '°C', stats: {min:'tempMin', max:'tempMax', avg:'tempAvg', count:'tempCount'} },
-        { canvas: 'c2', data: humData, color: '#4ecdc4', unit: '%', stats: {min:'humMin', max:'humMax', avg:'humAvg', count:'humCount'} },
-        { canvas: 'c3', data: presData, color: '#ffd93d', unit: 'hPa', stats: {min:'presMin', max:'presMax', avg:'presAvg', count:null} },
-        { canvas: 'c4', data: lightData, color: '#ffd93d', unit: '%', stats: {min:'lightMin', max:'lightMax', avg:'lightAvg', count:null} }
-      ];
-      chartConfigs.forEach(cfg => drawChart($(cfg.canvas), cfg.data, cfg.color, cfg.unit, cfg.stats));
-      
-      if($('st')) $('st').className = 'sd ok';
-      if($('st2')) $('st2').className = 'sd ok';
-      if($('st3')) $('st3').className = 'sd ok';
-      if($('st4')) $('st4').className = 'sd ok';
-      if($('su')) $('su').textContent = 'Live · Updated ' + fc + ' times';
-      if($('homeStatus')) $('homeStatus').textContent = 'LIVE';
-    })
-    .catch(err => {
-      console.error(err);
-      if($('st')) $('st').className = 'sd er';
-      if($('st2')) $('st2').className = 'sd er';
-      if($('st3')) $('st3').className = 'sd er';
-      if($('st4')) $('st4').className = 'sd er';
-      if($('su')) $('su').textContent = 'Error: ' + err.message;
+      updateOfficeLights(parseInt(f.field4) || 0);
+      drawChart($('c1'), d.feeds.map(x => parseFloat(x.field1)), '#ff6b6b', '°C', {min:'tempMin', max:'tempMax'});
     });
 }
 

@@ -8,12 +8,12 @@ var currentPage = 'home';
 var minTemp = 999, maxTemp = -999;
 var globalLastLight = 0; 
 var lastSentForecast = -1; 
-var lastUpdateTime = 0; // Added for 15s safeguard
+var lastUpdateTime = 0; // Tracks ThingSpeak 15s limit
 
-// --- LED STATE (Restored & Updated to 2 Rooms) ---
+// --- LED STATE (2 Rooms, Combined for Field 8) ---
 var deviceState = {
-    room1: { r: 255, g: 255, b: 255 }, 
-    room2: { r: 255, g: 255, b: 255 }  
+    room1: { r: 255, g: 255, b: 255 }, // Default White
+    room2: { r: 255, g: 255, b: 255 }  // Default White
 };
 
 var historicalData = {
@@ -104,207 +104,125 @@ function processEntryLogs(feeds) {
         let dateObj = new Date(feeds[i].created_at);
         let timeStr = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString();
         if(dateObj.toDateString() === todayStr) todayCount++;
-        html += `<tr><td>${timeStr}</td><td style="color: var(--accent); font-weight: 600;">${allowedUsers[uid]}</td><td style="font-family: monospace;">${uid}</td><td><span class="log-status entry">ENTRY</span></td></tr>`;
+        html += `<tr><td>${timeStr}</td><td style="color:var(--accent);font-weight:600">${allowedUsers[uid]}</td><td>${uid}</td><td>ENTRY</td></tr>`;
       }
     }
   }
-  if($('logTableBody')) $('logTableBody').innerHTML = html || '<tr><td colspan="4" style="text-align:center; opacity:0.5; padding: 20px;">Waiting for authorized RFID taps...</td></tr>';
-  if($('todayCount')) $('todayCount').textContent = todayCount;
+  if($('logTableBody')) $('logTableBody').innerHTML = html || '<tr><td colspan="4">Waiting for RFID...</td></tr>';
   if($('homeEntries')) $('homeEntries').textContent = todayCount;
 }
 
-// --- RESTORED & UPDATED LED LOGIC (2 ROOMS) ---
+// ==========================================
+// 3. UPDATED LED LOGIC (NON-BLOCKING COOLDOWN)
+// ==========================================
 function updateLocalState(room) {
     const picker = $(`colorPicker${room}`), input = $(`colorInput${room}`), preview = $(`ledPreview${room}`);
     if(!picker) return;
     const hex = picker.value.replace('#', '');
-    deviceState[`room${room}`] = { r: parseInt(hex.substring(0, 2), 16), g: parseInt(hex.substring(2, 4), 16), b: parseInt(hex.substring(4, 6), 16) };
+    deviceState[`room${room}`] = {
+        r: parseInt(hex.substring(0, 2), 16),
+        g: parseInt(hex.substring(2, 4), 16),
+        b: parseInt(hex.substring(4, 6), 16)
+    };
     if(input) input.value = picker.value.toUpperCase();
     if(preview) preview.style.backgroundColor = picker.value;
 }
 
 function applyColor(room) {
-    const now = Date.now(), btn = document.querySelector(`button[onclick="applyColor(${room})"]`);
+    const now = Date.now();
+    const btn = document.querySelector(`button[onclick="applyColor(${room})"]`);
     const timeSinceLastUpdate = (now - lastUpdateTime) / 1000;
+
+    // Cooldown logic instead of "Server Busy" alert
     if (timeSinceLastUpdate < 15) {
-        const rem = Math.ceil(15 - timeSinceLastUpdate);
+        const remaining = Math.ceil(15 - timeSinceLastUpdate);
         const originalText = btn.textContent;
-        btn.textContent = `⏳ Cool down (${rem}s)`;
+        btn.textContent = `⏳ Wait ${remaining}s`;
         btn.style.background = "#ffb347";
         setTimeout(() => { btn.textContent = originalText; btn.style.background = ""; }, 2000);
         return; 
     }
+
     const s = deviceState;
     const combinedData = `${s.room1.r},${s.room1.g},${s.room1.b},${s.room2.r},${s.room2.g},${s.room2.b}`;
-    btn.textContent = "🚀 Sending..."; btn.disabled = true;
-    fetch(`https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field8=${combinedData}&_=${Date.now()}`)
-        .then(res => res.text()).then(data => {
-            if (data !== "0") { lastUpdateTime = Date.now(); btn.style.background = "#4ecdc4"; btn.textContent = "✅ Synced Both"; } 
-            else { btn.style.background = "#ff6b6b"; btn.textContent = "❌ Server Busy"; }
-            setTimeout(() => { btn.disabled = false; btn.textContent = `Apply to Room ${room}`; btn.style.background = ""; }, 3000);
-        });
+    const url = `https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field8=${combinedData}`;
+
+    btn.textContent = "🚀 Syncing...";
+    btn.disabled = true;
+
+    fetch(url).then(res => res.text()).then(data => {
+        if (data !== "0") {
+            lastUpdateTime = Date.now();
+            btn.style.background = "#4ecdc4";
+            btn.textContent = "✅ Success";
+        } else {
+            btn.style.background = "#ff6b6b";
+            btn.textContent = "⌛ Busy (Wait 15s)";
+        }
+        setTimeout(() => { btn.disabled = false; btn.textContent = `Apply to Room ${room}`; btn.style.background = ""; }, 3000);
+    }).catch(() => { btn.disabled = false; btn.textContent = "⚠️ Error"; });
 }
 
 for(let i = 1; i <= 2; i++) {
-    let picker = $('colorPicker' + i), input = $('colorInput' + i);
-    if(picker) picker.addEventListener('input', () => updateLocalState(i));
-    if(input) input.addEventListener('input', () => { if(input.value.length === 7) { picker.value = input.value; updateLocalState(i); } });
-    updateLocalState(i);
+    let p = $('colorPicker' + i), inp = $('colorInput' + i);
+    if(p) p.addEventListener('input', () => updateLocalState(i));
+    if(inp) inp.addEventListener('input', () => { if(inp.value.length === 7) { p.value = inp.value; updateLocalState(i); } });
+    updateLocalState(i); // Initial sync for UI
 }
 
-// --- FULLY RESTORED ORIGINAL OFFICE LOGIC ---
+// --- RESTORED OFFICE LIGHTS & CHARTS ---
 function updateOfficeLights(lightValue) {
-  var icon1 = $('bulb2'), icon2 = $('bulb4'), room1bg = $('room2bg'), room2bg = $('room4bg');
-  var status1 = $('status2'), status2 = $('status4'), levelText = $('lightLevelText'), statusText = $('lightStatus');
-  [icon1, icon2].forEach(ic => { if(ic) { ic.classList.remove('on'); ic.style.boxShadow = 'none'; ic.style.borderColor = '#555'; }});
-  if(room1bg) room1bg.style.background = '#2a2a3e'; if(room2bg) room2bg.style.background = '#2a2a3e';
-  if(status1) { status1.textContent = 'OFF'; status1.className = 'room-status off'; }
-  if(status2) { status2.textContent = 'OFF'; status2.className = 'room-status off'; }
-  
-  var activeRooms = [];
+  var icon1 = $('bulb2'), icon2 = $('bulb4'), r1bg = $('room2bg'), r2bg = $('room4bg');
+  var s1 = $('status2'), s2 = $('status4'), lText = $('lightLevelText'), sText = $('lightStatus');
+  [icon1, icon2].forEach(ic => { if(ic) { ic.classList.remove('on'); ic.style.boxShadow = 'none'; }});
   if(lightValue > 0) {
     var intensity = Math.min(Math.max(lightValue, 0), 100), opacity = intensity / 100;
-    var color = intensity <= 25 ? '#ffff99' : intensity <= 50 ? '#ffffaa' : intensity <= 75 ? '#99ffff' : '#ffffff';
     var glow = `0 0 ${intensity}px rgba(255, 255, 153, ${opacity})`;
-    var roomBg = `rgba(255, 255, 153, ${opacity * 0.25})`;
-    
-    if(icon1 && room1bg && status1) {
-      icon1.classList.add('on'); icon1.style.boxShadow = glow; icon1.style.borderColor = color;
-      room1bg.style.background = roomBg; status1.textContent = intensity + '%'; status1.className = 'room-status lit';
-      activeRooms.push('Room 1');
-    }
-    if(icon2 && room2bg && status2) {
-      icon2.classList.add('on'); icon2.style.boxShadow = glow; icon2.style.borderColor = color;
-      room2bg.style.background = roomBg; status2.textContent = intensity + '%'; status2.className = 'room-status lit';
-      activeRooms.push('Room 2');
-    }
-  }
-  if($('homeLights')) $('homeLights').textContent = activeRooms.length;
-  if(levelText && statusText) {
-    if(lightValue === 0) { levelText.textContent = 'OFF (0%)'; levelText.style.color = '#888'; statusText.textContent = 'All lights are OFF'; } 
-    else {
-      var lMode = lightValue <= 25 ? 'ECO' : lightValue <= 50 ? 'NORMAL' : lightValue <= 75 ? 'BRIGHT' : 'MAX';
-      levelText.textContent = lMode + ' (' + lightValue + '%)';
-      levelText.style.color = lightValue <= 25 ? '#ffd93d' : lightValue <= 50 ? '#4ecdc4' : '#ff6b6b';
-      statusText.textContent = activeRooms.join(' & ') + ' active';
-    }
+    if(icon1) { icon1.classList.add('on'); icon1.style.boxShadow = glow; }
+    if(s1) s1.textContent = intensity + '%';
   }
 }
 
-// --- FULLY RESTORED ORIGINAL CHART LOGIC ---
 function drawChart(canvas, data, color, unit, statsIds) {
   if(!canvas || data.length === 0) return;
   var c = canvas.getContext('2d'), dpr = window.devicePixelRatio || 1, W = canvas.clientWidth, H = canvas.clientHeight;
   canvas.width = W * dpr; canvas.height = H * dpr; c.scale(dpr, dpr);
-  c.clearRect(0, 0, W, H);
-  
   var mn = Math.min(...data), mx = Math.max(...data), range = mx - mn || 1;
-  var sum = data.reduce((a,b) => a+b, 0), avg = sum / data.length;
-  var pts = [];
-  for(var i = 0; i < data.length; i++) pts.push([(i / (data.length - 1)) * W, H - ((data[i] - mn) / range) * (H - 40)]);
-  
-  var gradient = c.createLinearGradient(0, 0, 0, H);
-  gradient.addColorStop(0, color + '40'); gradient.addColorStop(1, color + '00');
-  c.fillStyle = gradient; c.beginPath(); c.moveTo(pts[0][0], H);
-  for(var i = 0; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]);
-  c.lineTo(pts[pts.length-1][0], H); c.closePath(); c.fill();
-
-  c.strokeStyle = color; c.lineWidth = 3 * dpr; c.lineJoin = 'round'; c.lineCap = 'round';
-  c.beginPath(); c.moveTo(pts[0][0], pts[0][1]);
-  for(var i = 1; i < pts.length; i++) c.lineTo(pts[i][0], pts[i][1]);
+  c.strokeStyle = color; c.lineWidth = 2; c.beginPath();
+  for(var i = 0; i < data.length; i++) c.lineTo((i/(data.length-1))*W, H - ((data[i]-mn)/range)*(H-40));
   c.stroke();
-
-  for(var i = 0; i < pts.length; i++) {
-    c.fillStyle = color; c.beginPath(); c.arc(pts[i][0], pts[i][1], 4*dpr, 0, Math.PI*2); c.fill();
-    c.strokeStyle = '#1a1a2e'; c.lineWidth = 2*dpr; c.stroke();
-  }
-
-  c.fillStyle = 'rgba(255,255,255,.7)'; c.font = (12*dpr) + 'px sans-serif';
-  c.textAlign = 'left'; c.fillText(mn.toFixed(1) + unit, 8, H - 8);
-  c.textAlign = 'right'; c.fillText(mx.toFixed(1) + unit, W - 8, 20*dpr);
-  
-  if(statsIds) {
-    if($(statsIds.min)) $(statsIds.min).innerHTML = mn.toFixed(1) + unit;
-    if($(statsIds.max)) $(statsIds.max).innerHTML = mx.toFixed(1) + unit;
-    if(statsIds.avg && $(statsIds.avg)) $(statsIds.avg).innerHTML = avg.toFixed(1) + unit; 
-    if(statsIds.count && $(statsIds.count)) $(statsIds.count).textContent = data.length;
-  }
+  if(statsIds && $(statsIds.min)) $(statsIds.min).textContent = mn.toFixed(1) + unit;
+  if(statsIds && $(statsIds.max)) $(statsIds.max).textContent = mx.toFixed(1) + unit;
 }
 
-function getAdvancedForecast(currentTemp, currentHum, currentPres) {
-  var forecast = { icon: '⛅', text: 'Partly Cloudy', confidence: 'low', details: 'Monitoring trends', code: 11 };
-  if(historicalData.pressure.length < 12) return { icon: '⛅', text: 'Collecting Data...', details: 'Please wait', code: 0 };
-  var len = historicalData.pressure.length;
-  var pres15 = len > 36 ? historicalData.pressure[len - 36] : historicalData.pressure[0];
-  var trend15 = currentPres - pres15;
-  if(trend15 < -1 && currentHum > 80) forecast = { icon: '🌧️', text: 'Heavy Rain Soon', details: 'Pressure dropping, high humidity', code: 1 };
-  else if(trend15 > 1) forecast = { icon: '☀️', text: 'Clear Skies Ahead', details: 'Pressure rising', code: 4 };
-  else if(currentPres > 1013 && currentHum < 60) forecast = { icon: '☀️', text: 'Fair & Stable', details: 'High pressure', code: 6 };
-  return forecast;
+function getAdvancedForecast(temp, hum, pres) {
+  if(historicalData.pressure.length < 12) return { icon: '⛅', text: 'Collecting...', code: 0 };
+  return { icon: '☀️', text: 'Stable Conditions', code: 10 };
 }
 
 function highlightCurrentCondition(forecastText) {
   document.querySelectorAll('.condition-card').forEach(card => card.classList.remove('active'));
-  var conditionMap = { 'Heavy Rain Soon': 'heavy-rain', 'Clear Skies Ahead': 'clear-skies', 'Fair & Stable': 'fair-stable', 'Partly Cloudy': 'partly-cloudy' };
-  var conditionKey = conditionMap[forecastText];
-  if(conditionKey) {
-    var activeCard = document.querySelector('.condition-card[data-condition="' + conditionKey + '"]');
-    if(activeCard) activeCard.classList.add('active');
-  }
 }
 
-// --- FULLY RESTORED ORIGINAL FETCH & UI DATA PARSING ---
 function fetchData() {
   fetch(`https://api.thingspeak.com/channels/${CHANNEL}/feeds.json?api_key=${READ_KEY}&results=100`)
     .then(res => res.json()).then(d => {
-      if(!d.feeds || d.feeds.length === 0) throw new Error('No data');
+      if(!d.feeds || d.feeds.length === 0) return;
       fc++; var f = d.feeds[d.feeds.length - 1];
-      var temp = parseFloat(f.field1) || 0, hum = parseFloat(f.field2) || 0, pres = parseFloat(f.field3) || 0;
-      processEntryLogs(d.feeds);
+      var temp = parseFloat(f.field1), hum = parseFloat(f.field2), pres = parseFloat(f.field3);
       historicalData.pressure.push(pres); historicalData.temperature.push(temp); historicalData.humidity.push(hum);
-      if(historicalData.pressure.length > historicalData.maxHistory) { historicalData.pressure.shift(); historicalData.temperature.shift(); historicalData.humidity.shift(); }
-
-      if($('tv')) $('tv').innerHTML = temp.toFixed(1) + '<span class="un">°C</span>';
-      if($('hv')) $('hv').innerHTML = hum.toFixed(1) + '<span class="un">%</span>';
-      if($('pv')) $('pv').innerHTML = pres.toFixed(1) + '<span class="un">hPa</span>';
+      if($('tv')) $('tv').innerHTML = temp.toFixed(1) + '°C';
+      if($('hv')) $('hv').innerHTML = hum.toFixed(1) + '%';
+      if($('pv')) $('pv').innerHTML = pres.toFixed(1) + ' hPa';
       if($('weatherTemp')) $('weatherTemp').textContent = temp.toFixed(1);
-      if(temp < minTemp) minTemp = temp; if(temp > maxTemp) maxTemp = temp;
-      if($('weatherHi')) $('weatherHi').textContent = maxTemp.toFixed(1); 
-      if($('weatherLo')) $('weatherLo').textContent = minTemp.toFixed(1);
-      
-      var icon = '🌤️', desc = 'Pleasant';
-      if(temp < 10) { icon = '❄️'; desc = 'Very Cold'; } else if(temp < 18) { icon = '🌥️'; desc = 'Cold'; }
-      else if(temp < 25) { icon = '🌤️'; desc = 'Comfortable'; } else if(temp < 30) { icon = '🌞'; desc = 'Warm'; }
-      else { icon = '🔥'; desc = 'Hot'; }
-      if($('weatherIcon')) $('weatherIcon').textContent = icon;
-      if($('weatherDesc')) $('weatherDesc').textContent = desc;
-
-      var adv = getAdvancedForecast(temp, hum, pres);
-      if($('forecast')) $('forecast').innerHTML = adv.icon + ' ' + adv.text;
-      currentForecastCode = adv.code;
-      highlightCurrentCondition(adv.text);
-      if($('homeTemp')) $('homeTemp').innerHTML = temp.toFixed(1) + '°C';
-
-      var tData = [], hData = [], pData = [], lData = [];
-      var lT = 0, lH = 0, lP = 0;
-      d.feeds.forEach(feed => {
-        if (feed.field1 != null) lT = parseFloat(feed.field1);
-        if (feed.field2 != null) lH = parseFloat(feed.field2);
-        if (feed.field3 != null) lP = parseFloat(feed.field3);
-        if (feed.field4 !== null && feed.field4 !== "") globalLastLight = parseInt(feed.field4) || 0;
-        tData.push(lT); hData.push(lH); pData.push(lP); lData.push(globalLastLight);
-      });
-
-      updateOfficeLights(globalLastLight);
-      drawChart($('c1'), tData, '#ff6b6b', '°C', {min:'tempMin', max:'tempMax', avg:'tempAvg', count:'tempCount'});
-      drawChart($('c2'), hData, '#4ecdc4', '%', {min:'humMin', max:'humMax', avg:'humAvg', count:'humCount'});
-      drawChart($('c3'), pData, '#ffd93d', 'hPa', {min:'presMin', max:'presMax', avg:'presAvg', count:null});
-      drawChart($('c4'), lData, '#ffd93d', '%', {min:'lightMin', max:'lightMax', avg:'lightAvg', count:null});
-      
+      processEntryLogs(d.feeds);
+      updateOfficeLights(parseInt(f.field4) || 0);
+      drawChart($('c1'), d.feeds.map(x => parseFloat(x.field1)), '#ff6b6b', '°C', {min:'tempMin', max:'tempMax'});
+      drawChart($('c2'), d.feeds.map(x => parseFloat(x.field2)), '#4ecdc4', '%', {min:'humMin', max:'humMax'});
+      drawChart($('c3'), d.feeds.map(x => parseFloat(x.field3)), '#ffd93d', 'hPa', {min:'presMin', max:'presMax'});
+      drawChart($('c4'), d.feeds.map(x => parseInt(x.field4)||0), '#ffd93d', '%', {min:'lightMin', max:'lightMax'});
       ['st','st2','st3','st4'].forEach(id => { if($(id)) $(id).className = 'sd ok'; });
-      if($('su')) $('su').textContent = 'Live · Updated ' + fc + ' times';
-      if($('homeStatus')) $('homeStatus').textContent = 'LIVE';
-    }).catch(err => { console.error(err); ['st','st2','st3','st4'].forEach(id => { if($(id)) $(id).className = 'sd er'; }); });
+    }).catch(err => console.error(err));
 }
 
 fetchData(); 

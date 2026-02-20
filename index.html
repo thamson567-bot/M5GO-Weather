@@ -26,11 +26,12 @@
   <div class="home-hero">
     <div class="home-content">
       <h1 class="home-title">Smart Office Hub</h1>
+      <p class="home-subtitle">IoT-Powered Workspace Management System</p>
       <div class="home-stats">
-        <div class="stat-card"><div class="stat-icon">🌡️</div><div class="stat-value" id="homeTemp">--°C</div><div class="stat-label">Temperature</div></div>
+        <div class="stat-card"><div class="stat-icon">🌡️</div><div class="stat-value" id="homeTemp">--°C</div><div class="stat-label">Current Temperature</div></div>
         <div class="stat-card"><div class="stat-icon">💡</div><div class="stat-value" id="homeLights">--</div><div class="stat-label">Active Lights</div></div>
-        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="homeEntries">0</div><div class="stat-label">Entries</div></div>
-        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-value" id="homeStatus">LIVE</div><div class="stat-label">System</div></div>
+        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="homeEntries">0</div><div class="stat-label">Today's Entries</div></div>
+        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-value" id="homeStatus">LIVE</div><div class="stat-label">System Status</div></div>
       </div>
     </div>
   </div>
@@ -40,7 +41,6 @@
   <div class="wrap">
     <h2 class="page-title">🌤️ Environmental Monitoring</h2>
     <div class="sb glass-panel"><div class="sd ok" id="st"></div><span id="su">Connecting...</span></div>
-    
     <div class="weather-hero">
       <div class="weather-display">
         <div class="weather-icon" id="weatherIcon">🌤️</div>
@@ -51,20 +51,31 @@
         </div>
       </div>
     </div>
-
     <div class="gr">
-      <div class="cd glass-panel"><div class="ic">🌡️</div><div class="lb">Temp</div><div class="vl" id="tv">--</div></div>
+      <div class="cd glass-panel"><div class="ic">🌡️</div><div class="lb">Temperature</div><div class="vl" id="tv">--</div></div>
       <div class="cd glass-panel"><div class="ic">💧</div><div class="lb">Humidity</div><div class="vl" id="hv">--</div></div>
-      <div class="cd glass-panel"><div class="ic">🌬️</div><div class="lb">Pressure</div><div class="vl" id="pv">--</div></div>
-      <div class="cd glass-panel"><div class="ic">🌦️</div><div class="lb">Forecast</div><div class="vl" id="forecast" style="font-size:1.2rem">--</div></div>
+      <div class="cd glass-panel"><div class="ic">🌬️</div><div class="lb">Air Pressure</div><div class="vl" id="pv">--</div></div>
+      <div class="cd glass-panel"><div class="ic">🌦️</div><div class="lb">Weather Forecast</div><div class="vl" id="forecast" style="font-size:1.5rem">--</div></div>
     </div>
-
-    <div class="ch glass-panel"><div class="tt">Temperature History</div><canvas id="c1"></canvas><div class="chart-info">Min: <span id="tempMin">--</span> Max: <span id="tempMax">--</span></div></div>
-    <div class="ch glass-panel"><div class="tt">Humidity History</div><canvas id="c2"></canvas><div class="chart-info">Min: <span id="humMin">--</span> Max: <span id="humMax">--</span></div></div>
-    <div class="ch glass-panel"><div class="tt">Pressure History</div><canvas id="c3"></canvas><div class="chart-info">Min: <span id="presMin">--</span> Max: <span id="presMax">--</span></div></div>
-    
-    <div class="weather-guide glass-panel">
-      <h3 class="weather-guide-title">📚 Weather Conditions Guide</h3>
+    <div class="ch glass-panel">
+      <div class="tt">Temperature History</div>
+      <canvas id="c1"></canvas>
+      <div class="chart-info">Min: <span id="tempMin">--</span> | Max: <span id="tempMax">--</span> | Avg: <span id="tempAvg">--</span></div>
+    </div>
+    <div class="ch glass-panel">
+      <div class="tt">Humidity History</div>
+      <canvas id="c2"></canvas>
+      <div class="chart-info">Min: <span id="humMin">--</span> | Max: <span id="humMax">--</span></div>
+    </div>
+    <div class="ch glass-panel">
+      <div class="tt">Pressure History</div>
+      <canvas id="c3"></canvas>
+      <div class="chart-info">Min: <span id="presMin">--</span> | Max: <span id="presMax">--</span></div>
+    </div>
+  </div>
+  <div class="weather-guide glass-panel">
+    <div class="weather-guide-inner">
+      <h3 class="weather-guide-title">📚 Weather Reference Guide</h3>
       <div class="conditions-grid" id="conditionsGrid"></div>
     </div>
   </div>
@@ -86,13 +97,19 @@
         <div class="room2-outer" id="room2bg">
           <div class="room-content">
             <div class="room-label">2</div>
-            <div class="device-icon" id="bulb2"><svg viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" rx="12" fill="#222" stroke="#eee" stroke-width="6"/><text x="50" y="65" font-family="Arial" font-weight="bold" font-size="34" fill="#eee" text-anchor="middle">M5</text></svg></div>
+            <div class="device-icon" id="bulb2">
+              <svg viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" rx="12" fill="#222" stroke="#eee" stroke-width="6"/><text x="50" y="65" font-family="Arial" font-weight="bold" font-size="34" fill="#eee" text-anchor="middle">M5</text></svg>
+            </div>
             <div class="room-status off" id="status2">OFF</div>
           </div>
         </div>
       </div>
     </div>
-    <div class="ch glass-panel"><div class="tt">Light Level History</div><canvas id="c4"></canvas><div class="chart-info">Min: <span id="lightMin">--</span> Max: <span id="lightMax">--</span></div></div>
+    <div class="ch glass-panel">
+      <div class="tt">Light Level History</div>
+      <canvas id="c4"></canvas>
+      <div class="chart-info">Min: <span id="lightMin">--</span> | Max: <span id="lightMax">--</span></div>
+    </div>
   </div>
 </div>
 
@@ -110,7 +127,7 @@
 
 <div id="led-page" class="page">
   <div class="wrap">
-    <h2 class="page-title">🎨 LED Control</h2>
+    <h2 class="page-title">🎨 LED Controller</h2>
     <div class="led-container glass-panel">
       <div class="led-grid">
         <div class="led-room-card">

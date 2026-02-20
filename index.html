@@ -193,22 +193,32 @@
           <button class="btn-apply" onclick="applyColor(1)">Apply to Room 1</button>
         </div>
 
-        <div class="led-room-card">
-          <div class="led-room-title"><span>💡 Room 2 (Arduino)</span></div>
-          <div class="led-preview" id="ledPreview2" style="background-color:#00FF00"></div>
-          <div class="color-input-group">
-            <label>Color (HEX):</label>
-            <input type="text" class="color-input" id="colorInput2" placeholder="#00FF00" maxlength="7" value="#00FF00">
-          </div>
-          <div class="color-input-group">
-            <label>Color Picker:</label>
-            <input type="color" class="color-input" id="colorPicker2" value="#00FF00" style="height:50px;cursor:pointer">
-          </div>
-          <button class="btn-apply" onclick="applyColor(2)">Apply to Room 2</button>
-        </div>
-      </div>
-    </div>
+<div class="led-room-card">
+  <div class="led-room-title"><span>💡 Room 1 (M5Stack)</span></div>
+  <div class="led-preview" id="ledPreview1" style="background-color:#FFFFFF"></div>
+  <div class="color-input-group">
+    <label>Color (HEX):</label>
+    <input type="text" class="color-input" id="colorInput1" placeholder="#FFFFFF" maxlength="7" value="#FFFFFF">
   </div>
+  <div class="color-input-group">
+    <label>Color Picker:</label>
+    <input type="color" class="color-input" id="colorPicker1" value="#FFFFFF" style="height:50px;cursor:pointer">
+  </div>
+  <button class="btn-apply" onclick="applyColor(1)">Apply to Room 1</button>
+</div>
+
+<div class="led-room-card">
+  <div class="led-room-title"><span>💡 Room 2 (Arduino)</span></div>
+  <div class="led-preview" id="ledPreview2" style="background-color:#FFFFFF"></div>
+  <div class="color-input-group">
+    <label>Color (HEX):</label>
+    <input type="text" class="color-input" id="colorInput2" placeholder="#FFFFFF" maxlength="7" value="#FFFFFF">
+  </div>
+  <div class="color-input-group">
+    <label>Color Picker:</label>
+    <input type="color" class="color-input" id="colorPicker2" value="#FFFFFF" style="height:50px;cursor:pointer">
+  </div>
+  <button class="btn-apply" onclick="applyColor(2)">Apply to Room 2</button>
 </div>
 
 <footer>Smart Office Hub © 2026 | Powered by M5GO + ThingSpeak + Arduino Mega</footer>

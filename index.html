@@ -8,48 +8,11 @@
 </head>
 <body>
 
-<div class="header">
-  <div class="header-content">
-    <div class="logo">
-      <span class="logo-icon">🏢</span>
-      <span>Smart Office Hub</span>
-    </div>
-    <div class="nav-header">
-      <button class="nav-btn active" onclick="showPage('home')">🏠 Home</button>
-      <button class="nav-btn" onclick="showPage('weather')">🌤️ Weather</button>
-      <button class="nav-btn" onclick="showPage('office')">💡 Lighting</button>
-      <button class="nav-btn" onclick="showPage('entry')">🔐 Entry Log</button>
-      <button class="nav-btn" onclick="showPage('led')">🎨 LED Control</button>
-    </div>
-    <div class="clock-header" id="clockHeader">00:00:00</div>
-  </div>
-</div>
-
-<div id="home-page" class="page active">
-  <div class="home-hero">
-    <div class="home-content">
-      <h1 class="home-title">Smart Office Hub</h1>
-      <p class="home-subtitle">IoT-Powered Workspace Management System</p>
-      <div class="home-stats">
-        <div class="stat-card"><div class="stat-icon">🌡️</div><div class="stat-value" id="homeTemp">--°C</div><div class="stat-label">Current Temperature</div></div>
-        <div class="stat-card"><div class="stat-icon">💡</div><div class="stat-value" id="homeLights">--</div><div class="stat-label">Active Lights</div></div>
-        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="homeEntries">0</div><div class="stat-label">Today's Entries</div></div>
-        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-value" id="homeStatus">LIVE</div><div class="stat-label">System Status</div></div>
-      </div>
-      <div class="nav-cards">
-        <div class="nav-card" onclick="showPage('weather')"><div class="nav-card-icon">🌤️</div><div class="nav-card-title">Weather Monitoring</div><div class="nav-card-desc">Real-time environmental data and forecasting.</div></div>
-        <div class="nav-card" onclick="showPage('office')"><div class="nav-card-icon">💡</div><div class="nav-card-title">Office Lighting</div><div class="nav-card-desc">Visual map showing current lighting status.</div></div>
-        <div class="nav-card" onclick="showPage('entry')"><div class="nav-card-icon">🔐</div><div class="nav-card-title">Entry Access Log</div><div class="nav-card-desc">Track employee access with RFID tags.</div></div>
-        <div class="nav-card" onclick="showPage('led')"><div class="nav-card-icon">🎨</div><div class="nav-card-title">LED Color Control</div><div class="nav-card-desc">Customize RGB colors for each room.</div></div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <div id="weather-page" class="page">
   <div class="wrap">
     <h2 class="page-title">🌤️ Environmental Monitoring</h2>
     <div class="sb glass-panel"><div class="sd ok" id="st"></div><span id="su">Connecting...</span></div>
+    
     <div class="weather-hero">
       <div class="weather-display">
         <div class="weather-icon" id="weatherIcon">🌤️</div>
@@ -60,62 +23,79 @@
         </div>
       </div>
     </div>
+
     <div class="gr">
       <div class="cd glass-panel"><div class="ic">🌡️</div><div class="lb">Temperature</div><div class="vl" id="tv">--<span class="un">°C</span></div></div>
       <div class="cd glass-panel"><div class="ic">💧</div><div class="lb">Humidity</div><div class="vl" id="hv">--<span class="un">%</span></div></div>
       <div class="cd glass-panel"><div class="ic">🌬️</div><div class="lb">Air Pressure</div><div class="vl" id="pv">--<span class="un">hPa</span></div></div>
       <div class="cd glass-panel"><div class="ic">🌦️</div><div class="lb">Forecast</div><div class="vl" id="forecast" style="font-size:1.5rem">--</div></div>
     </div>
-    <div class="ch glass-panel"><div class="tt">Temperature History</div><canvas id="c1"></canvas><div class="chart-info">Min: <span id="tempMin">--</span> Max: <span id="tempMax">--</span></div></div>
-    <div class="ch glass-panel"><div class="tt">Humidity History</div><canvas id="c2"></canvas><div class="chart-info">Min: <span id="humMin">--</span> Max: <span id="humMax">--</span></div></div>
-    <div class="ch glass-panel"><div class="tt">Pressure History</div><canvas id="c3"></canvas><div class="chart-info">Min: <span id="presMin">--</span> Max: <span id="presMax">--</span></div></div>
+
+    <div class="ch glass-panel">
+      <div class="tt"><span>Temperature History</span></div>
+      <canvas id="c1"></canvas>
+      <div class="chart-info">
+        <div class="chart-stat">Min: <span id="tempMin">--</span></div>
+        <div class="chart-stat">Max: <span id="tempMax">--</span></div>
+        <div class="chart-stat">Avg: <span id="tempAvg">--</span></div>
+      </div>
+    </div>
+    <div class="ch glass-panel">
+      <div class="tt"><span>Humidity History</span></div>
+      <canvas id="c2"></canvas>
+      <div class="chart-info">
+        <div class="chart-stat">Min: <span id="humMin">--</span></div>
+        <div class="chart-stat">Max: <span id="humMax">--</span></div>
+      </div>
+    </div>
+    <div class="ch glass-panel">
+      <div class="tt"><span>Pressure History</span></div>
+      <canvas id="c3"></canvas>
+      <div class="chart-info">
+        <div class="chart-stat">Min: <span id="presMin">--</span></div>
+        <div class="chart-stat">Max: <span id="presMax">--</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="weather-guide glass-panel">
+    <div class="weather-guide-inner">
+      <h3 class="weather-guide-title">📚 Weather Conditions Reference Guide</h3>
+      <div class="conditions-grid" id="conditionsGrid"></div>
+    </div>
   </div>
 </div>
 
 <div id="office-page" class="page">
   <div class="wrap">
     <h2 class="page-title">💡 Office Lighting Map</h2>
-    <div class="sb glass-panel"><div class="sd ok" id="st2"></div><span id="lightStatus">Monitoring...</span></div>
     <div class="office-container glass-panel">
       <div class="office-map">
-        <div class="room4-outer" id="room4bg"><div class="room4-door"></div><div class="room-content"><div class="room-label">1</div><div class="device-icon" id="bulb4"><img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Arduino_Logo.svg"></div><div class="room-status off" id="status4">OFF</div></div></div>
-        <div class="room1-outer" id="room1bg"><div class="room1-main-door"></div></div>
-        <div class="room2-outer" id="room2bg"><div class="room2-door"></div><div class="room-content"><div class="room-label">2</div><div class="device-icon" id="bulb2"><svg viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" rx="12" fill="#222" stroke="#e0e0e0" stroke-width="6"/><text x="50" y="65" font-family="Arial" font-size="34" fill="#e0e0e0" text-anchor="middle">M5</text></svg></div><div class="room-status off" id="status2">OFF</div></div></div>
+        <div class="room4-outer" id="room4bg">
+          <div class="room-content">
+            <div class="room-label">1</div>
+            <div class="device-icon" id="bulb4"><img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Arduino_Logo.svg"></div>
+            <div class="room-status off" id="status4">OFF</div>
+          </div>
+        </div>
+        <div class="room1-outer" id="room1bg"></div>
+        <div class="room2-outer" id="room2bg">
+          <div class="room-content">
+            <div class="room-label">2</div>
+            <div class="device-icon" id="bulb2">
+              <svg viewBox="0 0 100 100"><rect x="10" y="10" width="80" height="80" rx="12" fill="#222" stroke="#eee" stroke-width="6"/><text x="50" y="65" font-family="Arial" font-weight="bold" font-size="34" fill="#eee" text-anchor="middle">M5</text></svg>
+            </div>
+            <div class="room-status off" id="status2">OFF</div>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="light-info-section"><div class="light-level" id="lightLevelText">0%</div></div>
-    <div class="ch glass-panel"><div class="tt">Light Intensity History</div><canvas id="c4"></canvas><div class="chart-info">Min: <span id="lightMin">--</span> Max: <span id="lightMax">--</span></div></div>
-  </div>
-</div>
-
-<div id="entry-page" class="page">
-  <div class="wrap">
-    <h2 class="page-title">🔐 Entry Access Log</h2>
-    <div class="sb glass-panel"><div class="sd ok" id="st3"></div><span>Real-time Monitoring</span></div>
-    <div class="log-container glass-panel"><table class="log-table"><thead><tr><th>Timestamp</th><th>Employee</th><th>ID</th><th>Action</th></tr></thead><tbody id="logTableBody"></tbody></table></div>
-  </div>
-</div>
-
-<div id="led-page" class="page">
-  <div class="wrap">
-    <h2 class="page-title">🎨 LED Controller</h2>
-    <div class="sb glass-panel"><div class="sd ok" id="st4"></div><span>Web-based Management</span></div>
-    <div class="led-container glass-panel">
-      <div class="led-grid">
-        <div class="led-room-card">
-          <div class="led-room-title">💡 Room 1 (Arduino)</div>
-          <div class="led-preview" id="ledPreview1" style="background-color:#FFFFFF"></div>
-          <div class="color-input-group"><input type="text" class="color-input" id="colorInput1" value="#FFFFFF"></div>
-          <div class="color-input-group"><input type="color" class="color-input" id="colorPicker1" value="#FFFFFF" style="height:50px"></div>
-          <button class="btn-apply" onclick="applyColor(1)">Apply to Arduino</button>
-        </div>
-        <div class="led-room-card">
-          <div class="led-room-title">💡 Room 2 (M5Stack)</div>
-          <div class="led-preview" id="ledPreview2" style="background-color:#FFFFFF"></div>
-          <div class="color-input-group"><input type="text" class="color-input" id="colorInput2" value="#FFFFFF"></div>
-          <div class="color-input-group"><input type="color" class="color-input" id="colorPicker2" value="#FFFFFF" style="height:50px"></div>
-          <button class="btn-apply" onclick="applyColor(2)">Apply to M5Stack</button>
-        </div>
+    <div class="ch glass-panel">
+      <div class="tt">Light Level History</div>
+      <canvas id="c4"></canvas>
+      <div class="chart-info">
+        <div class="chart-stat">Min: <span id="lightMin">--</span></div>
+        <div class="chart-stat">Max: <span id="lightMax">--</span></div>
       </div>
     </div>
   </div>

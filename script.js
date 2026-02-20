@@ -77,7 +77,7 @@ updateClock();
 // 1. WEATHER FORECAST TO THINGSPEAK (FIELD 7)
 // ==========================================
 function sendForecastToThingSpeak(forecastCode) {
-  if (forecastCode === lastSentForecast || forecastCode <= 0) return; // Prevent rate-limit spam
+  if (forecastCode <= 0) return; 
   
   var url = `https://api.thingspeak.com/update?api_key=${WRITE_KEY}&field7=${forecastCode}&t=${new Date().getTime()}`;
   fetch(url)
@@ -85,7 +85,8 @@ function sendForecastToThingSpeak(forecastCode) {
     .then(data => {
       if(data !== "0") {
         console.log('✅ Forecast sent to Field 7: Code ' + forecastCode);
-        lastSentForecast = forecastCode;
+      } else {
+        console.log('⚠️ ThingSpeak is busy. Forecast not sent this cycle.');
       }
     })
     .catch(err => console.error("Forecast failed:", err));
@@ -96,9 +97,9 @@ function sendForecastToThingSpeak(forecastCode) {
 // ==========================================
 function processEntryLogs(feeds) {
   const allowedUsers = {
-    "21 4D 5D 5D": "Pang Sheng Yuan",
+    "21 4D 5D 5D": "PANG SHENG YUAN",
     "F1 96 EA 01": "THIRSHEN S/O SIVA BALAN",
-    "51 FC BA 5D": "Chew Qibin Bryant"
+    "51 FC BA 5D": "CHEW QIBIN BRYANT"
     // "F1 AB 09 5C" -> No access, intentionally left out
   };
 

@@ -71,6 +71,26 @@ border-color:rgba(255,255,255,.4)}
 .page{display:none}
 .page.active{display:block}
 
+/* Humidity Comfort Level Bar Styling */
+.hg-card { background: var(--card); padding: 25px; border-radius: var(--r); margin-top: 20px; border: 1px solid rgba(255,255,255,.08); }
+.hg-labels { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 0.85rem; opacity: 0.8; }
+.hg-track { 
+    height: 12px; 
+    background: linear-gradient(to right, #ffb347, #4ecdc4, #45aaf2); 
+    border-radius: 6px; 
+    position: relative; 
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+.hg-pin { 
+    width: 20px; height: 20px; background: #fff; border: 3px solid var(--bg); 
+    border-radius: 50%; position: absolute; top: 50%; transform: translate(-50%, -50%); 
+    transition: left 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+/* Light Map Bulb Styling */
+.light-bulb { font-size: 2.5rem; transition: all 0.4s; filter: grayscale(1); opacity: 0.3; }
+.light-bulb.on { filter: grayscale(0); opacity: 1; text-shadow: 0 0 20px #ffd93d; transform: scale(1.1); }
+
 .sb{display:flex;align-items:center;justify-content:center;gap:8px;
 padding:12px 24px;border-radius:24px;font-size:.9rem;margin:0 auto 20px;
 background:var(--card);width:fit-content;border:1px solid rgba(255,255,255,.08);

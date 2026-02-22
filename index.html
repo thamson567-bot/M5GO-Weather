@@ -159,14 +159,25 @@
 <div id="entry-page" class="page">
   <div class="wrap">
     <h2 class="page-title">🔐 Office Entry Access Log</h2>
-    <div class="sb glass-panel"><div class="sd ok" id="st3"></div><span>Real-time RFID access monitoring</span></div>
+    
+    <div class="sb glass-panel">
+      <div class="sd ok" id="st3"></div>
+      <span>Real-time RFID monitoring: <span id="todayCount">0</span> entries today</span>
+    </div>
+
     <div class="log-container glass-panel">
       <h3>Recent Access Records</h3>
       <table class="log-table">
-        <thead><tr><th>Timestamp</th><th>Employee Name</th><th>Card ID</th><th>Action</th></tr></thead>
+        <thead>
+          <tr>
+            <th>Timestamp</th>
+            <th>Employee Name</th>
+            <th>Card ID</th>
+            <th>Action</th>
+          </tr>
+        </thead>
         <tbody id="logTableBody">
-          <tr><td class="log-time">2026-02-15 09:23:45</td><td class="log-name">John Doe</td><td>RFID-001234</td><td><span class="log-status entry">ENTRY</span></td></tr>
-        </tbody>
+          </tbody>
       </table>
     </div>
   </div>

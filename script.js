@@ -141,7 +141,7 @@ function processEntryLogs(feeds) {
   if($('homeEntries')) $('homeEntries').textContent = todayCount;
 }
 
-var lastRgbArduino = '255,0,0'; /
+var lastRgbArduino = '255,0,0'; 
 var lastRgbM5Stack = '0,255,0'; 
 
 function applyColor(room) {

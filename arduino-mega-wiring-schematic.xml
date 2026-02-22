@@ -1,0 +1,39 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="p2c0Qf7h6EK23nPjeNIj">
+    <mxGraphModel dx="1068" dy="944" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="1" shadow="0">
+      <root>
+        <mxCell id="0" parent="">
+          <mxCell id="1" parent="0"/>
+          <mxCell id="2" style="text;html=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+            <mxGeometry x="380" y="30" width="240" height="30" as="geometry"/>
+            <mxValue key="text">Arduino Mega Pin Connections</mxValue>
+          </mxCell>
+          <mxCell id="3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF0000;strokeColor=#000000;" vertex="1" parent="1">
+            <mxGeometry x="220" y="95" width="20" height="20" as="geometry"/>
+            <mxValue key="text">LCD Pin 6</mxValue>
+          </mxCell>
+          <mxCell id="4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FF0000;strokeColor=#000000;" vertex="1" parent="1">
+            <mxGeometry x="220" y="130" width="20" height="20" as="geometry"/>
+            <mxValue key="text">LCD Pin 7</mxValue>
+          </mxCell>
+          <mxCell id="5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00FF00;strokeColor=#000000;" vertex="1" parent="1">
+            <mxGeometry x="220" y="165" width="20" height="20" as="geometry"/>
+            <mxValue key="text">Servo Pin 4</mxValue>
+          </mxCell>
+          <mxCell id="6" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#0000FF;strokeColor=#000000;" vertex="1" parent="1">
+            <mxGeometry x="220" y="200" width="20" height="20" as="geometry"/>
+            <mxValue key="text">Ultrasonic Pin 5</mxValue>
+          </mxCell>
+          <mxCell id="7" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFF00;strokeColor=#000000;" vertex="1" parent="1">
+            <mxGeometry x="220" y="235" width="20" height="20" as="geometry"/>
+            <mxValue key="text">RFID Pin 49</mxValue>
+          </mxCell>
+          <mxCell id="8" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFF00;strokeColor=#000000;" vertex="1" parent="1">
+            <mxGeometry x="220" y="270" width="20" height="20" as="geometry"/>
+            <mxValue key="text">RFID Pin 53</mxValue>
+          </mxCell>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

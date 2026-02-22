@@ -1,0 +1,13 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="+Zj7ohFlGNfF2C4P2jB5">
+    <mxGraphModel dx="1178" dy="573" grid="1" gridSize="10" guideline="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" parent=""></mxCell>
+        <mxCell id="1" parent="0"></mxCell>
+        <mxCell id="M5GO_Port_A" value="M5GO Port A (ENV III sensor)" style="text;html=1;strokeColor=none;fillColor=none;" vertex="1" parent="1"/> 
+        <mxCell id="M5GO_Port_B" value="M5GO Port B (Angle sensor)" style="text;html=1;strokeColor=none;fillColor=none;" vertex="1" parent="1"/> 
+        <mxCell id="M5GO_Port_C" value="M5GO Port C (PIR sensor)" style="text;html=1;strokeColor=none;fillColor=none;" vertex="1" parent="1"/> 
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

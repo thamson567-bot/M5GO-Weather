@@ -1,0 +1,31 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="l14IyRlL4NqjcArcfnTY">
+    <mxGraphModel dx="1098" dy="690" grid="1" gridSize="10" guid="1" tool="1">
+      <root>
+        <mxCell id="0" parent=""/>
+        <mxCell id="1" parent="0">
+          <mxGeometry width="680" height="460"/>
+        </mxCell>
+        <mxCell id="M5GO" value="M5GO" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="20" width="80" height="40"/>
+        </mxCell>
+        <mxCell id="ThingSpeak" value="ThingSpeak" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="120" width="100" height="40"/>
+        </mxCell>
+        <mxCell id="GitHub" value="GitHub" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="240" y="220" width="100" height="40"/>
+        </mxCell>
+        <mxCell id="Dashboard" value="Dashboard" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="120" width="100" height="40"/>
+        </mxCell>
+        <mxCell id="ArduinoMega" value="Arduino Mega" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="420" y="220" width="100" height="40"/>
+        </mxCell>
+        <mxCell id="edge1" style="edgeStyle=orthogonalEdgeStyle;orthogonal=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="M5GO" target="ThingSpeak"/>
+        <mxCell id="edge2" style="edgeStyle=orthogonalEdgeStyle;orthogonal=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="ThingSpeak" target="GitHub"/>
+        <mxCell id="edge3" style="edgeStyle=orthogonalEdgeStyle;orthogonal=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="GitHub" target="Dashboard"/>
+        <mxCell id="edge4" style="edgeStyle=orthogonalEdgeStyle;orthogonal=1;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="Dashboard" target="ArduinoMega"/>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
